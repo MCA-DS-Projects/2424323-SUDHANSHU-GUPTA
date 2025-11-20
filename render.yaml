@@ -1,0 +1,22 @@
+# render.yaml - Simplified version
+services:
+  - type: web
+    name: prospeak-ai
+    env: python
+    plan: free
+    region: oregon
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn run:app
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: FLASK_ENV
+        value: production
+      - key: MONGODB_URI
+        value: "mongodb+srv://sguptaperfect2001_db_user:sgjiLuNNAUPG0QHd@cluster0.yblp5da.mongodb.net/prospeak_ai?retryWrites=true&w=majority"
+      - key: OPENAI_API_KEY
+        value: 8cbdab37a4170bc49007f46e990d2277
+      - key: GEMINI_API_KEY
+        value: AIzaSyBZnv-1ablwVQiVrydpiwRUo4JvfnAqyDI
