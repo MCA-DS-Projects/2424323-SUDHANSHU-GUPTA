@@ -1,9 +1,14 @@
-
-
-const API_BASE_URL = 'http://localhost:5000/api';
+// app/static/js/api.js
 
 class APIClient {
     constructor() {
+        // Smart environment detection for API base URL
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            this.baseURL = 'http://localhost:5000/api'; // Development
+        } else {
+            this.baseURL = '/api'; // Production - relative URL
+        }
+        
         this.token = localStorage.getItem('access_token');
     }
 
@@ -42,7 +47,7 @@ class APIClient {
      * Make API request
      */
     async request(endpoint, options = {}) {
-        const url = `${API_BASE_URL}${endpoint}`;
+        const url = `${this.baseURL}${endpoint}`;
         const config = {
             ...options,
             headers: this.getHeaders()
@@ -277,6 +282,111 @@ class APIClient {
 
     async getPlatformAnalytics(days = 30) {
         return await this.request(`/admin/analytics?days=${days}`);
+    }
+
+    // New AI Audio Analysis Methods
+    async analyzeAudioWithAI(audioData, analysisType = 'pronunciation') {
+        return await this.request('/audio/analyze-ai', {
+            method: 'POST',
+            body: JSON.stringify({
+                audio_data: audioData,
+                analysis_type: analysisType
+            })
+        });
+    }
+
+    async getAudioFeedback(sessionId) {
+        return await this.request(`/audio/get-feedback/${sessionId}`);
+    }
+
+    async getAIPracticeExercises() {
+        return await this.request('/audio/practice-exercises');
+    }
+
+    // Interview Analysis
+    async analyzeInterviewResponse(question, transcript, category = 'General', difficulty = 'Medium') {
+        return await this.request('/interview/analyze-response', {
+            method: 'POST',
+            body: JSON.stringify({
+                question: question,
+                transcript: transcript,
+                category: category,
+                difficulty: difficulty
+            })
+        });
+    }
+
+    async generateInterviewQuestion(category = 'Behavioral', difficulty = 'Medium', jobRole = 'Professional') {
+        return await this.request('/interview/generate-question', {
+            method: 'POST',
+            body: JSON.stringify({
+                category: category,
+                difficulty: difficulty,
+                job_role: jobRole
+            })
+        });
+    }
+
+    // Conversation AI
+    async startAIConversation(conversationType = 'fluency_practice') {
+        return await this.request('/conversation/start', {
+            method: 'POST',
+            body: JSON.stringify({
+                conversation_type: conversationType
+            })
+        });
+    }
+
+    async continueAIConversation(userMessage, conversationHistory = []) {
+        return await this.request('/conversation/continue', {
+            method: 'POST',
+            body: JSON.stringify({
+                user_message: userMessage,
+                conversation_history: conversationHistory
+            })
+        });
+    }
+
+    async generateQuickResponses(lastMessage = '', conversationHistory = []) {
+        return await this.request('/conversation/quick-responses', {
+            method: 'POST',
+            body: JSON.stringify({
+                last_message: lastMessage,
+                conversation_history: conversationHistory
+            })
+        });
+    }
+
+    // Audio Practice with AI
+    async generatePracticePhrase(exerciseType = 'word-stress', difficulty = 'medium') {
+        return await this.request('/audio/generate-phrase', {
+            method: 'POST',
+            body: JSON.stringify({
+                exercise_type: exerciseType,
+                difficulty: difficulty
+            })
+        });
+    }
+
+    async getAudioPracticeStats() {
+        return await this.request('/audio/stats');
+    }
+
+    // Session Tracking
+    async trackSessionCompletion(sessionType = 'general', duration = 0) {
+        return await this.request('/session/track', {
+            method: 'POST',
+            body: JSON.stringify({
+                session_type: sessionType,
+                duration: duration
+            })
+        });
+    }
+
+    async incrementSessionCount() {
+        return await this.request('/dashboard/increment-session', {
+            method: 'POST'
+        });
     }
 }
 

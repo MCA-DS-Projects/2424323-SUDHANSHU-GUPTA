@@ -1,11 +1,24 @@
+# render.yaml
+
 services:
+  # Backend API service
   - type: web
-    name: prospeak-ai
+    name: prospeak-ai-backend
     env: python
     plan: free
     region: oregon
-    buildCommand: pip install -r requirements.txt
+    
+    # Build configuration
+    buildCommand: |
+      pip install -r requirements.txt
+    
+    # Start command - important: use $PORT environment variable
     startCommand: gunicorn --bind 0.0.0.0:$PORT run:app
+    
+    # Health check path
+    healthCheckPath: /api/auth/me
+    
+    # Environment variables
     envVars:
       - key: SECRET_KEY
         generateValue: true
@@ -21,3 +34,21 @@ services:
         value: 8cbdab37a4170bc49007f46e990d2277
       - key: GEMINI_API_KEY
         value: AIzaSyBZnv-1ablwVQiVrydpiwRUo4JvfnAqyDI
+
+  # Frontend static site (if you're deploying frontend separately)
+  - type: web
+    name: prospeak-ai-frontend
+    env: static
+    plan: free
+    region: oregon
+    buildCommand: |
+      echo "Building frontend..."
+    staticPublishPath: ./app/static
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
