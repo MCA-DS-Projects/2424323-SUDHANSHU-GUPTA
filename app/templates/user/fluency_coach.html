@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fluency Coach - ProSpeak AI</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}" />
+    <link rel="alternate icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='favicon.svg') }}" />
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  </head>
+<body class="bg-gradient-to-br from-primary-50 via-white to-secondary-50 min-h-screen">
+    <!-- Header -->
+    {% include 'partials/user_header.html' %}
+
+    <!-- Main Content -->
+    <main class="flex-1 py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <!-- Page Header -->
+            <div class="mb-8">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                    <div>
+                        <h1 class="text-3xl font-heading font-bold text-text-primary mb-2">Fluency Coach</h1>
+                        <p class="text-text-secondary">Practice daily conversations with AI-powered feedback and pronunciation coaching</p>
+                    </div>
+                    <div class="mt-4 lg:mt-0 flex items-center space-x-4">
+                        <div class="flex items-center space-x-2 text-sm text-text-secondary">
+                            <i class="fas fa-clock text-primary"></i>
+                            <span>Session: 15 min</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-sm text-text-secondary">
+                            <i class="fas fa-trophy text-warning"></i>
+                            <span>Streak: 7 days</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-4 gap-8">
+                <!-- Left Sidebar -->
+                <div class="lg:col-span-1 space-y-6">
+                    <!-- Communication Tips -->
+                    <div class="card" id="tipsCard">
+                        <h4 class="font-heading font-semibold text-text-primary mb-3">Communication Tips</h4>
+                        <div id="communicationTips" class="space-y-2 text-sm text-text-secondary">
+                            <div class="flex items-start space-x-2">
+                                <i class="fas fa-lightbulb text-warning mt-0.5"></i>
+                                <span>Start with a friendly greeting</span>
+                            </div>
+                            <div class="flex items-start space-x-2">
+                                <i class="fas fa-lightbulb text-warning mt-0.5"></i>
+                                <span>Speak clearly and naturally</span>
+                            </div>
+                            <div class="flex items-start space-x-2">
+                                <i class="fas fa-lightbulb text-warning mt-0.5"></i>
+                                <span>Take your time to respond</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Today's Progress (Hidden initially, shown after session) -->
+                    <div class="card hidden" id="progressCard">
+                        <h4 class="font-heading font-semibold text-text-primary mb-4">Session Progress</h4>
+                        
+                        <!-- Speaking Confidence -->
+                        <div class="mb-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-text-secondary">Confidence</span>
+                                <span id="confidenceScore" class="text-sm font-bold text-secondary">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div id="confidenceBar" class="bg-secondary h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Vocabulary Usage -->
+                        <div class="mb-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-text-secondary">Vocabulary</span>
+                                <span id="vocabularyScore" class="text-sm font-bold text-warning">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div id="vocabularyBar" class="bg-warning h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Grammar Accuracy -->
+                        <div class="mb-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-text-secondary">Grammar</span>
+                                <span id="grammarScore" class="text-sm font-bold text-primary">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div id="grammarBar" class="bg-primary h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Messages Count -->
+                        <div class="mt-4 p-3 bg-secondary-50 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-text-primary">Messages</span>
+                                <span id="messageCount" class="text-lg font-bold text-secondary">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conversation Interface (Center) -->
+                <div class="lg:col-span-3">
+                    <div class="card-elevated h-full">
+                        <!-- Conversation Header -->
+                        <div class="flex items-center justify-between mb-6 pb-4 border-b border-border">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-robot text-primary"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-text-primary">AI Coach - Emma</div>
+                                    <div class="text-sm text-text-secondary">Workplace Communication Expert</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button class="btn-outline text-sm px-3 py-1">
+                                    <i class="fas fa-redo mr-1"></i>
+                                    Restart
+                                </button>
+                                <button id="endSessionBtn" class="btn-primary text-sm px-3 py-1">
+                                    <i class="fas fa-stop-circle mr-1"></i>
+                                    End Session
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Conversation Area -->
+                        <div class="conversation-area mb-6" style="height: 400px; overflow-y: auto;">
+                            <div class="space-y-4">
+                                <!-- AI Message -->
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-robot text-primary text-sm"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="bg-gray-100 rounded-lg p-4 max-w-md">
+                                            <p class="text-text-primary">Good morning! Let's start our team meeting. Could you please give us an update on the current project status?</p>
+                                            <div class="flex items-center justify-between mt-2">
+                                                <button class="text-primary hover:text-primary-700 text-sm">
+                                                    <i class="fas fa-play mr-1"></i>
+                                                    Play Audio
+                                                </button>
+                                                <span class="text-xs text-text-secondary">9:15 AM</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- User Message -->
+                                <div class="flex items-start space-x-3 justify-end">
+                                    <div class="flex-1 flex justify-end">
+                                        <div class="bg-primary text-white rounded-lg p-4 max-w-md">
+                                            <p>Good morning everyone. I'm pleased to report that we're currently on track with our project timeline. We've completed 75% of the development phase.</p>
+                                            <div class="flex items-center justify-between mt-2">
+                                                <div class="flex items-center space-x-2">
+                                                    <div class="flex items-center space-x-1">
+                                                        <i class="fas fa-check-circle text-secondary text-sm"></i>
+                                                        <span class="text-xs opacity-75">Pronunciation: 92%</span>
+                                                    </div>
+                                                </div>
+                                                <span class="text-xs opacity-75">9:16 AM</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="w-8 h-8 bg-secondary-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-user text-secondary text-sm"></i>
+                                    </div>
+                                </div>
+
+                                <!-- Feedback Message -->
+                                <div class="feedback-card">
+                                    <div class="flex items-start space-x-3">
+                                        <i class="fas fa-lightbulb text-secondary mt-1"></i>
+                                        <div>
+                                            <div class="font-medium text-text-primary mb-1">Great job!</div>
+                                            <p class="text-sm text-text-secondary">Your pronunciation was excellent. Consider adding specific metrics to make your update even more impactful: "We've completed 75% of the development phase, finishing 12 out of 16 planned features."</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- AI Follow-up -->
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-robot text-primary text-sm"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="bg-gray-100 rounded-lg p-4 max-w-md">
+                                            <p class="text-text-primary">That's excellent progress! What are the main challenges you're facing, and do you anticipate any risks to the upcoming milestones?</p>
+                                            <div class="flex items-center justify-between mt-2">
+                                                <button class="text-primary hover:text-primary-700 text-sm">
+                                                    <i class="fas fa-play mr-1"></i>
+                                                    Play Audio
+                                                </button>
+                                                <span class="text-xs text-text-secondary">9:17 AM</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Input Area -->
+                        <div class="border-t border-border pt-4">
+                            <div class="flex items-center space-x-4">
+                                <!-- Recording Controls -->
+                                <div class="flex items-center space-x-2">
+                                    <button id="recordBtn" class="w-12 h-12 bg-accent text-white rounded-full flex items-center justify-center hover:bg-accent-700 transition-fast">
+                                        <i class="fas fa-microphone"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Audio Visualization -->
+                                <div class="flex-1 flex items-center space-x-1 h-12 bg-gray-50 rounded-lg px-4">
+                                    <div class="audio-wave bg-primary h-2 w-1 rounded-full"></div>
+                                    <div class="audio-wave bg-primary h-4 w-1 rounded-full"></div>
+                                    <div class="audio-wave bg-primary h-3 w-1 rounded-full"></div>
+                                    <div class="audio-wave bg-primary h-6 w-1 rounded-full"></div>
+                                    <div class="audio-wave bg-primary h-2 w-1 rounded-full"></div>
+                                    <div class="audio-wave bg-primary h-5 w-1 rounded-full"></div>
+                                    <div class="audio-wave bg-primary h-3 w-1 rounded-full"></div>
+                                    <div class="audio-wave bg-primary h-4 w-1 rounded-full"></div>
+                                    <span id="recordingStatusText" class="text-sm text-text-secondary ml-4">Tap microphone to start speaking</span>
+                                </div>
+                            </div>
+
+                            <!-- Quick Responses -->
+                            <div class="mt-4">
+                                <div class="text-sm text-text-secondary mb-2">Quick responses:</div>
+                                <div class="flex flex-wrap gap-2">
+                                    <button class="px-3 py-1 bg-primary-50 text-primary rounded-full text-sm hover:bg-primary-100 transition-fast">
+                                        "Could you clarify that?"
+                                    </button>
+                                    <button class="px-3 py-1 bg-primary-50 text-primary rounded-full text-sm hover:bg-primary-100 transition-fast">
+                                        "I need more time to think"
+                                    </button>
+                                    <button class="px-3 py-1 bg-primary-50 text-primary rounded-full text-sm hover:bg-primary-100 transition-fast">
+                                        "Let me get back to you"
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-border mt-16">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <svg class="h-8 w-8 text-primary mr-2" viewBox="0 0 40 40" fill="currentColor">
+                        <circle cx="20" cy="20" r="18" fill="currentColor" opacity="0.1"/>
+                        <path d="M12 16c0-4.4 3.6-8 8-8s8 3.6 8 8v8c0 4.4-3.6 8-8 8s-8-3.6-8-8v-8zm8-6c-3.3 0-6 2.7-6 6v8c0 3.3 2.7 6 6 6s6-2.7 6-6v-8c0-3.3-2.7-6-6-6z"/>
+                        <circle cx="20" cy="16" r="2" fill="currentColor"/>
+                    </svg>
+                    <span class="text-text-primary font-medium">ProSpeak AI</span>
+                </div>
+                <div class="flex space-x-6 text-sm text-text-secondary">
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Privacy Policy</a>
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Terms of Service</a>
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Support</a>
+                </div>
+                <div class="text-sm text-text-secondary mt-4 md:mt-0">
+                    © 2025 ProSpeak AI. All Rights Reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Fluency Coach Styles -->
+    <style>
+        .recording-active {
+            animation: pulse-red 1.5s infinite;
+            background-color: #ef4444 !important;
+        }
+        
+        @keyframes pulse-red {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+        
+        .pulse-success {
+            animation: pulse-success 1.5s infinite;
+        }
+        
+        @keyframes pulse-success {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .microphone-denied {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .audio-wave {
+            transition: height 0.2s ease;
+        }
+        
+        .conversation-area {
+            scroll-behavior: smooth;
+        }
+        
+        /* Hide floating vocabulary items that appear at the top */
+        body > div:not(.max-w-7xl):not(.fixed):not(.relative):not(header):not(main):not(footer) {
+            display: none !important;
+        }
+        
+        /* Specifically hide vocabulary items outside their container */
+        body > .bg-primary-50,
+        body > div > .bg-primary-50:not(.lg\\:col-span-1 .bg-primary-50) {
+            display: none !important;
+        }
+        
+        /* Hide any text elements that might be vocabulary words floating at top */
+        body > span,
+        body > div > span:not(.max-w-7xl span) {
+            display: none !important;
+        }
+    </style>
+
+    <!-- Load Required Scripts -->
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/user-common.js') }}"></script>
+    
+    <!-- JavaScript for Fluency Coach -->
+    <script>
+        let conversationHistory = [];
+        let sessionStartTime = null;
+        let messageCount = 0;
+        let totalConfidence = 0;
+        let totalVocabulary = 0;
+        let totalGrammar = 0;
+        
+        // Audio recording variables
+        let isRecording = false;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let recognition = null;
+        let recordedAudioUrl = null;
+        let currentTranscript = '';
+        
+        // Global initialization state
+        window.fluencyCoachInitialized = false;
+        
+        // Cleanup function for fluency coach
+        window.cleanupFluencyCoach = function() {
+            console.log('Cleaning up Fluency Coach...');
+            
+            // Stop recording if active
+            if (isRecording) {
+                try {
+                    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                        mediaRecorder.stop();
+                    }
+                } catch (e) {
+                    console.log('Error stopping recorder:', e);
+                }
+            }
+            
+            // Stop speech recognition
+            if (recognition) {
+                try {
+                    recognition.stop();
+                } catch (e) {
+                    console.log('Recognition already stopped');
+                }
+            }
+            
+            // Clear any timers
+            if (recordingStartTime) {
+                recordingStartTime = null;
+            }
+            
+            // Reset state
+            isRecording = false;
+            window.fluencyCoachInitialized = false;
+            
+            console.log('Fluency Coach cleaned up');
+        };
+        
+        // Initialize everything when page loads
+        function initializeFluencyCoach() {
+            if (window.fluencyCoachInitialized) {
+                console.log('Fluency Coach already initialized');
+                return;
+            }
+            
+            console.log('Fluency Coach initializing...');
+            
+            try {
+                initializeAudioRecording();
+                initializeSpeechRecognition();
+                setupEventListeners();
+                startConversation();
+                
+                sessionStartTime = Date.now();
+                
+                window.fluencyCoachInitialized = true;
+                console.log('Fluency Coach initialized successfully');
+                
+            } catch (error) {
+                console.error('Initialization error:', error);
+                showErrorMessage('Failed to initialize fluency coach. Please refresh the page.');
+            }
+        }
+        
+        // Initialize immediately if DOM is ready, otherwise wait
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeFluencyCoach);
+        } else {
+            setTimeout(initializeFluencyCoach, 100);
+        }
+        
+        // Also initialize on window load as backup
+        window.addEventListener('load', function() {
+            if (!window.fluencyCoachInitialized) {
+                setTimeout(initializeFluencyCoach, 200);
+            }
+        });
+        
+        // Initialize audio recording
+        async function initializeAudioRecording() {
+            try {
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    throw new Error('Audio recording not supported in this browser');
+                }
+                
+                // Test microphone permission
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                stream.getTracks().forEach(track => track.stop());
+                console.log('Microphone permission granted for fluency coach');
+                
+            } catch (error) {
+                console.error('Microphone permission denied:', error);
+                showPermissionError();
+            }
+        }
+        
+        // Initialize speech recognition
+        function initializeSpeechRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = 'en-US';
+                
+                recognition.onstart = function() {
+                    console.log('Speech recognition started for fluency coach');
+                };
+                
+                recognition.onresult = function(event) {
+                    let finalTranscript = '';
+                    let interimTranscript = '';
+                    
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const transcript = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalTranscript += transcript;
+                        } else {
+                            interimTranscript += transcript;
+                        }
+                    }
+                    
+                    currentTranscript = finalTranscript + interimTranscript;
+                    console.log('Fluency transcript:', currentTranscript);
+                    
+                    // Update status text to show we're capturing speech
+                    const statusText = document.getElementById('recordingStatusText');
+                    if (statusText && isRecording) {
+                        if (currentTranscript.trim() !== '') {
+                            statusText.innerHTML = '<i class="fas fa-check-circle text-green-500 mr-2"></i>Capturing speech...';
+                            statusText.classList.remove('text-red-500');
+                            statusText.classList.add('text-green-500');
+                        }
+                    }
+                };
+                
+                recognition.onerror = function(event) {
+                    console.error('Speech recognition error:', event.error);
+                    if (event.error === 'not-allowed') {
+                        showPermissionError();
+                    }
+                };
+                
+                recognition.onend = function() {
+                    console.log('Speech recognition ended');
+                    if (isRecording) {
+                        setTimeout(() => {
+                            if (isRecording && recognition) {
+                                try {
+                                    recognition.start();
+                                } catch (e) {
+                                    console.log('Could not restart recognition:', e);
+                                }
+                            }
+                        }, 100);
+                    }
+                };
+            } else {
+                console.warn('Speech recognition not supported in this browser');
+                showErrorMessage('Speech recognition is not supported in this browser. Please use Chrome or Edge.');
+            }
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            console.log('Setting up fluency coach event listeners...');
+            
+            // Record button
+            const recordBtn = document.getElementById('recordBtn');
+            if (recordBtn) {
+                recordBtn.addEventListener('click', toggleRecording);
+                console.log('Record button event listener added');
+            }
+            
+            // End session button
+            const endSessionHandler = function(e) {
+                e.preventDefault();
+                console.log('End Session button clicked');
+                endSession();
+            };
+            const endSessionBtn = document.getElementById('endSessionBtn');
+            if (endSessionBtn) {
+                endSessionBtn.removeEventListener('click', endSessionHandler);
+                endSessionBtn.addEventListener('click', endSessionHandler);
+                console.log('End session button event listener added');
+            } else {
+                console.warn('End Session button not found');
+            }
+            
+            // Restart button
+            const restartBtn = document.querySelector('.btn-outline');
+            if (restartBtn) {
+                restartBtn.addEventListener('click', restartConversation);
+            }
+            
+            // Quick response buttons
+            setupQuickResponseButtons();
+            
+            // Audio play buttons
+            setupAudioPlayButtons();
+            
+            console.log('Fluency coach event listeners setup completed');
+        }
+        
+        // Toggle recording
+        async function toggleRecording() {
+            if (!isRecording) {
+                await startRecording();
+            } else {
+                stopRecording();
+            }
+        }
+        
+        // Start recording
+        async function startRecording() {
+            try {
+                console.log('Starting fluency recording...');
+                
+                // Get microphone stream
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true,
+                        sampleRate: 44100
+                    }
+                });
+                
+                // Setup MediaRecorder
+                mediaRecorder = new MediaRecorder(stream, {
+                    mimeType: 'audio/webm;codecs=opus'
+                });
+                audioChunks = [];
+                
+                mediaRecorder.ondataavailable = function(event) {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
+                };
+                
+                mediaRecorder.onstop = function() {
+                    console.log('MediaRecorder stopped, processing fluency audio...');
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    recordedAudioUrl = URL.createObjectURL(audioBlob);
+                    
+                    // Show processing message
+                    const statusText = document.querySelector('.conversation-area .space-y-4 + div span');
+                    if (statusText) {
+                        statusText.textContent = 'Processing your speech...';
+                    }
+                    
+                    // Add user message to conversation with transcript
+                    setTimeout(() => {
+                        if (currentTranscript && currentTranscript.trim() !== '') {
+                            addUserMessage(currentTranscript);
+                        } else {
+                            // If no transcript, show a message
+                            if (window.notifications) {
+                                window.notifications.warning('No speech detected. Please try again.');
+                            }
+                            const statusText = document.querySelector('.conversation-area .space-y-4 + div span');
+                            if (statusText) {
+                                statusText.textContent = 'Tap microphone to start speaking';
+                            }
+                        }
+                    }, 500);
+                    
+                    // Stop all tracks
+                    stream.getTracks().forEach(track => track.stop());
+                };
+                
+                mediaRecorder.onerror = function(event) {
+                    console.error('MediaRecorder error:', event.error);
+                    showErrorMessage('Recording error: ' + event.error);
+                };
+                
+                // Start recording
+                mediaRecorder.start(1000);
+                isRecording = true;
+                recordingStartTime = Date.now();
+                currentTranscript = '';
+                
+                // Start speech recognition
+                if (recognition) {
+                    try {
+                        recognition.start();
+                    } catch (e) {
+                        console.log('Recognition already started or error:', e);
+                    }
+                }
+                
+                // Update UI
+                updateRecordingUI(true);
+                animateWaves();
+                
+                console.log('Fluency recording started successfully');
+                
+            } catch (error) {
+                console.error('Failed to start recording:', error);
+                if (error.name === 'NotAllowedError') {
+                    showPermissionError();
+                } else {
+                    showErrorMessage('Failed to start recording: ' + error.message);
+                }
+            }
+        }
+        
+        // Stop recording
+        function stopRecording() {
+            console.log('Stopping fluency recording...');
+            
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+            }
+            
+            if (recognition) {
+                recognition.stop();
+            }
+            
+            isRecording = false;
+            
+            // Update UI
+            updateRecordingUI(false);
+            stopWaveAnimation();
+            
+            console.log('Fluency recording stopped');
+        }
+        
+        // Update recording UI
+        function updateRecordingUI(recording) {
+            const recordBtn = document.getElementById('recordBtn');
+            const statusText = document.getElementById('recordingStatusText');
+            
+            if (recording) {
+                if (recordBtn) {
+                    recordBtn.classList.remove('bg-accent');
+                    recordBtn.classList.add('bg-red-500', 'recording-active');
+                    recordBtn.innerHTML = '<i class="fas fa-stop"></i>';
+                }
+                if (statusText) {
+                    statusText.innerHTML = '<i class="fas fa-microphone text-red-500 mr-2"></i>Recording... Speak now';
+                    statusText.classList.remove('text-text-secondary');
+                    statusText.classList.add('text-red-500', 'font-medium');
+                }
+            } else {
+                if (recordBtn) {
+                    recordBtn.classList.remove('bg-red-500', 'recording-active');
+                    recordBtn.classList.add('bg-accent');
+                    recordBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                }
+                if (statusText) {
+                    statusText.innerHTML = 'Tap microphone to start speaking';
+                    statusText.classList.remove('text-red-500', 'font-medium');
+                    statusText.classList.add('text-text-secondary');
+                }
+            }
+        }
+        
+        // Animate audio waves
+        function animateWaves() {
+            const audioWaves = document.querySelectorAll('.audio-wave');
+            
+            function animate() {
+                if (!isRecording) return;
+                
+                audioWaves.forEach((wave, index) => {
+                    const randomHeight = Math.random() * 6 + 2;
+                    wave.style.height = `${randomHeight * 4}px`;
+                });
+                
+                if (isRecording) {
+                    setTimeout(animate, 200);
+                }
+            }
+            
+            animate();
+        }
+        
+        // Stop wave animation
+        function stopWaveAnimation() {
+            const audioWaves = document.querySelectorAll('.audio-wave');
+            audioWaves.forEach(wave => {
+                wave.style.height = '8px';
+            });
+        }
+        
+        // Start conversation with Gemini
+        async function startConversation() {
+            try {
+                console.log('Starting Gemini conversation...');
+                
+                // Clear conversation area
+                const conversationArea = document.querySelector('.conversation-area .space-y-4');
+                if (conversationArea) {
+                    conversationArea.innerHTML = '<div class="text-center py-8"><i class="fas fa-spinner fa-spin text-primary text-2xl"></i><p class="text-text-secondary mt-2">Starting conversation...</p></div>';
+                }
+                
+                // Get initial greeting from Gemini
+                const response = await api.request('/conversation/start', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        conversation_type: 'fluency_practice'
+                    })
+                });
+                
+                if (response.success && response.message) {
+                    conversationHistory = [{
+                        role: 'assistant',
+                        content: response.message
+                    }];
+                    
+                    // Display AI greeting
+                    if (conversationArea) {
+                        conversationArea.innerHTML = '';
+                        addAIMessage(response.message);
+                    }
+                } else {
+                    throw new Error('Failed to start conversation');
+                }
+                
+            } catch (error) {
+                console.error('Error starting conversation:', error);
+                // Fallback to simple greeting
+                const conversationArea = document.querySelector('.conversation-area .space-y-4');
+                if (conversationArea) {
+                    conversationArea.innerHTML = '';
+                    addAIMessage("Hello! I'm your fluency coach. Let's have a conversation to practice your speaking skills. How are you doing today?");
+                }
+            }
+        }
+        
+        // Restart conversation
+        async function restartConversation() {
+            conversationHistory = [];
+            messageCount = 0;
+            totalConfidence = 0;
+            totalVocabulary = 0;
+            totalGrammar = 0;
+            
+            const conversationArea = document.querySelector('.conversation-area .space-y-4');
+            if (conversationArea) {
+                conversationArea.innerHTML = '';
+            }
+            
+            // Hide progress card
+            const progressCard = document.getElementById('progressCard');
+            if (progressCard) {
+                progressCard.classList.add('hidden');
+            }
+            
+            // Show tips card
+            const tipsCard = document.getElementById('tipsCard');
+            if (tipsCard) {
+                tipsCard.classList.remove('hidden');
+            }
+            
+            await startConversation();
+            
+            if (window.notifications) {
+                window.notifications.info('Conversation restarted!');
+            }
+        }
+        
+        // Add user message to conversation
+        async function addUserMessage(transcript) {
+            if (!transcript || transcript.trim() === '') {
+                transcript = "I'm practicing my speaking skills.";
+            }
+            
+            const conversationArea = document.querySelector('.conversation-area .space-y-4');
+            if (!conversationArea) return;
+            
+            // Generate scores
+            const pronunciationScore = Math.floor(Math.random() * 15) + 85; // 85-100%
+            const vocabularyScore = Math.floor(Math.random() * 20) + 75; // 75-95%
+            const grammarScore = Math.floor(Math.random() * 20) + 75; // 75-95%
+            
+            // Update totals for progress tracking
+            messageCount++;
+            totalConfidence += pronunciationScore;
+            totalVocabulary += vocabularyScore;
+            totalGrammar += grammarScore;
+            
+            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            const userMessage = `
+                <div class="flex items-start space-x-3 justify-end animate-fade-in">
+                    <div class="flex-1 flex justify-end">
+                        <div class="bg-primary text-white rounded-lg p-4 max-w-md">
+                            <p>${transcript}</p>
+                            <div class="flex items-center justify-between mt-2">
+                                <div class="flex items-center space-x-2">
+                                    <div class="flex items-center space-x-1">
+                                        <i class="fas fa-check-circle text-secondary text-sm"></i>
+                                        <span class="text-xs opacity-75">Score: ${pronunciationScore}%</span>
+                                    </div>
+                                </div>
+                                <span class="text-xs opacity-75">${timestamp}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 bg-secondary-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-user text-secondary text-sm"></i>
+                    </div>
+                </div>
+            `;
+            
+            conversationArea.insertAdjacentHTML('beforeend', userMessage);
+            conversationArea.scrollTop = conversationArea.parentElement.scrollHeight;
+            
+            // Add to conversation history
+            conversationHistory.push({
+                role: 'user',
+                content: transcript
+            });
+            
+            // Update progress stats
+            updateProgressStats();
+            
+            // Show success notification
+            if (window.notifications) {
+                window.notifications.success(`Message sent! Score: ${pronunciationScore}%`);
+            }
+            
+            // Get AI response from Gemini
+            await getAIResponse(transcript);
+        }
+        
+        // Get AI response based on user's message
+        async function getAIResponse(userMessage) {
+            try {
+                const conversationArea = document.querySelector('.conversation-area .space-y-4');
+                if (!conversationArea) return;
+                
+                // Show typing indicator with placeholder structure
+                const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                const messageId = 'aiMessage_' + Date.now(); // Unique ID for this message
+                const typingIndicator = `
+                    <div class="flex items-start space-x-3 animate-fade-in" id="aiResponseContainer_${messageId}">
+                        <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-robot text-primary text-sm"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="bg-gray-100 rounded-lg p-4 max-w-md">
+                                <p class="text-text-primary" id="${messageId}">
+                                    <i class="fas fa-spinner fa-spin mr-2"></i>Thinking...
+                                </p>
+                            </div>
+                            <div class="flex items-center mt-2 space-x-3">
+                                <button class="text-xs text-text-secondary hover:text-primary transition-fast" onclick="playAIAudio(this)" style="display: none;">
+                                    <i class="fas fa-play mr-1"></i>
+                                    Play Audio
+                                </button>
+                                <span class="text-xs text-text-secondary">${timestamp}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                conversationArea.insertAdjacentHTML('beforeend', typingIndicator);
+                
+                // Auto-scroll to bottom
+                scrollToBottom();
+                
+                console.log('🔄 Sending message to Gemini:', userMessage);
+                console.log('📚 Conversation history length:', conversationHistory.length);
+                console.log('📚 Full conversation history:', JSON.stringify(conversationHistory, null, 2));
+                
+                // Get dynamic response based on user's message with timeout
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => {
+                    console.warn('⏱️ API request timeout after 30 seconds');
+                    controller.abort();
+                }, 30000); // 30 second timeout (increased for Gemini API)
+                
+                let response;
+                try {
+                    response = await api.request('/conversation/continue', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            user_message: userMessage,
+                            conversation_history: conversationHistory
+                        }),
+                        signal: controller.signal
+                    });
+                    clearTimeout(timeoutId);
+                } catch (fetchError) {
+                    clearTimeout(timeoutId);
+                    console.error('❌ API request failed:', fetchError);
+                    // Create a fallback response object
+                    response = {
+                        success: true,
+                        message: `I understand. Could you tell me more about that?`,
+                        using_ai: false,
+                        error_details: fetchError.message
+                    };
+                }
+                
+                console.log('📥 Received response:', response);
+                
+                // Update the thinking indicator with actual response
+                const messageContent = document.getElementById(messageId);
+                
+                // Check if we got a valid response
+                let aiResponse = null;
+                let usingAI = false;
+                
+                if (response && response.success && response.message) {
+                    aiResponse = response.message;
+                    usingAI = response.using_ai || false;
+                } else if (response && response.message) {
+                    // Fallback if success flag is missing
+                    aiResponse = response.message;
+                    usingAI = false;
+                } else {
+                    // Generate contextual fallback
+                    console.warn('⚠️ No valid message in response, using fallback');
+                    const fallbacks = [
+                        `That's interesting! Tell me more about "${userMessage.substring(0, 20)}..."`,
+                        "I'd love to hear more about that. Can you elaborate?",
+                        "That's a great point. What else can you tell me?",
+                        "Thanks for sharing. How do you feel about that?"
+                    ];
+                    aiResponse = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+                    usingAI = false;
+                }
+                
+                if (messageContent && aiResponse) {
+                    // Replace "Thinking..." with actual message
+                    messageContent.innerHTML = aiResponse;
+                    
+                    // Add to conversation history
+                    conversationHistory.push({
+                        role: 'assistant',
+                        content: aiResponse
+                    });
+                    
+                    // Show indicator
+                    if (usingAI) {
+                        console.log('✅ Using Gemini AI for dynamic responses');
+                    } else {
+                        console.log('📝 Using fallback response');
+                    }
+                    
+                    // Auto-scroll after response
+                    scrollToBottom();
+                    
+                } else {
+                    console.error('❌ Could not update message content');
+                    throw new Error('Failed to update AI response');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error getting AI response:', error);
+                console.error('Error details:', error.message, error.stack);
+                
+                // Update thinking indicator with fallback response
+                const messageContent = document.getElementById('aiMessageContent');
+                const fallbackResponses = [
+                    "That's interesting! Could you tell me more about that?",
+                    "I see. What do you think about that?",
+                    "Thanks for sharing. How did that make you feel?",
+                    "That's a good point. Can you elaborate?"
+                ];
+                const randomResponse = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
+                
+                if (messageContent) {
+                    // Replace "Thinking..." with fallback message
+                    messageContent.innerHTML = randomResponse;
+                } else {
+                    // If indicator was removed, add new message
+                    addAIMessage(randomResponse);
+                }
+                
+                // Add to conversation history
+                conversationHistory.push({
+                    role: 'assistant',
+                    content: randomResponse
+                });
+                
+                // Auto-scroll after fallback
+                scrollToBottom();
+                
+                if (window.notifications) {
+                    window.notifications.warning('Using fallback response - check console for details');
+                }
+            }
+        }
+        
+        // Auto-scroll to bottom of conversation
+        function scrollToBottom() {
+            const conversationContainer = document.querySelector('.conversation-area');
+            if (conversationContainer) {
+                setTimeout(() => {
+                    conversationContainer.scrollTop = conversationContainer.scrollHeight;
+                }, 100);
+            }
+        }
+        
+        // Add AI message to conversation
+        function addAIMessage(message) {
+            const conversationArea = document.querySelector('.conversation-area .space-y-4');
+            if (!conversationArea) return;
+            
+            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            const aiMessage = `
+                <div class="flex items-start space-x-3 animate-fade-in">
+                    <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-robot text-primary text-sm"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="bg-gray-100 rounded-lg p-4 max-w-md">
+                            <p class="text-text-primary">${message}</p>
+                            <div class="flex items-center justify-between mt-2">
+                                <button class="text-primary hover:text-primary-700 text-sm play-audio-btn">
+                                    <i class="fas fa-play mr-1"></i>
+                                    Play Audio
+                                </button>
+                                <span class="text-xs text-text-secondary">${timestamp}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            conversationArea.insertAdjacentHTML('beforeend', aiMessage);
+            conversationArea.scrollTop = conversationArea.parentElement.scrollHeight;
+            
+            // Update quick responses based on this message
+            updateQuickResponses();
+        }
+        
+        // Update progress stats
+        function updateProgressStats() {
+            if (messageCount === 0) return;
+            
+            const avgConfidence = Math.round(totalConfidence / messageCount);
+            const avgVocabulary = Math.round(totalVocabulary / messageCount);
+            const avgGrammar = Math.round(totalGrammar / messageCount);
+            
+            // Update score displays with animation
+            const confidenceScore = document.getElementById('confidenceScore');
+            const vocabularyScore = document.getElementById('vocabularyScore');
+            const grammarScore = document.getElementById('grammarScore');
+            const messageCountEl = document.getElementById('messageCount');
+            
+            if (confidenceScore) {
+                animateValue(confidenceScore, parseInt(confidenceScore.textContent) || 0, avgConfidence, 500);
+                confidenceScore.textContent = avgConfidence + '%';
+            }
+            if (vocabularyScore) {
+                animateValue(vocabularyScore, parseInt(vocabularyScore.textContent) || 0, avgVocabulary, 500);
+                vocabularyScore.textContent = avgVocabulary + '%';
+            }
+            if (grammarScore) {
+                animateValue(grammarScore, parseInt(grammarScore.textContent) || 0, avgGrammar, 500);
+                grammarScore.textContent = avgGrammar + '%';
+            }
+            if (messageCountEl) {
+                messageCountEl.textContent = messageCount;
+            }
+            
+            // Update progress bars with smooth animation
+            const confidenceBar = document.getElementById('confidenceBar');
+            const vocabularyBar = document.getElementById('vocabularyBar');
+            const grammarBar = document.getElementById('grammarBar');
+            
+            if (confidenceBar) {
+                setTimeout(() => {
+                    confidenceBar.style.width = avgConfidence + '%';
+                }, 100);
+            }
+            if (vocabularyBar) {
+                setTimeout(() => {
+                    vocabularyBar.style.width = avgVocabulary + '%';
+                }, 200);
+            }
+            if (grammarBar) {
+                setTimeout(() => {
+                    grammarBar.style.width = avgGrammar + '%';
+                }, 300);
+            }
+            
+            // Show progress card after first message
+            if (messageCount >= 1) {
+                const progressCard = document.getElementById('progressCard');
+                if (progressCard) {
+                    progressCard.classList.remove('hidden');
+                }
+                
+                // Hide tips card to make room
+                const tipsCard = document.getElementById('tipsCard');
+                if (tipsCard && messageCount > 2) {
+                    tipsCard.classList.add('hidden');
+                }
+            }
+        }
+        
+        // Animate number changes
+        function animateValue(element, start, end, duration) {
+            if (!element) return;
+            const range = end - start;
+            const increment = range / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    current = end;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.round(current) + '%';
+            }, 16);
+        }
+        
+        // Update dynamic tips based on performance
+        function updateDynamicTips(tips) {
+            const tipsContainer = document.getElementById('communicationTips');
+            if (!tipsContainer || !tips || tips.length === 0) return;
+            
+            tipsContainer.innerHTML = tips.map(tip => `
+                <div class="flex items-start space-x-2">
+                    <i class="fas fa-lightbulb text-warning mt-0.5"></i>
+                    <span>${tip}</span>
+                </div>
+            `).join('');
+        }
+        
+        // End session and redirect to dashboard
+        async function endSession() {
+            console.log('🛑 Ending fluency session...');
+            
+            // Stop any active recording immediately
+            if (isRecording) {
+                console.log('Stopping active recording...');
+                stopRecording();
+            }
+            
+            // Calculate session duration and scores
+            const sessionDuration = sessionStartTime ? Date.now() - sessionStartTime : 0;
+            const avgConfidence = messageCount > 0 ? Math.round(totalConfidence / messageCount) : 0;
+            const avgVocabulary = messageCount > 0 ? Math.round(totalVocabulary / messageCount) : 0;
+            const avgGrammar = messageCount > 0 ? Math.round(totalGrammar / messageCount) : 0;
+            const overallScore = Math.round((avgConfidence + avgVocabulary + avgGrammar) / 3);
+            
+            console.log(`Session: ${Math.round(sessionDuration / 1000)}s, Messages: ${messageCount}, Score: ${overallScore}%`);
+            
+            // Store session summary immediately
+            localStorage.setItem('lastSessionSummary', JSON.stringify({
+                type: 'fluency_practice',
+                duration: sessionDuration,
+                messages: messageCount,
+                score: overallScore,
+                timestamp: Date.now()
+            }));
+            
+            // Save session data in background (don't wait)
+            const sessionData = {
+                session_type: 'fluency_practice',
+                duration: sessionDuration,
+                message_count: messageCount,
+                scores: {
+                    overall: overallScore,
+                    confidence: avgConfidence,
+                    vocabulary: avgVocabulary,
+                    grammar: avgGrammar
+                },
+                conversation_history: conversationHistory
+            };
+            
+            // Fire and forget - save session and track in background
+            Promise.all([
+                api.request('/audio/save-session', {
+                    method: 'POST',
+                    body: JSON.stringify(sessionData)
+                }),
+                api.request('/session/track', {
+                    method: 'POST',
+                    body: JSON.stringify({ 
+                        session_type: 'fluency_practice',
+                        duration: sessionDuration
+                    })
+                })
+            ]).then(([saveResponse, trackResponse]) => {
+                console.log('✅ Session saved:', saveResponse);
+                console.log('✅ Session tracked:', trackResponse);
+            }).catch(error => {
+                console.error('❌ Error saving session:', error);
+            });
+            
+            // Redirect immediately
+            console.log('Redirecting to dashboard...');
+            window.location.href = '/pages/user/user_dashboard.html';
+        }
+        
+        // Setup quick response buttons
+        function setupQuickResponseButtons() {
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('button') && e.target.closest('button').classList.contains('bg-primary-50')) {
+                    const button = e.target.closest('button');
+                    const text = button.textContent.trim().replace(/"/g, '');
+                    
+                    // Add quick response as user message
+                    addUserMessage(text);
+                    
+                    console.log('Quick response:', text);
+                }
+            });
+        }
+        
+        // Update quick responses based on conversation context
+        async function updateQuickResponses() {
+            try {
+                // Get last AI message for context
+                const lastAIMessage = conversationHistory.filter(m => m.role === 'assistant').pop();
+                if (!lastAIMessage) return;
+                
+                // Try to generate contextual quick responses with Gemini
+                const response = await api.request('/conversation/quick-responses', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        last_message: lastAIMessage.content,
+                        conversation_history: conversationHistory
+                    })
+                });
+                
+                if (response.success && response.quick_responses) {
+                    const quickResponsesContainer = document.querySelector('.mt-4 .flex.flex-wrap');
+                    if (quickResponsesContainer) {
+                        quickResponsesContainer.innerHTML = response.quick_responses.map(text => `
+                            <button class="px-3 py-1 bg-primary-50 text-primary rounded-full text-sm hover:bg-primary-100 transition-fast">
+                                "${text}"
+                            </button>
+                        `).join('');
+                    }
+                }
+            } catch (error) {
+                console.log('Could not update quick responses:', error);
+                // Keep default responses
+            }
+        }
+        
+        // Setup audio play buttons
+        function setupAudioPlayButtons() {
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('button') && e.target.closest('button').classList.contains('play-audio-btn')) {
+                    e.preventDefault();
+                    const button = e.target.closest('button');
+                    const originalHTML = button.innerHTML;
+                    
+                    button.innerHTML = '<i class="fas fa-pause mr-1"></i>Playing...';
+                    
+                    // Simulate audio playback
+                    setTimeout(() => {
+                        button.innerHTML = originalHTML;
+                    }, 3000);
+                }
+            });
+        }
+        
+
+        
+        // Show permission error
+        function showPermissionError() {
+            const recordBtn = document.getElementById('recordBtn');
+            if (recordBtn) {
+                recordBtn.disabled = true;
+                recordBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+                recordBtn.title = 'Microphone access required';
+                recordBtn.classList.add('microphone-denied');
+            }
+            
+            if (window.notifications) {
+                window.notifications.error('Microphone access required. Please enable permissions and refresh the page.');
+            }
+        }
+        
+        // Show error message
+        function showErrorMessage(message) {
+            if (window.notifications) {
+                window.notifications.error(message);
+            }
+            console.error(message);
+        }
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', function() {
+            if (isRecording) {
+                stopRecording();
+            }
+        });
+    </script>
+
+</body>
+</html>

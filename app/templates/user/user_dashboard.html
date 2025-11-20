@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - ProSpeak AI</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}" />
+    <link rel="alternate icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='favicon.svg') }}" />
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  </head>
+<body class="bg-gradient-to-br from-primary-50 via-white to-secondary-50 min-h-screen">
+    <!-- Header -->
+    {% include 'partials/user_header.html' %}
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Welcome Section -->
+        <div class="mb-8">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <h1 id="welcomeMessage" class="text-3xl font-heading font-bold text-text-primary">Welcome back!</h1>
+                    <p class="text-text-secondary mt-1">Ready to continue your English learning journey?</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Summary Card -->
+        <div class="card-elevated mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-heading font-semibold text-text-primary">Your Progress Overview</h2>
+                <div class="flex items-center space-x-2 text-sm text-text-secondary">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Last 7 days</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                <!-- Overall Score -->
+                <div class="text-center">
+                    <div class="relative inline-flex items-center justify-center w-20 h-20 mb-3">
+                        <svg class="w-20 h-20 transform -rotate-90" viewBox="0 0 36 36">
+                            <path class="text-gray-200" stroke="currentColor" stroke-width="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            <path id="overallScoreCircle" class="text-secondary transition-all duration-1000" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                        </svg>
+                        <span id="overallScoreText" class="absolute text-lg font-bold text-text-primary">--%</span>
+                    </div>
+                    <p class="text-sm font-medium text-text-primary">Overall Score</p>
+                    <p id="scoreImprovement" class="text-xs text-secondary">Loading...</p>
+                </div>
+
+                <!-- Current Streak -->
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-warning-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-fire text-2xl text-warning"></i>
+                    </div>
+                    <p id="streakCount" class="text-lg font-bold text-text-primary">-- Days</p>
+                    <p class="text-sm text-text-secondary">Current Streak</p>
+                </div>
+
+                <!-- Daily Goal -->
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-accent-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-bullseye text-2xl text-accent"></i>
+                    </div>
+                    <p id="dailyProgress" class="text-lg font-bold text-text-primary">-/-</p>
+                    <p class="text-sm text-text-secondary">Daily Goal</p>
+                </div>
+
+                <!-- Total Sessions -->
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-secondary-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-graduation-cap text-2xl text-secondary"></i>
+                    </div>
+                    <p id="totalSessions" class="text-lg font-bold text-text-primary">--</p>
+                    <p class="text-sm text-text-secondary">Total Sessions</p>
+                </div>
+            </div>
+
+            <!-- Weekly Progress Bar -->
+            <div class="bg-gray-100 rounded-lg p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-medium text-text-primary">Weekly Progress</span>
+                    <span id="weeklyPercentage" class="text-sm text-text-secondary">--%</span>
+                </div>
+                <div class="progress-bar bg-gray-200 rounded-full h-2">
+                    <div id="weeklyProgressFill" class="progress-fill bg-primary rounded-full h-2 transition-all duration-1000" style="width: 0%"></div>
+                </div>
+                <div class="flex justify-between text-xs text-text-secondary mt-2">
+                    <span id="weeklyProgressText">-- of -- sessions</span>
+                    <span id="weeklyGoalText">Weekly Goal</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Learning Modules Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Interview Simulator -->
+            <div class="card hover:shadow-medium transition-all duration-300 cursor-pointer" onclick="window.location.href='{{ url_for("pages.render_page", filename="user/interview_simulator.html") }}'">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-briefcase text-xl text-primary"></i>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <div class="w-2 h-2 bg-secondary rounded-full"></div>
+                        <span class="text-xs text-secondary font-medium">Active</span>
+                    </div>
+                </div>
+                <h3 class="text-lg font-heading font-semibold text-text-primary mb-2">Interview Simulator</h3>
+                <p class="text-sm text-text-secondary mb-4">Practice job interviews with AI feedback</p>
+                <div class="flex items-center justify-between">
+                    <div class="text-xs text-text-secondary">
+                        <span class="font-medium">Last session:</span> 2 hours ago
+                    </div>
+                    <div class="text-xs bg-secondary-100 text-secondary px-2 py-1 rounded-full">
+                        92% Score
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fluency Coach -->
+            <div class="card hover:shadow-medium transition-all duration-300 cursor-pointer" onclick="window.location.href='{{ url_for("pages.render_page", filename="user/fluency_coach.html") }}'">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-secondary-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-comments text-xl text-secondary"></i>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <div class="w-2 h-2 bg-warning rounded-full"></div>
+                        <span class="text-xs text-warning font-medium">In Progress</span>
+                    </div>
+                </div>
+                <h3 class="text-lg font-heading font-semibold text-text-primary mb-2">Fluency Coach</h3>
+                <p class="text-sm text-text-secondary mb-4">Improve conversation skills and fluency</p>
+                <div class="flex items-center justify-between">
+                    <div class="text-xs text-text-secondary">
+                        <span class="font-medium">Last session:</span> Yesterday
+                    </div>
+                    <div class="text-xs bg-warning-100 text-warning px-2 py-1 rounded-full">
+                        78% Score
+                    </div>
+                </div>
+            </div>
+
+            <!-- Audio Practice Mode -->
+            <div class="card hover:shadow-medium transition-all duration-300 cursor-pointer" onclick="window.location.href='{{ url_for("pages.render_page", filename="user/audio_practice_mode.html") }}'">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-accent-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-microphone text-xl text-accent"></i>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <div class="w-2 h-2 bg-secondary rounded-full"></div>
+                        <span class="text-xs text-secondary font-medium">Available</span>
+                    </div>
+                </div>
+                <h3 class="text-lg font-heading font-semibold text-text-primary mb-2">Audio Practice</h3>
+                <p class="text-sm text-text-secondary mb-4">Voice-focused pronunciation training</p>
+                <div class="flex items-center justify-between mb-3">
+                    <div class="text-xs text-text-secondary">
+                        <span class="font-medium">Last session:</span> 3 days ago
+                    </div>
+                    <div class="text-xs bg-secondary-100 text-secondary px-2 py-1 rounded-full">
+                        85% Score
+                    </div>
+                </div>
+                <div class="flex space-x-2">
+                    <button class="flex-1 text-xs bg-primary text-white px-2 py-1 rounded hover:bg-primary-700 transition-colors" onclick="event.stopPropagation(); window.location.href='{{ url_for('pages.render_page', filename='user/audio_practice_mode.html') }}'">
+                        <i class="fas fa-microphone mr-1"></i>Practice
+                    </button>
+                    <div class="flex-1 text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded text-center">
+                        <i class="fas fa-robot mr-1"></i>AI Integrated
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity & Practice History -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Recent Practice Sessions -->
+            <div class="lg:col-span-2">
+                <div class="card">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-heading font-semibold text-text-primary">Recent Practice Sessions</h2>
+                        <button class="text-sm text-primary hover:text-primary-700 transition-fast">View All</button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Session 1 -->
+                        <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                            <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-briefcase text-primary"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-sm font-medium text-text-primary truncate">Technical Interview Practice</h4>
+                                <p class="text-xs text-text-secondary">Interview Simulator • 15 minutes</p>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-star text-warning text-xs mr-1"></i>
+                                        <span class="text-xs text-text-secondary">Score: 92%</span>
+                                    </div>
+                                    <span class="text-xs text-text-secondary">• 2 hours ago</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button class="p-2 text-text-secondary hover:text-primary transition-fast">
+                                    <i class="fas fa-play text-sm"></i>
+                                </button>
+                                <button class="p-2 text-text-secondary hover:text-primary transition-fast">
+                                    <i class="fas fa-download text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Session 2 -->
+                        <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                            <div class="w-12 h-12 bg-secondary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-comments text-secondary"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-sm font-medium text-text-primary truncate">Daily Conversation Practice</h4>
+                                <p class="text-xs text-text-secondary">Fluency Coach • 12 minutes</p>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-star text-warning text-xs mr-1"></i>
+                                        <span class="text-xs text-text-secondary">Score: 78%</span>
+                                    </div>
+                                    <span class="text-xs text-text-secondary">• Yesterday</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button class="p-2 text-text-secondary hover:text-primary transition-fast">
+                                    <i class="fas fa-play text-sm"></i>
+                                </button>
+                                <button class="p-2 text-text-secondary hover:text-primary transition-fast">
+                                    <i class="fas fa-download text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Session 3 -->
+                        <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                            <div class="w-12 h-12 bg-accent-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-microphone text-accent"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-sm font-medium text-text-primary truncate">Pronunciation Training</h4>
+                                <p class="text-xs text-text-secondary">Audio Practice • 8 minutes</p>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-star text-warning text-xs mr-1"></i>
+                                        <span class="text-xs text-text-secondary">Score: 85%</span>
+                                    </div>
+                                    <span class="text-xs text-text-secondary">• 3 days ago</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button class="p-2 text-text-secondary hover:text-primary transition-fast">
+                                    <i class="fas fa-play text-sm"></i>
+                                </button>
+                                <button class="p-2 text-text-secondary hover:text-primary transition-fast">
+                                    <i class="fas fa-download text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Feed & Achievements -->
+            <div class="space-y-6">
+                <!-- Achievements -->
+                <div class="card">
+                    <h3 class="text-lg font-heading font-semibold text-text-primary mb-4">Recent Achievements</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-warning-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-fire text-warning text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-text-primary">12-Day Streak!</p>
+                                <p class="text-xs text-text-secondary">Keep it up!</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-secondary-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-trophy text-secondary text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-text-primary">Interview Master</p>
+                                <p class="text-xs text-text-secondary">Completed 10 interviews</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-star text-primary text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-text-primary">High Scorer</p>
+                                <p class="text-xs text-text-secondary">90%+ average score</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Recommendations -->
+                <div class="card">
+                    <h3 class="text-lg font-heading font-semibold text-text-primary mb-4">AI Recommendations</h3>
+                    <div class="space-y-4">
+                        <div class="bg-primary-50 border border-primary-200 rounded-lg p-3">
+                            <div class="flex items-start space-x-2">
+                                <i class="fas fa-lightbulb text-primary text-sm mt-1"></i>
+                                <div>
+                                    <p class="text-sm font-medium text-text-primary">Focus on Pronunciation</p>
+                                    <p class="text-xs text-text-secondary mt-1">Your 'th' sounds need improvement. Try the audio practice mode.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-secondary-50 border border-secondary-200 rounded-lg p-3">
+                            <div class="flex items-start space-x-2">
+                                <i class="fas fa-chart-line text-secondary text-sm mt-1"></i>
+                                <div>
+                                    <p class="text-sm font-medium text-text-primary">Great Progress!</p>
+                                    <p class="text-xs text-text-secondary mt-1">Your fluency has improved 15% this week. Keep practicing!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card">
+                    <h3 class="text-lg font-heading font-semibold text-text-primary mb-4">Quick Actions</h3>
+                    <div class="space-y-2">
+                        <button class="w-full text-left p-3 rounded-lg hover:bg-gray-50 transition-fast flex items-center space-x-3">
+                            <i class="fas fa-redo text-primary"></i>
+                            <span class="text-sm text-text-primary">Retry Last Session</span>
+                        </button>
+                        <button class="w-full text-left p-3 rounded-lg hover:bg-gray-50 transition-fast flex items-center space-x-3">
+                            <i class="fas fa-random text-secondary"></i>
+                            <span class="text-sm text-text-primary">Random Practice</span>
+                        </button>
+                        <button class="w-full text-left p-3 rounded-lg hover:bg-gray-50 transition-fast flex items-center space-x-3">
+                            <i class="fas fa-calendar-plus text-warning"></i>
+                            <span class="text-sm text-text-primary">Schedule Practice</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-border mt-16">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <svg class="h-8 w-8 text-primary mr-2" viewBox="0 0 40 40" fill="currentColor">
+                        <circle cx="20" cy="20" r="18" fill="currentColor" opacity="0.1"/>
+                        <path d="M12 16c0-4.4 3.6-8 8-8s8 3.6 8 8v8c0 4.4-3.6 8-8 8s-8-3.6-8-8v-8zm8-6c-3.3 0-6 2.7-6 6v8c0 3.3 2.7 6 6 6s6-2.7 6-6v-8c0-3.3-2.7-6-6-6z"/>
+                        <circle cx="20" cy="16" r="2" fill="currentColor"/>
+                    </svg>
+                    <span class="text-text-primary font-medium">ProSpeak AI</span>
+                </div>
+                <div class="flex space-x-6 text-sm text-text-secondary">
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Privacy Policy</a>
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Terms of Service</a>
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Support</a>
+                </div>
+                <div class="text-sm text-text-secondary mt-4 md:mt-0">
+                    © 2025 ProSpeak AI. All Rights Reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Action Button -->
+    <button class="fab" onclick="window.location.href='{{ url_for("pages.render_page", filename="user/audio_practice_mode.html") }}'">
+        <i class="fas fa-microphone text-xl"></i>
+    </button>
+
+    <!-- JavaScript for Interactivity -->
+    <script>
+        // Load dynamic dashboard data
+        window.loadDashboardData = async function loadDashboardData() {
+            try {
+                console.log('Loading dashboard data...');
+                
+                // Load dashboard overview
+                const overviewResponse = await api.request('/dashboard/overview');
+                updateDashboardStats(overviewResponse);
+                
+                // Load detailed stats
+                const statsResponse = await api.request('/dashboard/stats');
+                updateDetailedStats(statsResponse);
+                
+                console.log('Dashboard data loaded successfully');
+            } catch (error) {
+                console.error('Failed to load dashboard data:', error);
+                showDefaultStats();
+            }
+        }
+        
+        // Increment session count on server and update UI
+        async function incrementSessionCount() {
+            // Use the shared session tracker
+            const response = await window.trackSessionCompletion();
+            
+            if (response && response.success) {
+                // Update dashboard-specific counters
+                updateDashboardCounters(response.stats, response.goals);
+            }
+        }
+        
+        function updateDashboardCounters(stats, goals) {
+            // Update total sessions with animation
+            const totalSessionsElement = document.getElementById('totalSessions');
+            if (totalSessionsElement) {
+                animateNumber(totalSessionsElement, stats.total_sessions);
+                updateSessionMilestones(stats.total_sessions);
+            }
+            
+            // Update daily progress
+            const dailyProgressElement = document.getElementById('dailyProgress');
+            if (dailyProgressElement) {
+                dailyProgressElement.textContent = `${stats.today_sessions}/${goals.daily_goal}`;
+                
+                // Color code based on progress
+                if (stats.today_sessions >= goals.daily_goal) {
+                    dailyProgressElement.className = 'text-lg font-bold text-green-600';
+                } else if (stats.today_sessions >= goals.daily_goal * 0.7) {
+                    dailyProgressElement.className = 'text-lg font-bold text-yellow-600';
+                } else {
+                    dailyProgressElement.className = 'text-lg font-bold text-text-primary';
+                }
+            }
+            
+            // Update streak
+            const streakElement = document.getElementById('streakCount');
+            if (streakElement) {
+                const streak = stats.current_streak;
+                streakElement.textContent = `${streak} Day${streak !== 1 ? 's' : ''}`;
+                
+                // Dynamic streak styling
+                if (streak >= 30) {
+                    streakElement.className = 'text-lg font-bold text-orange-600';
+                } else if (streak >= 14) {
+                    streakElement.className = 'text-lg font-bold text-yellow-600';
+                } else if (streak >= 7) {
+                    streakElement.className = 'text-lg font-bold text-green-600';
+                } else {
+                    streakElement.className = 'text-lg font-bold text-text-primary';
+                }
+            }
+            
+            // Update overall score
+            if (stats.average_score) {
+                updateCircularProgress('overallScoreCircle', 'overallScoreText', stats.average_score);
+            }
+            
+            // Update weekly progress
+            updateWeeklyProgressBar(goals);
+        }
+        
+        function updateWeeklyProgressBar(goals) {
+            const progressFill = document.getElementById('weeklyProgressFill');
+            const percentageText = document.getElementById('weeklyPercentage');
+            const progressText = document.getElementById('weeklyProgressText');
+            
+            if (progressFill && percentageText && progressText) {
+                const percentage = goals.weekly_percentage || 0;
+                const weeklyProgress = goals.weekly_progress || 0;
+                const weeklyGoal = goals.weekly_goal || 7;
+                
+                // Animate progress bar
+                setTimeout(() => {
+                    progressFill.style.width = percentage + '%';
+                }, 100);
+                
+                // Update text
+                percentageText.textContent = Math.round(percentage) + '%';
+                progressText.textContent = `${weeklyProgress} of ${weeklyGoal} sessions`;
+                
+                // Color code the progress bar
+                if (percentage >= 100) {
+                    progressFill.className = 'progress-fill bg-green-500 rounded-full h-2 transition-all duration-1000';
+                } else if (percentage >= 70) {
+                    progressFill.className = 'progress-fill bg-primary rounded-full h-2 transition-all duration-1000';
+                } else {
+                    progressFill.className = 'progress-fill bg-yellow-500 rounded-full h-2 transition-all duration-1000';
+                }
+            }
+        }
+        
+        // Make increment function globally available
+        window.incrementSessionCount = incrementSessionCount;
+        
+        // Show last session summary if available
+        function showLastSessionSummary() {
+            try {
+                const summaryData = localStorage.getItem('lastSessionSummary');
+                if (summaryData) {
+                    const summary = JSON.parse(summaryData);
+                    
+                    // Check if summary is recent (within last 5 minutes)
+                    const timeSinceSession = Date.now() - summary.timestamp;
+                    if (timeSinceSession < 5 * 60 * 1000) {
+                        // Format duration
+                        const minutes = Math.floor(summary.duration / 60000);
+                        const seconds = Math.floor((summary.duration % 60000) / 1000);
+                        const timeStr = minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
+                        
+                        // Show notification
+                        if (window.notifications) {
+                            const message = `Welcome back! Last session: ${summary.exercises} exercises, ${timeStr} practice time, ${summary.accuracy}% accuracy`;
+                            window.notifications.success(message);
+                        }
+                        
+                        // Create a temporary banner
+                        const banner = document.createElement('div');
+                        banner.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-fade-in';
+                        banner.innerHTML = `
+                            <div class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-lg shadow-xl max-w-md">
+                                <div class="flex items-start space-x-3">
+                                    <i class="fas fa-check-circle text-2xl mt-1"></i>
+                                    <div class="flex-1">
+                                        <h3 class="font-bold text-lg mb-1">Session Completed! 🎉</h3>
+                                        <div class="text-sm space-y-1 opacity-90">
+                                            <div>✅ ${summary.exercises} exercises completed</div>
+                                            <div>⏱️ ${timeStr} practice time</div>
+                                            <div>🎯 ${summary.accuracy}% average accuracy</div>
+                                        </div>
+                                    </div>
+                                    <button onclick="this.parentElement.parentElement.parentElement.remove()" class="text-white hover:text-gray-200">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        
+                        document.body.appendChild(banner);
+                        
+                        // Auto-remove after 8 seconds
+                        setTimeout(() => {
+                            if (banner.parentElement) {
+                                banner.style.opacity = '0';
+                                banner.style.transition = 'opacity 0.5s';
+                                setTimeout(() => banner.remove(), 500);
+                            }
+                        }, 8000);
+                    }
+                    
+                    // Clear the summary after showing
+                    localStorage.removeItem('lastSessionSummary');
+                }
+            } catch (error) {
+                console.error('Error showing session summary:', error);
+            }
+        }
+        
+        function updateDashboardStats(data) {
+            const { stats, goals, performance, user } = data;
+            
+            // Update overall score with animation
+            const overallScore = stats.recent_average || stats.average_score || 0;
+            updateCircularProgress('overallScoreCircle', 'overallScoreText', overallScore);
+            
+            // Update score improvement indicator
+            const improvementElement = document.getElementById('scoreImprovement');
+            if (improvementElement) {
+                const improvement = performance.improvement_rate || 0;
+                if (improvement > 0) {
+                    improvementElement.textContent = `+${improvement.toFixed(1)}% this week`;
+                    improvementElement.className = 'text-xs text-green-600';
+                } else if (improvement < 0) {
+                    improvementElement.textContent = `${improvement.toFixed(1)}% this week`;
+                    improvementElement.className = 'text-xs text-red-600';
+                } else {
+                    improvementElement.textContent = 'Stable performance';
+                    improvementElement.className = 'text-xs text-text-secondary';
+                }
+            }
+            
+            // Update streak with dynamic styling
+            const streakElement = document.getElementById('streakCount');
+            if (streakElement) {
+                const streak = stats.current_streak || 0;
+                streakElement.textContent = `${streak} Day${streak !== 1 ? 's' : ''}`;
+                
+                // Dynamic streak styling
+                if (streak >= 30) {
+                    streakElement.className = 'text-lg font-bold text-orange-600';
+                } else if (streak >= 14) {
+                    streakElement.className = 'text-lg font-bold text-yellow-600';
+                } else if (streak >= 7) {
+                    streakElement.className = 'text-lg font-bold text-green-600';
+                } else {
+                    streakElement.className = 'text-lg font-bold text-text-primary';
+                }
+                
+                // Add streak milestone celebration
+                if (streak > 0 && streak % 7 === 0) {
+                    celebrateStreak(streak);
+                }
+            }
+            
+            // Update daily progress with dynamic colors
+            const dailyProgressElement = document.getElementById('dailyProgress');
+            if (dailyProgressElement) {
+                const todaySessions = goals.daily_progress || 0;
+                const dailyGoal = goals.daily_goal || 3;
+                dailyProgressElement.textContent = `${todaySessions}/${dailyGoal}`;
+                
+                // Color code based on progress
+                if (todaySessions >= dailyGoal) {
+                    dailyProgressElement.className = 'text-lg font-bold text-green-600';
+                } else if (todaySessions >= dailyGoal * 0.7) {
+                    dailyProgressElement.className = 'text-lg font-bold text-yellow-600';
+                } else {
+                    dailyProgressElement.className = 'text-lg font-bold text-text-primary';
+                }
+            }
+            
+            // Update total sessions with animation
+            const totalSessionsElement = document.getElementById('totalSessions');
+            if (totalSessionsElement) {
+                const total = stats.total_sessions || 0;
+                animateNumber(totalSessionsElement, total);
+                
+                // Add achievement badges for milestones
+                updateSessionMilestones(total);
+            }
+            
+            // Update weekly progress
+            updateWeeklyProgressBar(goals);
+            
+            // Update welcome message with personalization
+            updateWelcomeMessage(user, stats);
+        }
+        
+        function updateSessionMilestones(totalSessions) {
+            // Add visual indicators for session milestones
+            const totalSessionsContainer = document.getElementById('totalSessions').parentElement;
+            const existingBadge = totalSessionsContainer.querySelector('.milestone-badge');
+            
+            if (existingBadge) {
+                existingBadge.remove();
+            }
+            
+            let badgeText = '';
+            let badgeClass = '';
+            
+            if (totalSessions >= 100) {
+                badgeText = '🏆 Century!';
+                badgeClass = 'bg-yellow-100 text-yellow-800';
+            } else if (totalSessions >= 50) {
+                badgeText = '🎯 Half Century!';
+                badgeClass = 'bg-blue-100 text-blue-800';
+            } else if (totalSessions >= 25) {
+                badgeText = '⭐ Quarter Century!';
+                badgeClass = 'bg-green-100 text-green-800';
+            } else if (totalSessions >= 10) {
+                badgeText = '🚀 Getting Started!';
+                badgeClass = 'bg-purple-100 text-purple-800';
+            }
+            
+            if (badgeText) {
+                const badge = document.createElement('div');
+                badge.className = `milestone-badge text-xs px-2 py-1 rounded-full ${badgeClass} mt-1`;
+                badge.textContent = badgeText;
+                totalSessionsContainer.appendChild(badge);
+            }
+        }
+        
+        function updateWelcomeMessage(user, stats) {
+            const welcomeElement = document.getElementById('welcomeMessage');
+            if (welcomeElement && user) {
+                const firstName = user.name ? user.name.split(' ')[0] : 'there';
+                const timeOfDay = getTimeOfDay();
+                const streak = stats.current_streak || 0;
+                
+                let message = `Good ${timeOfDay}, ${firstName}!`;
+                
+                if (streak >= 7) {
+                    message += ` 🔥 Amazing ${streak}-day streak!`;
+                } else if (streak >= 3) {
+                    message += ` 💪 Keep up the momentum!`;
+                } else {
+                    message += ` Ready to practice today?`;
+                }
+                
+                welcomeElement.textContent = message;
+            }
+        }
+        
+        function getTimeOfDay() {
+            const hour = new Date().getHours();
+            if (hour < 12) return 'morning';
+            if (hour < 17) return 'afternoon';
+            return 'evening';
+        }
+        
+        function updateCircularProgress(circleId, textId, percentage) {
+            const circle = document.getElementById(circleId);
+            const text = document.getElementById(textId);
+            
+            if (circle && text) {
+                const circumference = 2 * Math.PI * 15.9155;
+                const offset = circumference - (percentage / 100) * circumference;
+                
+                // Animate the circle
+                circle.style.strokeDasharray = `${circumference}, ${circumference}`;
+                circle.style.strokeDashoffset = circumference;
+                
+                setTimeout(() => {
+                    circle.style.transition = 'stroke-dashoffset 1.5s ease-in-out';
+                    circle.style.strokeDashoffset = offset;
+                }, 100);
+                
+                // Animate the text
+                animateNumber(text, percentage, '%');
+                
+                // Update color based on score
+                const colorClass = percentage >= 85 ? 'text-green-500' : 
+                                 percentage >= 70 ? 'text-yellow-500' : 'text-red-500';
+                circle.className = `${colorClass} transition-all duration-1000`;
+            }
+        }
+        
+
+        
+        function animateNumber(element, targetNumber, suffix = '') {
+            const startNumber = parseInt(element.textContent) || 0;
+            const duration = 1000;
+            const startTime = Date.now();
+            
+            function updateNumber() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const currentNumber = Math.round(startNumber + (targetNumber - startNumber) * easeOut);
+                
+                element.textContent = currentNumber + suffix;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(updateNumber);
+                }
+            }
+            
+            updateNumber();
+        }
+        
+        function celebrateStreak(streak) {
+            // Show celebration for streak milestones
+            const celebration = document.createElement('div');
+            celebration.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-8 py-4 rounded-lg shadow-xl z-50 animate-bounce';
+            celebration.innerHTML = `
+                <div class="text-center">
+                    <i class="fas fa-fire text-3xl mb-2"></i>
+                    <h3 class="text-xl font-bold">${streak} Day Streak!</h3>
+                    <p class="text-sm">You're on fire! Keep it up!</p>
+                </div>
+            `;
+            
+            document.body.appendChild(celebration);
+            
+            setTimeout(() => {
+                celebration.remove();
+            }, 3000);
+        }
+        
+        function showDefaultStats() {
+            // Show default values if API fails
+            document.getElementById('overallScoreText').textContent = '--';
+            document.getElementById('streakCount').textContent = '-- Days';
+            document.getElementById('dailyProgress').textContent = '-/-';
+            document.getElementById('totalSessions').textContent = '--';
+        }
+
+        function showQuickPracticeModal() {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg max-w-md w-full p-6 animate-fade-in">
+                    <h3 class="text-xl font-semibold mb-4 text-text-primary">Quick Practice</h3>
+                    <p class="text-text-secondary mb-6">Choose a practice mode to get started quickly:</p>
+                    
+                    <div class="space-y-3">
+                        <button class="w-full text-left p-4 border border-gray-200 rounded-lg hover:bg-primary-50 hover:border-primary transition-colors" onclick="startQuickPractice('pronunciation')">
+                            <div class="flex items-center">
+                                <i class="fas fa-microphone text-primary mr-3"></i>
+                                <div>
+                                    <div class="font-medium text-text-primary">Pronunciation Practice</div>
+                                    <div class="text-sm text-text-secondary">5-minute focused pronunciation session</div>
+                                </div>
+                            </div>
+                        </button>
+                        
+                        <button class="w-full text-left p-4 border border-gray-200 rounded-lg hover:bg-secondary-50 hover:border-secondary transition-colors" onclick="startQuickPractice('fluency')">
+                            <div class="flex items-center">
+                                <i class="fas fa-comments text-secondary mr-3"></i>
+                                <div>
+                                    <div class="font-medium text-text-primary">Fluency Practice</div>
+                                    <div class="text-sm text-text-secondary">Conversational flow exercises</div>
+                                </div>
+                            </div>
+                        </button>
+                        
+                        <button class="w-full text-left p-4 border border-gray-200 rounded-lg hover:bg-accent-50 hover:border-accent transition-colors" onclick="startQuickPractice('vocabulary')">
+                            <div class="flex items-center">
+                                <i class="fas fa-book text-accent mr-3"></i>
+                                <div>
+                                    <div class="font-medium text-text-primary">Vocabulary Review</div>
+                                    <div class="text-sm text-text-secondary">Quick vocabulary reinforcement</div>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <div class="flex justify-end space-x-3 mt-6">
+                        <button class="px-4 py-2 text-text-secondary hover:text-text-primary transition-colors" onclick="this.closest('.fixed').remove()">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Close on backdrop click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
+
+        function startQuickPractice(type) {
+            // Close modal
+            document.querySelector('.fixed.inset-0').remove();
+            
+            // Show loading state
+            showPracticeLoading(type);
+            
+            // Navigate to appropriate practice mode
+            setTimeout(() => {
+                if (type === 'pronunciation') {
+                    if (window.spaNavigation) {
+                        window.spaNavigation.navigateTo('/audio-practice');
+                    } else {
+                        window.location.href = '/audio-practice';
+                    }
+                } else {
+                    // For other types, show coming soon message
+                    showComingSoonMessage(type);
+                }
+            }, 1500);
+        }
+
+        function showPracticeLoading(type) {
+            const loading = document.createElement('div');
+            loading.className = 'fixed top-4 right-4 bg-white border border-gray-200 rounded-lg p-4 shadow-lg z-50 animate-slide-in';
+            loading.innerHTML = `
+                <div class="flex items-center">
+                    <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mr-3"></div>
+                    <div>
+                        <div class="font-medium text-text-primary">Starting ${type} practice...</div>
+                        <div class="text-sm text-text-secondary">Preparing your session</div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(loading);
+            
+            setTimeout(() => {
+                loading.remove();
+            }, 2000);
+        }
+
+        function showComingSoonMessage(type) {
+            const message = document.createElement('div');
+            message.className = 'fixed top-4 right-4 bg-blue-500 text-white rounded-lg p-4 shadow-lg z-50';
+            message.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    <div>
+                        <div class="font-medium">${type.charAt(0).toUpperCase() + type.slice(1)} Practice</div>
+                        <div class="text-sm opacity-90">Coming soon! For now, try pronunciation practice.</div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(message);
+            
+            setTimeout(() => {
+                message.remove();
+            }, 4000);
+        }
+        
+        function updateDetailedStats(statsData) {
+            // Update any charts or detailed analytics
+            console.log('Detailed stats:', statsData);
+            
+            // Update practice time
+            const totalTime = Math.round((statsData.total_practice_time || 0) / 3600); // Convert to hours
+            const practiceTimeElements = document.querySelectorAll('.practice-time');
+            practiceTimeElements.forEach(element => {
+                element.textContent = totalTime + 'h';
+            });
+        }
+        
+        // Global initialization state
+        window.dashboardInitialized = false;
+        window.dashboardRefreshInterval = null;
+        
+        // Cleanup function for dashboard
+        window.cleanupDashboard = function() {
+            console.log('Cleaning up Dashboard...');
+            
+            // Clear refresh interval
+            if (window.dashboardRefreshInterval) {
+                clearInterval(window.dashboardRefreshInterval);
+                window.dashboardRefreshInterval = null;
+            }
+            
+            // Reset initialization flag
+            window.dashboardInitialized = false;
+        };
+        
+        // Initialize dashboard
+        function initializeDashboard() {
+            if (window.dashboardInitialized) {
+                console.log('Dashboard already initialized');
+                return;
+            }
+            
+            console.log('Dashboard initializing...');
+            
+            // Check for last session summary
+            showLastSessionSummary();
+            
+            // Load dynamic dashboard data
+            loadDashboardData();
+            
+            // Initialize real-time stats
+            updateRealTimeStats();
+            
+            // Animate progress bars on load
+            const progressBars = document.querySelectorAll('.progress-fill');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 500);
+            });
+
+            // Add click handlers for quick actions
+            document.querySelectorAll('[data-action]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const action = this.dataset.action;
+                    console.log('Action clicked:', action);
+                    // Handle different actions here
+                });
+            });
+
+            // Quick Practice Button
+            const quickPracticeBtn = document.getElementById('quickPracticeBtn');
+            if (quickPracticeBtn) {
+                quickPracticeBtn.addEventListener('click', function() {
+                    // Show quick practice modal
+                    showQuickPracticeModal();
+                });
+            }
+
+            // Audio Mode Button
+            const audioModeBtn = document.getElementById('audioModeBtn');
+            if (audioModeBtn) {
+                audioModeBtn.addEventListener('click', function() {
+                    // Navigate to audio practice mode using Flask route
+                    window.location.href = '{{ url_for("pages.render_page", filename="user/audio_practice_mode.html") }}';
+                });
+            }
+
+            // Refresh dashboard data every 30 seconds
+            window.dashboardRefreshInterval = setInterval(() => {
+                loadDashboardData();
+                updateRealTimeStats();
+            }, 30000);
+            
+            window.dashboardInitialized = true;
+            console.log('Dashboard initialized successfully');
+        }
+        
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeDashboard);
+        } else {
+            initializeDashboard();
+        }
+    </script>
+
+    <!-- Load API Client and Session Tracker -->
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/session-tracker.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/user-common.js') }}"></script>
+
+</body>
+</html>

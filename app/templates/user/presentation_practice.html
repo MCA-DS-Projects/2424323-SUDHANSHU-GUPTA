@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Presentation Practice - ProSpeak AI</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}" />
+    <link rel="alternate icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='favicon.svg') }}" />
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  
+  <script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fprospeaka9282back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.9"></script>
+  <script type="module" src="https://static.rocket.new/rocket-shot.js?v=0.0.1"></script>
+  </head>
+<body class="bg-gradient-to-br from-primary-50 via-white to-secondary-50 min-h-screen">
+    <!-- Header -->
+    {% include 'partials/user_header.html' %}
+
+    <!-- Main Content -->
+    <main class="flex-1 py-6 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <!-- Page Header -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-heading font-bold text-text-primary">Presentation Practice</h1>
+                        <p class="text-text-secondary mt-2">Master your presentation skills with AI-powered feedback and coaching</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button class="btn-outline">
+                            <i class="fas fa-history mr-2"></i>
+                            View History
+                        </button>
+                        <button class="btn-secondary">
+                            <i class="fas fa-chart-line mr-2"></i>
+                            Analytics
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Practice Mode Selection -->
+            <div class="grid lg:grid-cols-4 gap-6 mb-8">
+                <div class="lg:col-span-1">
+                    <div class="card">
+                        <h3 class="text-lg font-heading font-semibold text-text-primary mb-4">Practice Modes</h3>
+                        <div class="space-y-3">
+                            <button id="impromptuMode" class="w-full text-left p-3 rounded-lg border-2 border-primary bg-primary-50 text-primary transition-fast">
+                                <div class="flex items-center">
+                                    <i class="fas fa-lightning-bolt mr-3"></i>
+                                    <div>
+                                        <div class="font-medium">Impromptu</div>
+                                        <div class="text-xs opacity-75">Quick thinking</div>
+                                    </div>
+                                </div>
+                            </button>
+                            <button id="preparedMode" class="w-full text-left p-3 rounded-lg border border-border hover:border-primary hover:bg-primary-50 transition-fast">
+                                <div class="flex items-center">
+                                    <i class="fas fa-file-alt mr-3 text-text-secondary"></i>
+                                    <div>
+                                        <div class="font-medium text-text-primary">Prepared</div>
+                                        <div class="text-xs text-text-secondary">Rehearsal mode</div>
+                                    </div>
+                                </div>
+                            </button>
+                            <button id="qaMode" class="w-full text-left p-3 rounded-lg border border-border hover:border-primary hover:bg-primary-50 transition-fast">
+                                <div class="flex items-center">
+                                    <i class="fas fa-question-circle mr-3 text-text-secondary"></i>
+                                    <div>
+                                        <div class="font-medium text-text-primary">Q&A Session</div>
+                                        <div class="text-xs text-text-secondary">Interactive practice</div>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Topic Categories -->
+                    <div class="card mt-6">
+                        <h3 class="text-lg font-heading font-semibold text-text-primary mb-4">Topic Categories</h3>
+                        <div class="space-y-2">
+                            <button class="w-full text-left p-2 rounded-md bg-secondary-50 text-secondary font-medium">
+                                <i class="fas fa-briefcase mr-2"></i>
+                                Business Pitches
+                            </button>
+                            <button class="w-full text-left p-2 rounded-md hover:bg-gray-50 text-text-primary transition-fast">
+                                <i class="fas fa-graduation-cap mr-2"></i>
+                                Academic Presentations
+                            </button>
+                            <button class="w-full text-left p-2 rounded-md hover:bg-gray-50 text-text-primary transition-fast">
+                                <i class="fas fa-users mr-2"></i>
+                                Team Updates
+                            </button>
+                            <button class="w-full text-left p-2 rounded-md hover:bg-gray-50 text-text-primary transition-fast">
+                                <i class="fas fa-chart-bar mr-2"></i>
+                                Sales Presentations
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Practice Area -->
+                <div class="lg:col-span-3">
+                    <!-- Topic Prompt -->
+                    <div class="card mb-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex-1">
+                                <div class="flex items-center mb-2">
+                                    <span class="bg-secondary-100 text-secondary px-2 py-1 rounded-full text-xs font-medium mr-3">Business Pitch</span>
+                                    <span class="bg-warning-100 text-warning px-2 py-1 rounded-full text-xs font-medium">Intermediate</span>
+                                </div>
+                                <h2 class="text-xl font-heading font-semibold text-text-primary mb-2">
+                                    Present a New Product Launch Strategy
+                                </h2>
+                                <p class="text-text-secondary">
+                                    You are presenting to the executive team about launching a new mobile app. 
+                                    Cover market opportunity, target audience, competitive advantages, and go-to-market strategy. 
+                                    Focus on clear value proposition and expected ROI.
+                                </p>
+                            </div>
+                            <button class="ml-4 p-2 text-text-secondary hover:text-primary transition-fast">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Presentation Guidelines -->
+                        <div class="bg-primary-50 rounded-lg p-4">
+                            <h4 class="font-medium text-primary mb-2">
+                                <i class="fas fa-lightbulb mr-2"></i>
+                                Presentation Guidelines
+                            </h4>
+                            <ul class="text-sm text-primary space-y-1">
+                                <li>• Duration: 5-7 minutes</li>
+                                <li>• Include clear introduction and conclusion</li>
+                                <li>• Use confident body language and eye contact</li>
+                                <li>• Speak at a measured pace with appropriate pauses</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Recording Interface -->
+                    <div class="card mb-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-heading font-semibold text-text-primary">Recording Studio</h3>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm text-text-secondary">Timer:</span>
+                                <span id="timer" class="text-lg font-mono font-bold text-primary">00:00</span>
+                            </div>
+                        </div>
+
+                        <!-- Recording Area -->
+                        <div class="relative bg-gray-900 rounded-lg overflow-hidden mb-6" style="aspect-ratio: 16/9;">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div id="recordingIndicator" class="hidden">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                                        <span class="text-white font-medium">Recording in progress...</span>
+                                    </div>
+                                </div>
+                                <div id="readyIndicator" class="text-center">
+                                    <i class="fas fa-video text-6xl text-gray-400 mb-4"></i>
+                                    <p class="text-gray-400">Click Start Recording to begin your presentation</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Teleprompter Overlay -->
+                            <div id="teleprompter" class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-75 text-white p-4 hidden">
+                                <div class="text-center">
+                                    <p class="text-lg leading-relaxed">
+                                        Remember to maintain eye contact with your audience and speak clearly...
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recording Controls -->
+                        <div class="flex items-center justify-center space-x-4">
+                            <button id="startRecording" class="btn-primary px-8">
+                                <i class="fas fa-play mr-2"></i>
+                                Start Recording
+                            </button>
+                            <button id="pauseRecording" class="btn-outline px-6 hidden">
+                                <i class="fas fa-pause mr-2"></i>
+                                Pause
+                            </button>
+                            <button id="stopRecording" class="bg-red-500 text-white px-6 py-3 rounded-md font-medium hover:bg-red-600 transition-fast hidden">
+                                <i class="fas fa-stop mr-2"></i>
+                                Stop & Analyze
+                            </button>
+                        </div>
+
+                        <!-- Additional Controls -->
+                        <div class="flex items-center justify-between mt-4 pt-4 border-t border-border">
+                            <div class="flex items-center space-x-4">
+                                <button class="flex items-center text-text-secondary hover:text-primary transition-fast">
+                                    <i class="fas fa-scroll mr-2"></i>
+                                    Teleprompter
+                                </button>
+                                <button class="flex items-center text-text-secondary hover:text-primary transition-fast">
+                                    <i class="fas fa-cog mr-2"></i>
+                                    Settings
+                                </button>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm text-text-secondary">Quality:</span>
+                                <select class="text-sm border border-border rounded px-2 py-1">
+                                    <option>HD 720p</option>
+                                    <option>Full HD 1080p</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real-time Feedback Panel -->
+            <div class="grid lg:grid-cols-3 gap-6 mb-8">
+                <!-- Live Feedback -->
+                <div class="lg:col-span-2">
+                    <div class="card">
+                        <h3 class="text-lg font-heading font-semibold text-text-primary mb-4">
+                            <i class="fas fa-chart-line mr-2 text-primary"></i>
+                            Real-time Analysis
+                        </h3>
+                        
+                        <!-- Feedback Metrics -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                            <div class="text-center p-3 bg-secondary-50 rounded-lg">
+                                <div class="text-2xl font-bold text-secondary">85%</div>
+                                <div class="text-xs text-text-secondary">Clarity</div>
+                                <div class="w-full bg-gray-200 rounded-full h-1 mt-2">
+                                    <div class="bg-secondary h-1 rounded-full" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div class="text-center p-3 bg-primary-50 rounded-lg">
+                                <div class="text-2xl font-bold text-primary">92%</div>
+                                <div class="text-xs text-text-secondary">Volume</div>
+                                <div class="w-full bg-gray-200 rounded-full h-1 mt-2">
+                                    <div class="bg-primary h-1 rounded-full" style="width: 92%"></div>
+                                </div>
+                            </div>
+                            <div class="text-center p-3 bg-warning-50 rounded-lg">
+                                <div class="text-2xl font-bold text-warning">78%</div>
+                                <div class="text-xs text-text-secondary">Pace</div>
+                                <div class="w-full bg-gray-200 rounded-full h-1 mt-2">
+                                    <div class="bg-warning h-1 rounded-full" style="width: 78%"></div>
+                                </div>
+                            </div>
+                            <div class="text-center p-3 bg-error-50 rounded-lg">
+                                <div class="text-2xl font-bold text-error">3</div>
+                                <div class="text-xs text-text-secondary">Filler Words</div>
+                                <div class="text-xs text-error mt-1">↓ Improving</div>
+                            </div>
+                        </div>
+
+                        <!-- Live Feedback Messages -->
+                        <div class="space-y-3">
+                            <div class="feedback-card">
+                                <div class="flex items-start">
+                                    <i class="fas fa-check-circle text-secondary mr-3 mt-1"></i>
+                                    <div>
+                                        <p class="text-sm font-medium text-text-primary">Great opening statement!</p>
+                                        <p class="text-xs text-text-secondary">Your introduction was clear and engaging</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="feedback-card feedback-card-warning">
+                                <div class="flex items-start">
+                                    <i class="fas fa-exclamation-triangle text-warning mr-3 mt-1"></i>
+                                    <div>
+                                        <p class="text-sm font-medium text-text-primary">Consider slowing down</p>
+                                        <p class="text-xs text-text-secondary">Your pace increased during the technical explanation</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Body Language Tips -->
+                <div class="card">
+                    <h3 class="text-lg font-heading font-semibold text-text-primary mb-4">
+                        <i class="fas fa-user-tie mr-2 text-primary"></i>
+                        Body Language Tips
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div class="p-3 bg-primary-50 rounded-lg">
+                            <h4 class="font-medium text-primary mb-2">
+                                <i class="fas fa-eye mr-2"></i>
+                                Eye Contact
+                            </h4>
+                            <p class="text-sm text-primary">
+                                Look directly at the camera to simulate eye contact with your audience. Avoid looking down at notes frequently.
+                            </p>
+                        </div>
+                        
+                        <div class="p-3 bg-secondary-50 rounded-lg">
+                            <h4 class="font-medium text-secondary mb-2">
+                                <i class="fas fa-hands mr-2"></i>
+                                Gestures
+                            </h4>
+                            <p class="text-sm text-secondary">
+                                Use open palm gestures to appear trustworthy. Keep hand movements within the frame and purposeful.
+                            </p>
+                        </div>
+                        
+                        <div class="p-3 bg-warning-50 rounded-lg">
+                            <h4 class="font-medium text-warning mb-2">
+                                <i class="fas fa-user-check mr-2"></i>
+                                Posture
+                            </h4>
+                            <p class="text-sm text-warning">
+                                Stand or sit straight with shoulders back. Lean slightly forward to show engagement with your topic.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Quick Tips -->
+                    <div class="mt-6 pt-4 border-t border-border">
+                        <h4 class="font-medium text-text-primary mb-3">Quick Reminders</h4>
+                        <ul class="space-y-2 text-sm text-text-secondary">
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-secondary mr-2"></i>
+                                Smile naturally when appropriate
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-secondary mr-2"></i>
+                                Vary your vocal tone and pace
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-secondary mr-2"></i>
+                                Use pauses for emphasis
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Presentations -->
+            <div class="card">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-heading font-semibold text-text-primary">Recent Presentations</h3>
+                    <button class="text-primary hover:text-primary-700 text-sm font-medium transition-fast">
+                        View All
+                    </button>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Presentation Card 1 -->
+                    <div class="border border-border rounded-lg p-4 hover:shadow-medium transition-fast">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex-1">
+                                <h4 class="font-medium text-text-primary mb-1">Product Launch Strategy</h4>
+                                <p class="text-sm text-text-secondary">Business Pitch • 6:42</p>
+                            </div>
+                            <span class="bg-secondary-100 text-secondary px-2 py-1 rounded-full text-xs font-medium">88%</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between text-xs text-text-secondary mb-3">
+                            <span>Oct 10, 2025</span>
+                            <span>6 min 42 sec</span>
+                        </div>
+                        
+                        <div class="flex items-center space-x-2">
+                            <button class="flex-1 bg-primary-50 text-primary py-2 px-3 rounded-md text-sm font-medium hover:bg-primary-100 transition-fast">
+                                <i class="fas fa-play mr-1"></i>
+                                Review
+                            </button>
+                            <button class="p-2 text-text-secondary hover:text-primary transition-fast">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Presentation Card 2 -->
+                    <div class="border border-border rounded-lg p-4 hover:shadow-medium transition-fast">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex-1">
+                                <h4 class="font-medium text-text-primary mb-1">Team Quarterly Update</h4>
+                                <p class="text-sm text-text-secondary">Team Update • 4:15</p>
+                            </div>
+                            <span class="bg-warning-100 text-warning px-2 py-1 rounded-full text-xs font-medium">76%</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between text-xs text-text-secondary mb-3">
+                            <span>Oct 8, 2025</span>
+                            <span>4 min 15 sec</span>
+                        </div>
+                        
+                        <div class="flex items-center space-x-2">
+                            <button class="flex-1 bg-primary-50 text-primary py-2 px-3 rounded-md text-sm font-medium hover:bg-primary-100 transition-fast">
+                                <i class="fas fa-play mr-1"></i>
+                                Review
+                            </button>
+                            <button class="p-2 text-text-secondary hover:text-primary transition-fast">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Presentation Card 3 -->
+                    <div class="border border-border rounded-lg p-4 hover:shadow-medium transition-fast">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex-1">
+                                <h4 class="font-medium text-text-primary mb-1">Sales Proposal</h4>
+                                <p class="text-sm text-text-secondary">Sales • 8:30</p>
+                            </div>
+                            <span class="bg-secondary-100 text-secondary px-2 py-1 rounded-full text-xs font-medium">92%</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between text-xs text-text-secondary mb-3">
+                            <span>Oct 5, 2025</span>
+                            <span>8 min 30 sec</span>
+                        </div>
+                        
+                        <div class="flex items-center space-x-2">
+                            <button class="flex-1 bg-primary-50 text-primary py-2 px-3 rounded-md text-sm font-medium hover:bg-primary-100 transition-fast">
+                                <i class="fas fa-play mr-1"></i>
+                                Review
+                            </button>
+                            <button class="p-2 text-text-secondary hover:text-primary transition-fast">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-border mt-16">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <svg class="h-8 w-8 text-primary mr-2" viewBox="0 0 40 40" fill="currentColor">
+                        <circle cx="20" cy="20" r="18" fill="currentColor" opacity="0.1"/>
+                        <path d="M12 16c0-4.4 3.6-8 8-8s8 3.6 8 8v8c0 4.4-3.6 8-8 8s-8-3.6-8-8v-8zm8-6c-3.3 0-6 2.7-6 6v8c0 3.3 2.7 6 6 6s6-2.7 6-6v-8c0-3.3-2.7-6-6-6z"/>
+                        <circle cx="20" cy="16" r="2" fill="currentColor"/>
+                    </svg>
+                    <span class="text-text-primary font-medium">ProSpeak AI</span>
+                </div>
+                <div class="flex space-x-6 text-sm text-text-secondary">
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Privacy Policy</a>
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Terms of Service</a>
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Support</a>
+                </div>
+                <div class="text-sm text-text-secondary mt-4 md:mt-0">
+                    © 2025 ProSpeak AI. All Rights Reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Interactive Features -->
+    <script>
+        // Global state
+        let isRecording = false;
+        let isPaused = false;
+        let startTime = null;
+        let timerInterval = null;
+        
+        // Global initialization state
+        window.presentationPracticeInitialized = false;
+        
+        // Cleanup function
+        window.cleanupPresentationPractice = function() {
+            console.log('Cleaning up Presentation Practice...');
+            
+            // Stop timer
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            
+            // Reset state
+            isRecording = false;
+            isPaused = false;
+            startTime = null;
+            window.presentationPracticeInitialized = false;
+            
+            console.log('Presentation Practice cleaned up');
+        };
+        
+        // Initialize function
+        function initializePresentationPractice() {
+            if (window.presentationPracticeInitialized) {
+                console.log('Presentation Practice already initialized');
+                return;
+            }
+            
+            console.log('Presentation Practice initializing...');
+            
+            isRecording = false;
+            isPaused = false;
+            startTime = null;
+            timerInterval = null;
+
+            const startBtn = document.getElementById('startRecording');
+            const pauseBtn = document.getElementById('pauseRecording');
+            const stopBtn = document.getElementById('stopRecording');
+            const timer = document.getElementById('timer');
+            const recordingIndicator = document.getElementById('recordingIndicator');
+            const readyIndicator = document.getElementById('readyIndicator');
+
+            // Practice Mode Selection
+            const modeButtons = document.querySelectorAll('[id$="Mode"]');
+            modeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    modeButtons.forEach(btn => {
+                        btn.classList.remove('border-primary', 'bg-primary-50', 'text-primary');
+                        btn.classList.add('border-border', 'text-text-primary');
+                        btn.querySelector('i').classList.remove('text-primary');
+                        btn.querySelector('i').classList.add('text-text-secondary');
+                    });
+                    
+                    this.classList.add('border-primary', 'bg-primary-50', 'text-primary');
+                    this.classList.remove('border-border', 'text-text-primary');
+                    this.querySelector('i').classList.add('text-primary');
+                    this.querySelector('i').classList.remove('text-text-secondary');
+                });
+            });
+
+            // Topic Category Selection
+            const categoryButtons = document.querySelectorAll('.card button[class*="w-full text-left p-2"]');
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    categoryButtons.forEach(btn => {
+                        btn.classList.remove('bg-secondary-50', 'text-secondary');
+                        btn.classList.add('hover:bg-gray-50', 'text-text-primary');
+                    });
+                    
+                    this.classList.add('bg-secondary-50', 'text-secondary');
+                    this.classList.remove('hover:bg-gray-50', 'text-text-primary');
+                });
+            });
+
+            // Timer Functions
+            function updateTimer() {
+                if (startTime && !isPaused) {
+                    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                    const minutes = Math.floor(elapsed / 60);
+                    const seconds = elapsed % 60;
+                    timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+            }
+
+            function startTimer() {
+                if (!startTime) {
+                    startTime = Date.now();
+                }
+                timerInterval = setInterval(updateTimer, 1000);
+            }
+
+            function pauseTimer() {
+                clearInterval(timerInterval);
+            }
+
+            function resetTimer() {
+                clearInterval(timerInterval);
+                startTime = null;
+                timer.textContent = '00:00';
+            }
+
+            // Recording Controls
+            startBtn.addEventListener('click', function() {
+                if (!isRecording) {
+                    // Start recording
+                    isRecording = true;
+                    isPaused = false;
+                    
+                    startBtn.classList.add('hidden');
+                    pauseBtn.classList.remove('hidden');
+                    stopBtn.classList.remove('hidden');
+                    
+                    recordingIndicator.classList.remove('hidden');
+                    readyIndicator.classList.add('hidden');
+                    
+                    startTimer();
+                    
+                    // Simulate real-time feedback updates
+                    simulateRealTimeFeedback();
+                }
+            });
+
+            pauseBtn.addEventListener('click', function() {
+                if (isRecording && !isPaused) {
+                    // Pause recording
+                    isPaused = true;
+                    pauseTimer();
+                    
+                    pauseBtn.innerHTML = '<i class="fas fa-play mr-2"></i>Resume';
+                    recordingIndicator.innerHTML = '<div class="flex items-center space-x-3"><div class="w-3 h-3 bg-yellow-500 rounded-full"></div><span class="text-white font-medium">Recording paused...</span></div>';
+                } else if (isRecording && isPaused) {
+                    // Resume recording
+                    isPaused = false;
+                    startTime = Date.now() - (parseInt(timer.textContent.split(':')[0]) * 60 + parseInt(timer.textContent.split(':')[1])) * 1000;
+                    startTimer();
+                    
+                    pauseBtn.innerHTML = '<i class="fas fa-pause mr-2"></i>Pause';
+                    recordingIndicator.innerHTML = '<div class="flex items-center space-x-3"><div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div><span class="text-white font-medium">Recording in progress...</span></div>';
+                }
+            });
+
+            stopBtn.addEventListener('click', function() {
+                // Stop recording
+                isRecording = false;
+                isPaused = false;
+                
+                startBtn.classList.remove('hidden');
+                pauseBtn.classList.add('hidden');
+                stopBtn.classList.add('hidden');
+                
+                recordingIndicator.classList.add('hidden');
+                readyIndicator.classList.remove('hidden');
+                readyIndicator.innerHTML = '<div class="text-center"><i class="fas fa-check-circle text-6xl text-secondary mb-4"></i><p class="text-gray-400">Recording completed! Analyzing your presentation...</p></div>';
+                
+                pauseTimer();
+                
+                // Simulate analysis completion
+                setTimeout(() => {
+                    showAnalysisResults();
+                }, 3000);
+            });
+
+            // Simulate Real-time Feedback
+            function simulateRealTimeFeedback() {
+                if (!isRecording || isPaused) return;
+                
+                // Update metrics randomly
+                const metrics = [
+                    { element: document.querySelector('.bg-secondary-50 .text-2xl'), max: 95, current: 85 },
+                    { element: document.querySelector('.bg-primary-50 .text-2xl'), max: 98, current: 92 },
+                    { element: document.querySelector('.bg-warning-50 .text-2xl'), max: 90, current: 78 },
+                    { element: document.querySelector('.bg-error-50 .text-2xl'), max: 10, current: 3 }
+                ];
+                
+                metrics.forEach((metric, index) => {
+                    if (metric.element) {
+                        const variation = Math.floor(Math.random() * 10) - 5;
+                        let newValue = metric.current + variation;
+                        
+                        if (index === 3) { // Filler words (lower is better)
+                            newValue = Math.max(0, Math.min(metric.max, newValue));
+                        } else {
+                            newValue = Math.max(60, Math.min(metric.max, newValue));
+                        }
+                        
+                        metric.element.textContent = index === 3 ? newValue : `${newValue}%`;
+                        metric.current = newValue;
+                        
+                        // Update progress bar
+                        const progressBar = metric.element.parentElement.querySelector('.h-1 > div');
+                        if (progressBar && index !== 3) {
+                            progressBar.style.width = `${newValue}%`;
+                        }
+                    }
+                });
+                
+                // Continue updating if still recording
+                setTimeout(simulateRealTimeFeedback, 2000);
+            }
+
+            // Show Analysis Results
+            function showAnalysisResults() {
+                readyIndicator.innerHTML = '<div class="text-center"><i class="fas fa-chart-line text-6xl text-primary mb-4"></i><p class="text-gray-400">Analysis complete! Check your detailed feedback below.</p></div>';
+                
+                // Add a new feedback message
+                const feedbackContainer = document.querySelector('.space-y-3');
+                const newFeedback = document.createElement('div');
+                newFeedback.className = 'feedback-card';
+                newFeedback.innerHTML = `
+                    <div class="flex items-start">
+                        <i class="fas fa-star text-warning mr-3 mt-1"></i>
+                        <div>
+                            <p class="text-sm font-medium text-text-primary">Excellent presentation structure!</p>
+                            <p class="text-xs text-text-secondary">Your conclusion effectively summarized key points and included a clear call to action</p>
+                        </div>
+                    </div>
+                `;
+                feedbackContainer.appendChild(newFeedback);
+                
+                resetTimer();
+            }
+
+            // Teleprompter Toggle
+            document.querySelector('[class*="fas fa-scroll"]').parentElement.addEventListener('click', function() {
+                const teleprompter = document.getElementById('teleprompter');
+                teleprompter.classList.toggle('hidden');
+            });
+            
+            window.presentationPracticeInitialized = true;
+            console.log('Presentation Practice initialized successfully');
+        }
+        
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializePresentationPractice);
+        } else {
+            initializePresentationPractice();
+        }
+    </script>
+
+    <!-- Load API Client -->
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/user-common.js') }}"></script>
+
+</body>
+</html>

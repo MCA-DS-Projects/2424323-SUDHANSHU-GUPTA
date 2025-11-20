@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Progress Analytics - ProSpeak AI</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}" />
+    <link rel="alternate icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='favicon.svg') }}" />
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.css" rel="stylesheet" />
+  
+  <script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fprospeaka9282back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.9"></script>
+  <script type="module" src="https://static.rocket.new/rocket-shot.js?v=0.0.1"></script>
+  </head>
+<body class="bg-gradient-to-br from-primary-50 via-white to-secondary-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-soft border-b border-border">
+        <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-10 w-10 text-primary" viewBox="0 0 40 40" fill="currentColor">
+                            <circle cx="20" cy="20" r="18" fill="currentColor" opacity="0.1"/>
+                            <path d="M12 16c0-4.4 3.6-8 8-8s8 3.6 8 8v8c0 4.4-3.6 8-8 8s-8-3.6-8-8v-8zm8-6c-3.3 0-6 2.7-6 6v8c0 3.3 2.7 6 6 6s6-2.7 6-6v-8c0-3.3-2.7-6-6-6z"/>
+                            <circle cx="20" cy="16" r="2" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h1 class="text-xl font-heading font-bold text-text-primary">ProSpeak AI</h1>
+                        <p class="text-xs text-text-secondary">Progress Analytics</p>
+                    </div>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="user_dashboard.html" class="text-text-secondary hover:text-primary transition-fast">Dashboard</a>
+                    <a href="progress_analytics.html" class="text-primary font-medium transition-fast">Analytics</a>
+                    <a href="admin_dashboard.html" class="text-text-secondary hover:text-primary transition-fast">Admin</a>
+                    <a href="interview_simulator.html" class="text-text-secondary hover:text-primary transition-fast">Practice</a>
+                </nav>
+
+                <!-- User Menu -->
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <button class="p-2 text-text-secondary hover:text-primary transition-fast">
+                            <i class="fas fa-bell text-lg"></i>
+                            <span class="absolute -top-1 -right-1 bg-accent text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">2</span>
+                        </button>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <img src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150" alt="User avatar" class="w-8 h-8 rounded-full object-cover" loading="lazy" />
+                        <span class="text-sm font-medium text-text-primary hidden sm:block">John Doe</span>
+                        <button class="text-text-secondary hover:text-primary transition-fast">
+                            <i class="fas fa-chevron-down text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Analytics Header -->
+        <div class="mb-8">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                <div class="mb-4 lg:mb-0">
+                    <h1 class="text-3xl font-heading font-bold text-text-primary">Progress Analytics</h1>
+                    <p class="text-text-secondary mt-1">Detailed performance insights and learning progression tracking</p>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <div class="flex items-center space-x-2">
+                        <label class="text-sm font-medium text-text-secondary">Time Range:</label>
+                        <select class="px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm" id="timeRangeSelect">
+                            <option value="7d">Last 7 days</option>
+                            <option value="30d" selected>Last 30 days</option>
+                            <option value="90d">Last 3 months</option>
+                            <option value="1y">Last year</option>
+                        </select>
+                    </div>
+                    <button class="btn-secondary" id="exportAnalyticsBtn">
+                        <i class="fas fa-download mr-2"></i>
+                        Export Report
+                    </button>
+                    <button class="btn-primary" id="compareBtn">
+                        <i class="fas fa-chart-line mr-2"></i>
+                        Compare with Peers
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Personal Learning Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Fluency Improvement Score -->
+            <div class="card-elevated">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-heading font-semibold text-text-primary">Fluency Score</h3>
+                    <i class="fas fa-comments text-2xl text-primary"></i>
+                </div>
+                <div class="relative mb-4">
+                    <div class="w-20 h-20 mx-auto">
+                        <svg class="w-20 h-20 transform -rotate-90" viewBox="0 0 36 36">
+                            <path class="text-gray-200" stroke="currentColor" stroke-width="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            <path class="text-primary" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="88, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-2xl font-bold text-text-primary">88%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="flex items-center justify-center space-x-1">
+                        <i class="fas fa-arrow-up text-secondary text-sm"></i>
+                        <span class="text-sm font-medium text-secondary">+15%</span>
+                        <span class="text-xs text-text-secondary">this month</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pronunciation Accuracy -->
+            <div class="card-elevated">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-heading font-semibold text-text-primary">Pronunciation</h3>
+                    <i class="fas fa-microphone text-2xl text-secondary"></i>
+                </div>
+                <div class="mb-4">
+                    <div class="text-center">
+                        <span class="text-3xl font-bold text-text-primary">91.5%</span>
+                        <p class="text-sm text-text-secondary">Accuracy Rate</p>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="flex items-center justify-center space-x-1">
+                        <i class="fas fa-arrow-up text-secondary text-sm"></i>
+                        <span class="text-sm font-medium text-secondary">+8.2%</span>
+                        <span class="text-xs text-text-secondary">this month</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vocabulary Expansion -->
+            <div class="card-elevated">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-heading font-semibold text-text-primary">Vocabulary</h3>
+                    <i class="fas fa-book text-2xl text-warning"></i>
+                </div>
+                <div class="mb-4">
+                    <div class="text-center">
+                        <span class="text-3xl font-bold text-text-primary">347</span>
+                        <p class="text-sm text-text-secondary">New Words Learned</p>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="flex items-center justify-center space-x-1">
+                        <i class="fas fa-arrow-up text-secondary text-sm"></i>
+                        <span class="text-sm font-medium text-secondary">+42</span>
+                        <span class="text-xs text-text-secondary">this month</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Speaking Confidence -->
+            <div class="card-elevated">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-heading font-semibold text-text-primary">Confidence</h3>
+                    <i class="fas fa-user-check text-2xl text-accent"></i>
+                </div>
+                <div class="mb-4">
+                    <div class="text-center">
+                        <span class="text-3xl font-bold text-text-primary">8.4</span>
+                        <p class="text-sm text-text-secondary">out of 10</p>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="flex items-center justify-center space-x-1">
+                        <i class="fas fa-arrow-up text-secondary text-sm"></i>
+                        <span class="text-sm font-medium text-secondary">+1.2</span>
+                        <span class="text-xs text-text-secondary">this month</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Visualization Panels -->
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
+            <!-- Performance Trends -->
+            <div class="card">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-heading font-semibold text-text-primary">Performance Trends</h2>
+                    <div class="flex space-x-2">
+                        <button class="text-sm px-3 py-1 bg-primary-100 text-primary rounded-full" id="overallTrendBtn">Overall</button>
+                        <button class="text-sm px-3 py-1 text-text-secondary hover:bg-gray-100 rounded-full" id="pronunciationTrendBtn">Pronunciation</button>
+                        <button class="text-sm px-3 py-1 text-text-secondary hover:bg-gray-100 rounded-full" id="fluencyTrendBtn">Fluency</button>
+                    </div>
+                </div>
+                <div class="h-80">
+                    <canvas id="performanceTrendChart" class="w-full h-full"></canvas>
+                </div>
+            </div>
+
+            <!-- Module Performance Breakdown -->
+            <div class="card">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-heading font-semibold text-text-primary">Module Performance</h2>
+                    <button class="text-sm text-primary hover:text-primary-700 transition-fast" id="detailedBreakdownBtn">Detailed View</button>
+                </div>
+                <div class="space-y-4">
+                    <!-- Interview Simulator -->
+                    <div class="p-4 bg-primary-50 border border-primary-200 rounded-lg">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-briefcase text-primary text-sm"></i>
+                                </div>
+                                <span class="font-medium text-text-primary">Interview Simulator</span>
+                            </div>
+                            <span class="text-lg font-bold text-primary">92%</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs text-text-secondary">
+                            <span>24 sessions completed</span>
+                            <span>+8% improvement</span>
+                        </div>
+                        <div class="mt-2 bg-gray-200 rounded-full h-2">
+                            <div class="bg-primary h-2 rounded-full" style="width: 92%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Fluency Coach -->
+                    <div class="p-4 bg-secondary-50 border border-secondary-200 rounded-lg">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-secondary-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-comments text-secondary text-sm"></i>
+                                </div>
+                                <span class="font-medium text-text-primary">Fluency Coach</span>
+                            </div>
+                            <span class="text-lg font-bold text-secondary">85%</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs text-text-secondary">
+                            <span>18 sessions completed</span>
+                            <span>+12% improvement</span>
+                        </div>
+                        <div class="mt-2 bg-gray-200 rounded-full h-2">
+                            <div class="bg-secondary h-2 rounded-full" style="width: 85%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Pronunciation Practice -->
+                    <div class="p-4 bg-warning-50 border border-warning-200 rounded-lg">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-warning-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-microphone text-warning text-sm"></i>
+                                </div>
+                                <span class="font-medium text-text-primary">Audio Practice</span>
+                            </div>
+                            <span class="text-lg font-bold text-warning">89%</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs text-text-secondary">
+                            <span>31 sessions completed</span>
+                            <span>+15% improvement</span>
+                        </div>
+                        <div class="mt-2 bg-gray-200 rounded-full h-2">
+                            <div class="bg-warning h-2 rounded-full" style="width: 89%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Presentation Practice -->
+                    <div class="p-4 bg-accent-50 border border-accent-200 rounded-lg">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-accent-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-presentation text-accent text-sm"></i>
+                                </div>
+                                <span class="font-medium text-text-primary">Presentation Practice</span>
+                            </div>
+                            <span class="text-lg font-bold text-accent">78%</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs text-text-secondary">
+                            <span>12 sessions completed</span>
+                            <span>+22% improvement</span>
+                        </div>
+                        <div class="mt-2 bg-gray-200 rounded-full h-2">
+                            <div class="bg-accent h-2 rounded-full" style="width: 78%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Goal Tracking and Comparative Analysis -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <!-- Goal Progress -->
+            <div class="card">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-heading font-semibold text-text-primary">Goal Tracking</h2>
+                    <button class="text-sm text-primary hover:text-primary-700 transition-fast" id="editGoalsBtn">
+                        <i class="fas fa-edit mr-1"></i>Edit Goals
+                    </button>
+                </div>
+                <div class="space-y-6">
+                    <!-- Weekly Practice Goal -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-text-primary">Weekly Practice Goal</span>
+                            <span class="text-sm text-text-secondary">5/7 sessions</span>
+                        </div>
+                        <div class="bg-gray-200 rounded-full h-3">
+                            <div class="bg-secondary h-3 rounded-full" style="width: 71%"></div>
+                        </div>
+                        <p class="text-xs text-secondary mt-1">2 sessions remaining</p>
+                    </div>
+
+                    <!-- Fluency Improvement -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-text-primary">Fluency Target</span>
+                            <span class="text-sm text-text-secondary">88/90%</span>
+                        </div>
+                        <div class="bg-gray-200 rounded-full h-3">
+                            <div class="bg-primary h-3 rounded-full" style="width: 98%"></div>
+                        </div>
+                        <p class="text-xs text-secondary mt-1">Almost there! 2% to go</p>
+                    </div>
+
+                    <!-- Vocabulary Growth -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-text-primary">Vocabulary Goal</span>
+                            <span class="text-sm text-text-secondary">347/400 words</span>
+                        </div>
+                        <div class="bg-gray-200 rounded-full h-3">
+                            <div class="bg-warning h-3 rounded-full" style="width: 87%"></div>
+                        </div>
+                        <p class="text-xs text-secondary mt-1">53 words remaining</p>
+                    </div>
+
+                    <!-- Monthly Milestone -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-text-primary">Monthly Milestone</span>
+                            <span class="text-sm text-text-secondary">18/20 hours</span>
+                        </div>
+                        <div class="bg-gray-200 rounded-full h-3">
+                            <div class="bg-accent h-3 rounded-full" style="width: 90%"></div>
+                        </div>
+                        <p class="text-xs text-secondary mt-1">2 hours remaining</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparative Analysis -->
+            <div class="lg:col-span-2">
+                <div class="card">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-heading font-semibold text-text-primary">Peer Comparison</h2>
+                        <div class="flex items-center space-x-2 text-sm text-text-secondary">
+                            <i class="fas fa-users"></i>
+                            <span>vs similar learners</span>
+                        </div>
+                    </div>
+                    <div class="h-64">
+                        <canvas id="comparisonChart" class="w-full h-full"></canvas>
+                    </div>
+                    <div class="mt-4 grid grid-cols-2 gap-4">
+                        <div class="text-center p-3 bg-secondary-50 rounded-lg">
+                            <p class="text-2xl font-bold text-secondary">Top 25%</p>
+                            <p class="text-sm text-text-secondary">Overall Performance</p>
+                        </div>
+                        <div class="text-center p-3 bg-primary-50 rounded-lg">
+                            <p class="text-2xl font-bold text-primary">+18%</p>
+                            <p class="text-sm text-text-secondary">Above Average</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Session Logs and Predictive Analytics -->
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            <!-- Session History -->
+            <div class="xl:col-span-2">
+                <div class="card">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-heading font-semibold text-text-primary">Detailed Session Logs</h2>
+                        <div class="flex space-x-2">
+                            <input type="text" placeholder="Search sessions..." class="text-sm px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary w-48" id="sessionSearchInput" />
+                            <button class="btn-secondary text-sm" id="filterSessionsBtn">
+                                <i class="fas fa-filter mr-2"></i>Filter
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-border">
+                                    <th class="text-left py-3 text-sm font-medium text-text-secondary">Date</th>
+                                    <th class="text-left py-3 text-sm font-medium text-text-secondary">Module</th>
+                                    <th class="text-left py-3 text-sm font-medium text-text-secondary">Duration</th>
+                                    <th class="text-left py-3 text-sm font-medium text-text-secondary">Score</th>
+                                    <th class="text-left py-3 text-sm font-medium text-text-secondary">Feedback</th>
+                                    <th class="text-left py-3 text-sm font-medium text-text-secondary">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-border hover:bg-gray-50">
+                                    <td class="py-3">
+                                        <div>
+                                            <p class="text-sm font-medium text-text-primary">Jan 10, 2025</p>
+                                            <p class="text-xs text-text-secondary">2:30 PM</p>
+                                        </div>
+                                    </td>
+                                    <td class="py-3">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-6 h-6 bg-primary-100 rounded flex items-center justify-center">
+                                                <i class="fas fa-briefcase text-primary text-xs"></i>
+                                            </div>
+                                            <span class="text-sm text-text-primary">Interview Sim</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-3">
+                                        <span class="text-sm text-text-primary">15m 30s</span>
+                                    </td>
+                                    <td class="py-3">
+                                        <span class="text-sm font-bold text-secondary">92%</span>
+                                    </td>
+                                    <td class="py-3">
+                                        <span class="text-xs bg-secondary-100 text-secondary px-2 py-1 rounded-full">Excellent</span>
+                                    </td>
+                                    <td class="py-3">
+                                        <div class="flex space-x-1">
+                                            <button class="p-1 text-text-secondary hover:text-primary transition-fast" title="View Details">
+                                                <i class="fas fa-eye text-xs"></i>
+                                            </button>
+                                            <button class="p-1 text-text-secondary hover:text-warning transition-fast" title="Replay">
+                                                <i class="fas fa-play text-xs"></i>
+                                            </button>
+                                            <button class="p-1 text-text-secondary hover:text-accent transition-fast" title="Download">
+                                                <i class="fas fa-download text-xs"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="border-b border-border hover:bg-gray-50">
+                                    <td class="py-3">
+                                        <div>
+                                            <p class="text-sm font-medium text-text-primary">Jan 9, 2025</p>
+                                            <p class="text-xs text-text-secondary">4:15 PM</p>
+                                        </div>
+                                    </td>
+                                    <td class="py-3">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-6 h-6 bg-secondary-100 rounded flex items-center justify-center">
+                                                <i class="fas fa-comments text-secondary text-xs"></i>
+                                            </div>
+                                            <span class="text-sm text-text-primary">Fluency Coach</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-3">
+                                        <span class="text-sm text-text-primary">12m 45s</span>
+                                    </td>
+                                    <td class="py-3">
+                                        <span class="text-sm font-bold text-warning">85%</span>
+                                    </td>
+                                    <td class="py-3">
+                                        <span class="text-xs bg-warning-100 text-warning px-2 py-1 rounded-full">Good</span>
+                                    </td>
+                                    <td class="py-3">
+                                        <div class="flex space-x-1">
+                                            <button class="p-1 text-text-secondary hover:text-primary transition-fast" title="View Details">
+                                                <i class="fas fa-eye text-xs"></i>
+                                            </button>
+                                            <button class="p-1 text-text-secondary hover:text-warning transition-fast" title="Replay">
+                                                <i class="fas fa-play text-xs"></i>
+                                            </button>
+                                            <button class="p-1 text-text-secondary hover:text-accent transition-fast" title="Download">
+                                                <i class="fas fa-download text-xs"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="border-b border-border hover:bg-gray-50">
+                                    <td class="py-3">
+                                        <div>
+                                            <p class="text-sm font-medium text-text-primary">Jan 8, 2025</p>
+                                            <p class="text-xs text-text-secondary">1:20 PM</p>
+                                        </div>
+                                    </td>
+                                    <td class="py-3">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-6 h-6 bg-warning-100 rounded flex items-center justify-center">
+                                                <i class="fas fa-microphone text-warning text-xs"></i>
+                                            </div>
+                                            <span class="text-sm text-text-primary">Audio Practice</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-3">
+                                        <span class="text-sm text-text-primary">8m 12s</span>
+                                    </td>
+                                    <td class="py-3">
+                                        <span class="text-sm font-bold text-secondary">89%</span>
+                                    </td>
+                                    <td class="py-3">
+                                        <span class="text-xs bg-secondary-100 text-secondary px-2 py-1 rounded-full">Very Good</span>
+                                    </td>
+                                    <td class="py-3">
+                                        <div class="flex space-x-1">
+                                            <button class="p-1 text-text-secondary hover:text-primary transition-fast" title="View Details">
+                                                <i class="fas fa-eye text-xs"></i>
+                                            </button>
+                                            <button class="p-1 text-text-secondary hover:text-warning transition-fast" title="Replay">
+                                                <i class="fas fa-play text-xs"></i>
+                                            </button>
+                                            <button class="p-1 text-text-secondary hover:text-accent transition-fast" title="Download">
+                                                <i class="fas fa-download text-xs"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-4 flex items-center justify-between">
+                        <p class="text-sm text-text-secondary">Showing 3 of 85 sessions</p>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 text-sm border border-border rounded hover:bg-gray-50 transition-fast">Previous</button>
+                            <button class="px-3 py-1 text-sm bg-primary text-white rounded">1</button>
+                            <button class="px-3 py-1 text-sm border border-border rounded hover:bg-gray-50 transition-fast">2</button>
+                            <button class="px-3 py-1 text-sm border border-border rounded hover:bg-gray-50 transition-fast">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Recommendations and Insights -->
+            <div class="space-y-6">
+                <!-- AI Insights -->
+                <div class="card">
+                    <h3 class="text-lg font-heading font-semibold text-text-primary mb-4">AI Insights</h3>
+                    <div class="space-y-4">
+                        <div class="bg-primary-50 border border-primary-200 rounded-lg p-3">
+                            <div class="flex items-start space-x-2">
+                                <i class="fas fa-lightbulb text-primary text-sm mt-1"></i>
+                                <div>
+                                    <p class="text-sm font-medium text-text-primary">Optimal Practice Time</p>
+                                    <p class="text-xs text-text-secondary mt-1">Your performance peaks between 2-4 PM. Schedule important practice sessions during this window.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-secondary-50 border border-secondary-200 rounded-lg p-3">
+                            <div class="flex items-start space-x-2">
+                                <i class="fas fa-chart-line text-secondary text-sm mt-1"></i>
+                                <div>
+                                    <p class="text-sm font-medium text-text-primary">Strong Improvement</p>
+                                    <p class="text-xs text-text-secondary mt-1">Your pronunciation accuracy improved 8.2% this month. Continue with current practice frequency.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-warning-50 border border-warning-200 rounded-lg p-3">
+                            <div class="flex items-start space-x-2">
+                                <i class="fas fa-exclamation-circle text-warning text-sm mt-1"></i>
+                                <div>
+                                    <p class="text-sm font-medium text-text-primary">Focus Area</p>
+                                    <p class="text-xs text-text-secondary mt-1">Consider more presentation practice. This module shows the highest improvement potential.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recommended Next Steps -->
+                <div class="card">
+                    <h3 class="text-lg font-heading font-semibold text-text-primary mb-4">Recommended Actions</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
+                            <div class="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-target text-primary text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-text-primary">Complete Weekly Goal</p>
+                                <p class="text-xs text-text-secondary">2 sessions remaining</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
+                            <div class="w-8 h-8 bg-secondary-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-microphone text-secondary text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-text-primary">Practice 'th' Sounds</p>
+                                <p class="text-xs text-text-secondary">Needs improvement</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
+                            <div class="w-8 h-8 bg-warning-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-presentation text-warning text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-text-primary">Try Presentation Module</p>
+                                <p class="text-xs text-text-secondary">High improvement potential</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
+                            <div class="w-8 h-8 bg-accent-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-calendar-plus text-accent text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-text-primary">Schedule Regular Sessions</p>
+                                <p class="text-xs text-text-secondary">Consistency boosts results</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-border mt-16">
+        <div class="max-w-full mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <svg class="h-8 w-8 text-primary mr-2" viewBox="0 0 40 40" fill="currentColor">
+                        <circle cx="20" cy="20" r="18" fill="currentColor" opacity="0.1"/>
+                        <path d="M12 16c0-4.4 3.6-8 8-8s8 3.6 8 8v8c0 4.4-3.6 8-8 8s-8-3.6-8-8v-8zm8-6c-3.3 0-6 2.7-6 6v8c0 3.3 2.7 6 6 6s6-2.7 6-6v-8c0-3.3-2.7-6-6-6z"/>
+                        <circle cx="20" cy="16" r="2" fill="currentColor"/>
+                    </svg>
+                    <span class="text-text-primary font-medium">ProSpeak AI - Progress Analytics</span>
+                </div>
+                <div class="flex space-x-6 text-sm text-text-secondary">
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Privacy Policy</a>
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Terms of Service</a>
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Support</a>
+                </div>
+                <div class="text-sm text-text-secondary mt-4 md:mt-0">
+                    © 2025 ProSpeak AI. All Rights Reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Performance Trend Chart
+            const performanceCtx = document.getElementById('performanceTrendChart').getContext('2d');
+            const performanceChart = new Chart(performanceCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
+                    datasets: [
+                        {
+                            label: 'Overall Score',
+                            data: [72, 75, 78, 82, 85, 88],
+                            borderColor: 'rgb(99, 102, 241)',
+                            backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'Pronunciation',
+                            data: [68, 71, 76, 80, 86, 91],
+                            borderColor: 'rgb(34, 197, 94)',
+                            backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                            tension: 0.4,
+                            fill: false
+                        },
+                        {
+                            label: 'Fluency',
+                            data: [70, 73, 75, 79, 82, 85],
+                            borderColor: 'rgb(251, 191, 36)',
+                            backgroundColor: 'rgba(251, 191, 36, 0.1)',
+                            tension: 0.4,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 60,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            align: 'end'
+                        }
+                    }
+                }
+            });
+
+            // Initialize Comparison Chart
+            const comparisonCtx = document.getElementById('comparisonChart').getContext('2d');
+            const comparisonChart = new Chart(comparisonCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Pronunciation', 'Fluency', 'Vocabulary', 'Confidence', 'Grammar', 'Listening'],
+                    datasets: [
+                        {
+                            label: 'Your Score',
+                            data: [91, 88, 85, 84, 82, 87],
+                            borderColor: 'rgb(99, 102, 241)',
+                            backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                            pointBackgroundColor: 'rgb(99, 102, 241)',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2
+                        },
+                        {
+                            label: 'Peer Average',
+                            data: [78, 75, 80, 72, 79, 76],
+                            borderColor: 'rgb(156, 163, 175)',
+                            backgroundColor: 'rgba(156, 163, 175, 0.1)',
+                            pointBackgroundColor: 'rgb(156, 163, 175)',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            ticks: {
+                                beginAtZero: true,
+                                max: 100,
+                                stepSize: 20
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Trend Chart Filter Buttons
+            document.getElementById('overallTrendBtn').addEventListener('click', function() {
+                updateTrendFilter(this, 'overall');
+            });
+
+            document.getElementById('pronunciationTrendBtn').addEventListener('click', function() {
+                updateTrendFilter(this, 'pronunciation');
+            });
+
+            document.getElementById('fluencyTrendBtn').addEventListener('click', function() {
+                updateTrendFilter(this, 'fluency');
+            });
+
+            function updateTrendFilter(button, filter) {
+                // Update button states
+                document.querySelectorAll('#overallTrendBtn, #pronunciationTrendBtn, #fluencyTrendBtn').forEach(btn => {
+                    btn.className = 'text-sm px-3 py-1 text-text-secondary hover:bg-gray-100 rounded-full';
+                });
+                button.className = 'text-sm px-3 py-1 bg-primary-100 text-primary rounded-full';
+                
+                // Update chart based on filter
+                console.log('Updating trend chart for:', filter);
+                // Here you would update the chart data based on the filter
+            }
+
+            // Time Range Selection
+            document.getElementById('timeRangeSelect').addEventListener('change', function(e) {
+                const timeRange = e.target.value;
+                console.log('Updating analytics for time range:', timeRange);
+                // Update all charts and data based on selected time range
+            });
+
+            // Export Analytics
+            document.getElementById('exportAnalyticsBtn').addEventListener('click', function() {
+                alert('Exporting detailed analytics report...');
+                // This would typically generate and download a PDF or CSV report
+            });
+
+            // Compare with Peers
+            document.getElementById('compareBtn').addEventListener('click', function() {
+                alert('Loading peer comparison data...');
+                // This would show more detailed comparative analysis
+            });
+
+            // Edit Goals
+            document.getElementById('editGoalsBtn').addEventListener('click', function() {
+                alert('Opening goal setting interface...');
+                // This would open a modal to edit personal learning goals
+            });
+
+            // Session Search
+            document.getElementById('sessionSearchInput').addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                console.log('Searching sessions for:', searchTerm);
+                // This would filter the session table
+            });
+
+            // Filter Sessions
+            document.getElementById('filterSessionsBtn').addEventListener('click', function() {
+                alert('Opening session filter options...');
+                // This would show advanced filtering options
+            });
+
+            // Detailed Module Breakdown
+            document.getElementById('detailedBreakdownBtn').addEventListener('click', function() {
+                alert('Loading detailed module performance analysis...');
+                // This would show more granular module statistics
+            });
+
+            // Real-time updates simulation
+            setInterval(function() {
+                // Simulate real-time progress updates
+                // This would typically fetch latest session data and update displays
+            }, 60000); // Update every minute
+        });
+    </script>
+
+    <!-- Load API Client -->
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+
+</body>
+</html>

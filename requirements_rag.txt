@@ -1,0 +1,27 @@
+# RAG + LangChain Requirements for ProSpeak AI
+
+# Core LangChain
+langchain==0.1.0
+langchain-community==0.0.10
+langchain-core==0.1.10
+langchain-openai==0.0.2
+
+# Additional LangChain dependencies
+pydantic==2.5.3
+pydantic-core==2.14.6
+
+# OpenAI
+openai==1.6.1
+
+# Vector Store
+faiss-cpu==1.8.0
+
+# Tokenization
+tiktoken==0.5.2
+
+# Utilities
+numpy==1.24.3
+python-dotenv==1.0.0
+
+# Optional: For better performance
+# faiss-gpu==1.7.4  # Use this instead of faiss-cpu if you have GPU

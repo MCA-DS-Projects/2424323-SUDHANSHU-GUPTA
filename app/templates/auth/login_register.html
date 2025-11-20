@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login & Registration - ProSpeak AI</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}" />
+    <link rel="alternate icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='favicon.svg') }}" />
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  
+  <script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fprospeaka9282back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.9"></script>
+  <script type="module" src="https://static.rocket.new/rocket-shot.js?v=0.0.1"></script>
+  </head>
+<body class="bg-gradient-to-br from-primary-50 via-white to-secondary-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-soft border-b border-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-10 w-10 text-primary" viewBox="0 0 40 40" fill="currentColor">
+                            <circle cx="20" cy="20" r="18" fill="currentColor" opacity="0.1"/>
+                            <path d="M12 16c0-4.4 3.6-8 8-8s8 3.6 8 8v8c0 4.4-3.6 8-8 8s-8-3.6-8-8v-8zm8-6c-3.3 0-6 2.7-6 6v8c0 3.3 2.7 6 6 6s6-2.7 6-6v-8c0-3.3-2.7-6-6-6z"/>
+                            <circle cx="20" cy="16" r="2" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h1 class="text-xl font-heading font-bold text-text-primary">ProSpeak AI</h1>
+                        <p class="text-xs text-text-secondary">Professional English Coaching</p>
+                    </div>
+                </div>   
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                
+                <!-- Authentication Form Panel -->
+                <div class="order-2 lg:order-1">
+                    <div class="card-elevated max-w-md mx-auto">
+                        <!-- Tab Navigation -->
+                        <div class="flex mb-8 bg-gray-100 rounded-lg p-1">
+                            <button id="loginTab" class="flex-1 py-2 px-4 text-sm font-medium rounded-md transition-fast bg-white text-primary shadow-sm">
+                                Sign In
+                            </button>
+                            <button id="registerTab" class="flex-1 py-2 px-4 text-sm font-medium rounded-md transition-fast text-text-secondary hover:text-primary">
+                                Create Account
+                            </button>
+                        </div>
+
+                        <!-- Login Form -->
+                        <div id="loginForm" class="space-y-6">
+                            <div class="text-center mb-6">
+                                <h2 class="text-2xl font-heading font-bold text-text-primary">Welcome Back</h2>
+                                <p class="text-text-secondary mt-2">Continue your English learning journey</p>
+                            </div>
+
+                            <form class="space-y-4">
+                                <div>
+                                    <label for="loginEmail" class="block text-sm font-medium text-text-primary mb-2">Email Address</label>
+                                    <div class="relative">
+                                        <input type="email" id="loginEmail" name="email" class="input-field pl-10" placeholder="Enter your email" required />
+                                        <i class="fas fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary"></i>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="loginPassword" class="block text-sm font-medium text-text-primary mb-2">Password</label>
+                                    <div class="relative">
+                                        <input type="password" id="loginPassword" name="password" class="input-field pl-10 pr-10" placeholder="Enter your password" required />
+                                        <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary"></i>
+                                        <button type="button" id="toggleLoginPassword" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-secondary hover:text-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="rounded border-border text-primary focus:ring-primary" />
+                                        <span class="ml-2 text-sm text-text-secondary">Remember me</span>
+                                    </label>
+                                    <a href="javascript:void(0)" class="text-sm text-primary hover:text-primary-700 transition-fast">
+                                        Forgot password?
+                                    </a>
+                                </div>
+
+                                <button type="submit" class="btn-primary w-full">
+                                    <i class="fas fa-sign-in-alt mr-2"></i>
+                                    Sign In
+                                </button>
+                            </form>
+
+                            <!-- Social Login -->
+                            <div class="mt-6">
+                                <div class="relative">
+                                    <div class="absolute inset-0 flex items-center">
+                                        <div class="w-full border-t border-border"></div>
+                                    </div>
+                                    <div class="relative flex justify-center text-sm">
+                                        <span class="px-2 bg-white text-text-secondary">Or continue with</span>
+                                    </div>
+                                </div>
+
+                                <div class="mt-6 grid grid-cols-2 gap-3">
+                                    <button type="button" id="googleLoginBtn" class="w-full inline-flex justify-center items-center py-2 px-4 border border-border rounded-md shadow-sm bg-white text-sm font-medium text-text-secondary hover:bg-gray-50 transition-fast">
+                                        <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24">
+                                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                                        </svg>
+                                        Google
+                                    </button>
+                                    <button type="button" id="microsoftLoginBtn" class="w-full inline-flex justify-center items-center py-2 px-4 border border-border rounded-md shadow-sm bg-white text-sm font-medium text-text-secondary hover:bg-gray-50 transition-fast">
+                                        <svg class="w-5 h-5 mr-2" viewBox="0 0 23 23">
+                                            <path fill="#f3f3f3" d="M0 0h23v23H0z"/>
+                                            <path fill="#f35325" d="M1 1h10v10H1z"/>
+                                            <path fill="#81bc06" d="M12 1h10v10H12z"/>
+                                            <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+                                            <path fill="#ffba08" d="M12 12h10v10H12z"/>
+                                        </svg>
+                                        Microsoft
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Registration Form -->
+                        <div id="registerForm" class="space-y-6 hidden">
+                            <div class="text-center mb-6">
+                                <h2 class="text-2xl font-heading font-bold text-text-primary">Create Your Account</h2>
+                                <p class="text-text-secondary mt-2">Start improving your English communication skills</p>
+                            </div>
+
+                            <form class="space-y-4">
+                                <div>
+                                    <label for="registerName" class="block text-sm font-medium text-text-primary mb-2">Full Name</label>
+                                    <div class="relative">
+                                        <input type="text" id="registerName" name="name" class="input-field pl-10" placeholder="Enter your full name" required />
+                                        <i class="fas fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary"></i>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="registerEmail" class="block text-sm font-medium text-text-primary mb-2">Email Address</label>
+                                    <div class="relative">
+                                        <input type="email" id="registerEmail" name="email" class="input-field pl-10" placeholder="Enter your email" required />
+                                        <i class="fas fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary"></i>
+                                    </div>
+                                    <p class="text-xs text-text-secondary mt-1">We'll send a verification email to this address</p>
+                                </div>
+
+                                <div>
+                                    <label for="registerPassword" class="block text-sm font-medium text-text-primary mb-2">Password</label>
+                                    <div class="relative">
+                                        <input type="password" id="registerPassword" name="password" class="input-field pl-10 pr-10" placeholder="Create a strong password" required minlength="8" />
+                                        <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary"></i>
+                                        <button type="button" id="toggleRegisterPassword" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-secondary hover:text-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    <!-- Password Strength Indicator -->
+                                    <div id="passwordStrengthIndicator" class="mt-2 hidden">
+                                        <div class="flex space-x-1">
+                                            <div id="strength-bar-1" class="h-1 w-1/4 bg-gray-200 rounded transition-colors duration-300"></div>
+                                            <div id="strength-bar-2" class="h-1 w-1/4 bg-gray-200 rounded transition-colors duration-300"></div>
+                                            <div id="strength-bar-3" class="h-1 w-1/4 bg-gray-200 rounded transition-colors duration-300"></div>
+                                            <div id="strength-bar-4" class="h-1 w-1/4 bg-gray-200 rounded transition-colors duration-300"></div>
+                                        </div>
+                                        <p id="passwordStrengthText" class="text-xs text-text-secondary mt-1">Enter a password</p>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="experienceLevel" class="block text-sm font-medium text-text-primary mb-2">Experience Level</label>
+                                    <select id="experienceLevel" name="experienceLevel" class="input-field">
+                                        <option value>Select your level</option>
+                                        <option value="beginner">Beginner</option>
+                                        <option value="intermediate" selected>Intermediate</option>
+                                        <option value="advanced">Advanced</option>
+                                        <option value="native">Native Speaker</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label for="learningGoals" class="block text-sm font-medium text-text-primary mb-2">Primary Learning Goal</label>
+                                    <select id="learningGoals" name="learningGoals" class="input-field">
+                                        <option value>Select your goal</option>
+                                        <option value="interview" selected>Job Interview Preparation</option>
+                                        <option value="presentation">Presentation Skills</option>
+                                        <option value="conversation">Daily Conversation</option>
+                                        <option value="business">Business Communication</option>
+                                        <option value="pronunciation">Pronunciation Improvement</option>
+                                    </select>
+                                </div>
+
+                                <div class="flex items-start">
+                                    <input type="checkbox" id="terms" class="mt-1 rounded border-border text-primary focus:ring-primary" />
+                                    <label for="terms" class="ml-2 text-sm text-text-secondary">
+                                        I agree to the <a href="javascript:void(0)" class="text-primary hover:text-primary-700">Terms of Service</a> 
+                                        and <a href="javascript:void(0)" class="text-primary hover:text-primary-700">Privacy Policy</a>
+                                    </label>
+                                </div>
+
+                                <button type="submit" class="btn-primary w-full">
+                                    <i class="fas fa-user-plus mr-2"></i>
+                                    Create Account
+                                </button>
+                            </form>
+
+                            <!-- Social Registration -->
+                            <div class="mt-6">
+                                <div class="relative">
+                                    <div class="absolute inset-0 flex items-center">
+                                        <div class="w-full border-t border-border"></div>
+                                    </div>
+                                    <div class="relative flex justify-center text-sm">
+                                        <span class="px-2 bg-white text-text-secondary">Or sign up with</span>
+                                    </div>
+                                </div>
+
+                                <div class="mt-6 grid grid-cols-2 gap-3">
+                                    <button type="button" id="googleRegisterBtn" class="w-full inline-flex justify-center items-center py-2 px-4 border border-border rounded-md shadow-sm bg-white text-sm font-medium text-text-secondary hover:bg-gray-50 transition-fast">
+                                        <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24">
+                                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                                        </svg>
+                                        Google
+                                    </button>
+                                    <button type="button" id="microsoftRegisterBtn" class="w-full inline-flex justify-center items-center py-2 px-4 border border-border rounded-md shadow-sm bg-white text-sm font-medium text-text-secondary hover:bg-gray-50 transition-fast">
+                                        <svg class="w-5 h-5 mr-2" viewBox="0 0 23 23">
+                                            <path fill="#f3f3f3" d="M0 0h23v23H0z"/>
+                                            <path fill="#f35325" d="M1 1h10v10H1z"/>
+                                            <path fill="#81bc06" d="M12 1h10v10H12z"/>
+                                            <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+                                            <path fill="#ffba08" d="M12 12h10v10H12z"/>
+                                        </svg>
+                                        Microsoft
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Benefits Panel -->
+                <div class="order-1 lg:order-2">
+                    <div class="text-center lg:text-left">
+                        <h1 class="text-4xl lg:text-5xl font-heading font-bold text-text-primary mb-6">
+                            Master Professional 
+                            <span class="text-primary">English Communication</span>
+                        </h1>
+                        <p class="text-lg text-text-secondary mb-8">
+                            Join thousands of professionals who have improved their English speaking skills with AI-powered coaching and personalized feedback.
+                        </p>
+
+                        <!-- Success Metrics -->
+                        <div class="grid grid-cols-3 gap-6 mb-8">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-primary">95%</div>
+                                <div class="text-sm text-text-secondary">Success Rate</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-secondary">50K+</div>
+                                <div class="text-sm text-text-secondary">Active Users</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-warning">4.9★</div>
+                                <div class="text-sm text-text-secondary">User Rating</div>
+                            </div>
+                        </div>
+
+                        <!-- Feature Highlights -->
+                        <div class="space-y-4 mb-8">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-microphone text-primary text-sm"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-text-primary font-medium">Real-time Speech Analysis</p>
+                                    <p class="text-sm text-text-secondary">Get instant feedback on pronunciation and fluency</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 w-8 h-8 bg-secondary-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-briefcase text-secondary text-sm"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-text-primary font-medium">Interview Simulation</p>
+                                    <p class="text-sm text-text-secondary">Practice with realistic job interview scenarios</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 w-8 h-8 bg-warning-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-chart-line text-warning text-sm"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-text-primary font-medium">Progress Tracking</p>
+                                    <p class="text-sm text-text-secondary">Monitor your improvement with detailed analytics</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Testimonial -->
+                        <div class="bg-primary-50 rounded-lg p-6 border-l-4 border-primary">
+                            <div class="flex items-start">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop&ixlib=rb-4.0.3" alt="User testimonial" class="w-12 h-12 rounded-full object-cover mr-4" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;" />
+                                <div>
+                                    <p class="text-text-primary italic mb-2">
+                                        "ProSpeak AI helped me land my dream job! The interview practice sessions were incredibly realistic and boosted my confidence."
+                                    </p>
+                                    <div class="text-sm">
+                                        <span class="font-medium text-text-primary">Michael Chen</span>
+                                        <span class="text-text-secondary"> - Software Engineer at Google</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-border mt-16">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <svg class="h-8 w-8 text-primary mr-2" viewBox="0 0 40 40" fill="currentColor">
+                        <circle cx="20" cy="20" r="18" fill="currentColor" opacity="0.1"/>
+                        <path d="M12 16c0-4.4 3.6-8 8-8s8 3.6 8 8v8c0 4.4-3.6 8-8 8s-8-3.6-8-8v-8zm8-6c-3.3 0-6 2.7-6 6v8c0 3.3 2.7 6 6 6s6-2.7 6-6v-8c0-3.3-2.7-6-6-6z"/>
+                        <circle cx="20" cy="16" r="2" fill="currentColor"/>
+                    </svg>
+                    <span class="text-text-primary font-medium">ProSpeak AI</span>
+                </div>
+                <div class="flex space-x-6 text-sm text-text-secondary">
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Privacy Policy</a>
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Terms of Service</a>
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Support</a>
+                </div>
+                <div class="text-sm text-text-secondary mt-4 md:mt-0">
+                    © 2025 ProSpeak AI. All Rights Reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Load API Client -->
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+    
+    <!-- JavaScript for Tab Switching and Authentication -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ===== DEFINE showMessage FIRST (before anything else) =====
+            function showMessage(message, type) {
+                console.log('showMessage called with:', message, type);
+                
+                // Remove existing messages
+                const existingMessage = document.querySelector('.auth-message');
+                if (existingMessage) {
+                    existingMessage.remove();
+                }
+                
+                // Create message element
+                const messageDiv = document.createElement('div');
+                let backgroundColor = '#ef4444'; // red
+                let icon = 'fa-exclamation-circle';
+                
+                if (type === 'success') {
+                    backgroundColor = '#10b981'; // green
+                    icon = 'fa-check-circle';
+                } else if (type === 'info') {
+                    backgroundColor = '#3b82f6'; // blue
+                    icon = 'fa-info-circle';
+                }
+                
+                messageDiv.className = 'auth-message';
+                messageDiv.style.cssText = `
+                    position: fixed;
+                    top: 1rem;
+                    right: 1rem;
+                    padding: 0.75rem 1.5rem;
+                    background-color: ${backgroundColor};
+                    color: white;
+                    border-radius: 0.5rem;
+                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+                    z-index: 9999;
+                    display: flex;
+                    align-items: center;
+                    animation: slideIn 0.3s ease-out;
+                `;
+                
+                messageDiv.innerHTML = `
+                    <i class="fas ${icon}" style="margin-right: 0.5rem;"></i>
+                    <span>${message}</span>
+                `;
+                
+                document.body.appendChild(messageDiv);
+                console.log('Message added to DOM');
+                
+                // Auto remove after 5 seconds
+                setTimeout(() => {
+                    messageDiv.style.animation = 'fadeOut 0.3s ease-out';
+                    setTimeout(() => {
+                        if (messageDiv.parentNode) {
+                            messageDiv.remove();
+                            console.log('Message removed from DOM');
+                        }
+                    }, 300);
+                }, 5000);
+            }
+            // ===== END showMessage definition =====
+            
+            const loginTab = document.getElementById('loginTab');
+            const registerTab = document.getElementById('registerTab');
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+
+            // Check if user is already logged in
+            if (api.token) {
+                window.location.href = '/pages/user/user_dashboard.html';
+                return;
+            }
+
+            loginTab.addEventListener('click', function() {
+                // Switch to login
+                loginTab.classList.add('bg-white', 'text-primary', 'shadow-sm');
+                loginTab.classList.remove('text-text-secondary');
+                registerTab.classList.remove('bg-white', 'text-primary', 'shadow-sm');
+                registerTab.classList.add('text-text-secondary');
+                
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+            });
+
+            registerTab.addEventListener('click', function() {
+                // Switch to register
+                registerTab.classList.add('bg-white', 'text-primary', 'shadow-sm');
+                registerTab.classList.remove('text-text-secondary');
+                loginTab.classList.remove('bg-white', 'text-primary', 'shadow-sm');
+                loginTab.classList.add('text-text-secondary');
+                
+                registerForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+            });
+
+            // Email validation function
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            // Real-time email validation
+            const loginEmailInput = document.getElementById('loginEmail');
+            const registerEmailInput = document.getElementById('registerEmail');
+
+            function validateEmailInput(input) {
+                const email = input.value.trim();
+                
+                if (email.length === 0) {
+                    input.classList.remove('border-red-500', 'border-green-500');
+                    return true;
+                }
+                
+                if (isValidEmail(email)) {
+                    input.classList.remove('border-red-500');
+                    input.classList.add('border-green-500');
+                    return true;
+                } else {
+                    input.classList.remove('border-green-500');
+                    input.classList.add('border-red-500');
+                    return false;
+                }
+            }
+
+            if (loginEmailInput) {
+                loginEmailInput.addEventListener('blur', function() {
+                    validateEmailInput(this);
+                });
+                
+                loginEmailInput.addEventListener('input', function() {
+                    if (this.value.length > 0) {
+                        validateEmailInput(this);
+                    }
+                });
+            }
+
+            if (registerEmailInput) {
+                registerEmailInput.addEventListener('blur', function() {
+                    validateEmailInput(this);
+                });
+                
+                registerEmailInput.addEventListener('input', function() {
+                    if (this.value.length > 0) {
+                        validateEmailInput(this);
+                    }
+                });
+            }
+
+            // Login form submission
+            document.querySelector('#loginForm form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('loginEmail').value.trim();
+                const password = document.getElementById('loginPassword').value;
+                const submitBtn = this.querySelector('button[type="submit"]');
+                
+                // Validate email
+                if (!isValidEmail(email)) {
+                    showMessage('Please enter a valid email address.', 'error');
+                    loginEmailInput.focus();
+                    return;
+                }
+                
+                // Show loading state
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Signing In...';
+                
+                try {
+                    const response = await api.login(email, password);
+                    
+                    // Show personalized success message
+                    const welcomeMessage = `Welcome back, ${response.user.name}! Redirecting to dashboard...`;
+                    showMessage(welcomeMessage, 'success');
+                    
+                    // Redirect to dashboard
+                    setTimeout(() => {
+                        window.location.href = '/pages/user/user_dashboard.html';
+                    }, 1000);
+                    
+                } catch (error) {
+                    showMessage(error.message || 'Login failed. Please try again.', 'error');
+                    
+                    // Reset button
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Sign In';
+                }
+            });
+
+            // Registration form submission
+            document.querySelector('#registerForm form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('registerName').value.trim();
+                const email = document.getElementById('registerEmail').value.trim();
+                const password = document.getElementById('registerPassword').value;
+                const experienceLevel = document.getElementById('experienceLevel').value;
+                const learningGoals = document.getElementById('learningGoals').value;
+                
+                const submitBtn = this.querySelector('button[type="submit"]');
+                
+                // Validate name
+                if (name.length < 2) {
+                    showMessage('Please enter your full name.', 'error');
+                    document.getElementById('registerName').focus();
+                    return;
+                }
+                
+                // Validate email
+                if (!isValidEmail(email)) {
+                    showMessage('Please enter a valid email address.', 'error');
+                    registerEmailInput.focus();
+                    return;
+                }
+                
+                // Validate password strength
+                const strength = calculatePasswordStrength(password);
+                if (strength.score < 2) {
+                    showMessage('Please use a stronger password. ' + (strength.suggestions[0] || ''), 'error');
+                    document.getElementById('registerPassword').focus();
+                    return;
+                }
+                
+                // Validate experience level
+                if (!experienceLevel) {
+                    showMessage('Please select your experience level.', 'error');
+                    document.getElementById('experienceLevel').focus();
+                    return;
+                }
+                
+                // Validate learning goals
+                if (!learningGoals) {
+                    showMessage('Please select your primary learning goal.', 'error');
+                    document.getElementById('learningGoals').focus();
+                    return;
+                }
+                
+                // Validate terms checkbox
+                if (!document.getElementById('terms').checked) {
+                    showMessage('Please accept the Terms of Service and Privacy Policy.', 'error');
+                    return;
+                }
+                
+                const formData = {
+                    name: name,
+                    email: email,
+                    password: password,
+                    experienceLevel: experienceLevel,
+                    learningGoals: learningGoals
+                };
+                
+                // Show loading state
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Creating Account...';
+                
+                try {
+                    const response = await api.register(formData);
+                    
+                    // Show success message
+                    showMessage(response.message || 'Account created successfully! Please login to continue.', 'success');
+                    
+                    // Clear the token (user should login manually)
+                    api.clearToken();
+                    
+                    // Switch to login tab after 2 seconds
+                    setTimeout(() => {
+                        loginTab.click();
+                        // Pre-fill email in login form
+                        document.getElementById('loginEmail').value = formData.email;
+                        showMessage('Please login with your new account', 'info');
+                    }, 2000);
+                    
+                } catch (error) {
+                    showMessage(error.message || 'Registration failed. Please try again.', 'error');
+                    
+                    // Reset button
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-user-plus mr-2"></i>Create Account';
+                }
+            });
+
+            // Password visibility toggle for login
+            const toggleLoginPassword = document.getElementById('toggleLoginPassword');
+            if (toggleLoginPassword) {
+                toggleLoginPassword.addEventListener('click', function() {
+                    const input = document.getElementById('loginPassword');
+                    const icon = this.querySelector('i');
+                    
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                });
+            }
+
+            // Password visibility toggle for register
+            const toggleRegisterPassword = document.getElementById('toggleRegisterPassword');
+            if (toggleRegisterPassword) {
+                toggleRegisterPassword.addEventListener('click', function() {
+                    const input = document.getElementById('registerPassword');
+                    const icon = this.querySelector('i');
+                    
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                });
+            }
+
+            // Password strength checker
+            const registerPassword = document.getElementById('registerPassword');
+            const strengthIndicator = document.getElementById('passwordStrengthIndicator');
+            const strengthText = document.getElementById('passwordStrengthText');
+            const strengthBars = [
+                document.getElementById('strength-bar-1'),
+                document.getElementById('strength-bar-2'),
+                document.getElementById('strength-bar-3'),
+                document.getElementById('strength-bar-4')
+            ];
+
+            if (registerPassword) {
+                registerPassword.addEventListener('input', function() {
+                    const password = this.value;
+                    
+                    if (password.length === 0) {
+                        strengthIndicator.classList.add('hidden');
+                        return;
+                    }
+                    
+                    strengthIndicator.classList.remove('hidden');
+                    
+                    // Calculate password strength
+                    const strength = calculatePasswordStrength(password);
+                    
+                    // Reset all bars
+                    strengthBars.forEach(bar => {
+                        bar.className = 'h-1 w-1/4 bg-gray-200 rounded transition-colors duration-300';
+                    });
+                    
+                    // Update bars and text based on strength
+                    if (strength.score === 0) {
+                        strengthBars[0].classList.add('bg-red-500');
+                        strengthText.textContent = 'Very weak password';
+                        strengthText.className = 'text-xs text-red-500 mt-1';
+                    } else if (strength.score === 1) {
+                        strengthBars[0].classList.add('bg-red-500');
+                        strengthBars[1].classList.add('bg-red-500');
+                        strengthText.textContent = 'Weak password';
+                        strengthText.className = 'text-xs text-red-500 mt-1';
+                    } else if (strength.score === 2) {
+                        strengthBars[0].classList.add('bg-yellow-500');
+                        strengthBars[1].classList.add('bg-yellow-500');
+                        strengthBars[2].classList.add('bg-yellow-500');
+                        strengthText.textContent = 'Fair password';
+                        strengthText.className = 'text-xs text-yellow-600 mt-1';
+                    } else if (strength.score === 3) {
+                        strengthBars[0].classList.add('bg-green-500');
+                        strengthBars[1].classList.add('bg-green-500');
+                        strengthBars[2].classList.add('bg-green-500');
+                        strengthBars[3].classList.add('bg-green-500');
+                        strengthText.textContent = 'Strong password';
+                        strengthText.className = 'text-xs text-green-600 mt-1';
+                    } else {
+                        strengthBars.forEach(bar => bar.classList.add('bg-green-600'));
+                        strengthText.textContent = 'Very strong password!';
+                        strengthText.className = 'text-xs text-green-600 mt-1 font-medium';
+                    }
+                    
+                    // Show suggestions if weak
+                    if (strength.score < 2 && strength.suggestions.length > 0) {
+                        strengthText.textContent += ' - ' + strength.suggestions[0];
+                    }
+                });
+            }
+
+            // Password strength calculation function
+            function calculatePasswordStrength(password) {
+                let score = 0;
+                const suggestions = [];
+                
+                // Length check
+                if (password.length >= 8) score++;
+                else suggestions.push('Use at least 8 characters');
+                
+                if (password.length >= 12) score++;
+                
+                // Character variety checks
+                if (/[a-z]/.test(password) && /[A-Z]/.test(password)) {
+                    score++;
+                } else {
+                    suggestions.push('Mix uppercase and lowercase');
+                }
+                
+                if (/\d/.test(password)) {
+                    score++;
+                } else {
+                    suggestions.push('Add numbers');
+                }
+                
+                if (/[^a-zA-Z0-9]/.test(password)) {
+                    score++;
+                } else {
+                    suggestions.push('Add special characters (!@#$%^&*)');
+                }
+                
+                // Bonus for very long passwords
+                if (password.length >= 16) score++;
+                
+                // Penalty for common patterns
+                if (/^[a-z]+$/.test(password) || /^[A-Z]+$/.test(password) || /^\d+$/.test(password)) {
+                    score = Math.max(0, score - 1);
+                }
+                
+                // Normalize score to 0-4 range
+                score = Math.min(4, Math.max(0, Math.floor(score / 1.5)));
+                
+                return { score, suggestions };
+            }
+
+            // Message display function (define first)
+            function showMessage(message, type) {
+                console.log('showMessage called with:', message, type);
+                
+                // Remove existing messages
+                const existingMessage = document.querySelector('.auth-message');
+                if (existingMessage) {
+                    existingMessage.remove();
+                }
+                
+                // Create message element
+                const messageDiv = document.createElement('div');
+                let backgroundColor = '#ef4444'; // red
+                let icon = 'fa-exclamation-circle';
+                
+                if (type === 'success') {
+                    backgroundColor = '#10b981'; // green
+                    icon = 'fa-check-circle';
+                } else if (type === 'info') {
+                    backgroundColor = '#3b82f6'; // blue
+                    icon = 'fa-info-circle';
+                }
+                
+                messageDiv.className = 'auth-message';
+                messageDiv.style.cssText = `
+                    position: fixed;
+                    top: 1rem;
+                    right: 1rem;
+                    padding: 0.75rem 1.5rem;
+                    background-color: ${backgroundColor};
+                    color: white;
+                    border-radius: 0.5rem;
+                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+                    z-index: 9999;
+                    display: flex;
+                    align-items: center;
+                    animation: slideIn 0.3s ease-out;
+                `;
+                
+                messageDiv.innerHTML = `
+                    <i class="fas ${icon}" style="margin-right: 0.5rem;"></i>
+                    <span>${message}</span>
+                `;
+                
+                document.body.appendChild(messageDiv);
+                console.log('Message added to DOM');
+                
+                // Auto remove after 5 seconds
+                setTimeout(() => {
+                    messageDiv.style.animation = 'fadeOut 0.3s ease-out';
+                    setTimeout(() => {
+                        if (messageDiv.parentNode) {
+                            messageDiv.remove();
+                            console.log('Message removed from DOM');
+                        }
+                    }, 300);
+                }, 5000);
+            }
+
+            // OAuth Login Functions
+            function handleGoogleLogin() {
+                console.log('Google login clicked');
+                showMessage('Google Sign-In is being set up. Please use email/password for now.', 'info');
+                // TODO: Implement Google OAuth
+                // window.location.href = '/api/auth/google';
+            }
+
+            function handleMicrosoftLogin() {
+                console.log('Microsoft login clicked');
+                showMessage('Microsoft Sign-In is being set up. Please use email/password for now.', 'info');
+                // TODO: Implement Microsoft OAuth
+                // window.location.href = '/api/auth/microsoft';
+            }
+
+            // Attach OAuth button handlers
+            const googleLoginBtn = document.getElementById('googleLoginBtn');
+            const microsoftLoginBtn = document.getElementById('microsoftLoginBtn');
+            const googleRegisterBtn = document.getElementById('googleRegisterBtn');
+            const microsoftRegisterBtn = document.getElementById('microsoftRegisterBtn');
+            
+            if (googleLoginBtn) {
+                googleLoginBtn.addEventListener('click', handleGoogleLogin);
+                console.log('✓ Google login button attached');
+            }
+            
+            if (microsoftLoginBtn) {
+                microsoftLoginBtn.addEventListener('click', handleMicrosoftLogin);
+                console.log('✓ Microsoft login button attached');
+            }
+            
+            if (googleRegisterBtn) {
+                googleRegisterBtn.addEventListener('click', handleGoogleLogin);
+                console.log('✓ Google register button attached');
+            }
+            
+            if (microsoftRegisterBtn) {
+                microsoftRegisterBtn.addEventListener('click', handleMicrosoftLogin);
+                console.log('✓ Microsoft register button attached');
+            }
+        });
+    </script>
+    
+    <style>
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+        
+        @keyframes slide-in {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fade-out {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+        
+        .animate-slide-in {
+            animation: slide-in 0.3s ease-out;
+        }
+        
+        .animate-fade-out {
+            animation: fade-out 0.3s ease-out;
+        }
+    </style>
+
+</body>
+</html>

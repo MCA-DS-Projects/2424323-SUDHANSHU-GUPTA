@@ -1,0 +1,329 @@
+<!-- User Header Component -->
+<header class="bg-white shadow-soft border-b border-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <!-- Logo -->
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <svg class="h-10 w-10 text-primary" viewBox="0 0 40 40" fill="currentColor">
+                        <circle cx="20" cy="20" r="18" fill="currentColor" opacity="0.1"/>
+                        <path d="M12 16c0-4.4 3.6-8 8-8s8 3.6 8 8v8c0 4.4-3.6 8-8 8s-8-3.6-8-8v-8zm8-6c-3.3 0-6 2.7-6 6v8c0 3.3 2.7 6 6 6s6-2.7 6-6v-8c0-3.3-2.7-6-6-6z"/>
+                        <circle cx="20" cy="16" r="2" fill="currentColor"/>
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <h1 class="text-xl font-heading font-bold text-text-primary">ProSpeak AI</h1>
+                    <p class="text-xs text-text-secondary">Professional English Coaching</p>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="hidden md:flex space-x-8">
+                <a href="{{ url_for('pages.render_page', filename='user/user_dashboard.html') }}" class="nav-link">Dashboard</a>
+                <a href="{{ url_for('pages.render_page', filename='user/interview_simulator.html') }}" class="nav-link">Interview Practice</a>
+                <a href="{{ url_for('pages.render_page', filename='user/fluency_coach.html') }}" class="nav-link">Fluency Coach</a>
+                <a href="{{ url_for('pages.render_page', filename='user/audio_practice_mode.html') }}" class="nav-link">Audio Practice</a>
+            </nav>
+
+            <!-- User Menu -->
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <button class="p-2 text-text-secondary hover:text-primary transition-fast">
+                        <i class="fas fa-bell text-lg"></i>
+                        <span class="absolute -top-1 -right-1 bg-accent text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+                    </button>
+                </div>
+                <div class="relative">
+                    <button id="userMenuButton" class="flex items-center space-x-2 text-text-secondary hover:text-primary transition-fast">
+                        <img id="userAvatar" src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150" alt="User avatar" class="w-8 h-8 rounded-full object-cover" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;" />
+                        <span id="userName" class="text-sm font-medium text-text-primary hidden sm:block">Loading...</span>
+                        <i class="fas fa-chevron-down text-sm"></i>
+                    </button>
+                    
+                    <!-- Dropdown Menu -->
+                    <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-border">
+                        <a href="{{ url_for('pages.render_page', filename='user/user_profile_settings.html') }}" class="block px-4 py-2 text-sm text-text-primary hover:bg-gray-100 transition-fast">
+                            <i class="fas fa-user mr-2"></i>
+                            Profile Settings
+                        </a>
+                        <div class="border-t border-border"></div>
+                        <button id="logoutBtn" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 transition-fast">
+                            <i class="fas fa-sign-out-alt mr-2"></i>
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<style>
+.nav-link {
+    color: var(--text-secondary);
+    transition: color 0.2s ease;
+}
+.nav-link:hover {
+    color: var(--primary);
+}
+.nav-link.active {
+    color: var(--primary);
+    font-weight: 500;
+}
+
+/* Smooth transition styles */
+main {
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Loading indicator styles */
+#spa-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+}
+</style>
+
+<!-- Notification System -->
+<script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
+
+<!-- SPA Navigation Script -->
+<script src="{{ url_for('static', filename='js/spa-navigation.js') }}"></script>
+
+<!-- User Header JavaScript -->
+<script>
+    // Global dropdown state management
+    window.dropdownInitialized = false;
+    window.dropdownEventListeners = [];
+    
+    // User dropdown functionality - Enhanced for all pages
+    function initializeDropdowns() {
+        console.log('Initializing dropdowns...');
+        
+        // Remove existing event listeners to prevent duplicates
+        cleanupDropdownListeners();
+        
+        // User dropdown
+        const userMenuButton = document.getElementById('userMenuButton');
+        const userDropdown = document.getElementById('userDropdown');
+        
+        if (userMenuButton && userDropdown) {
+            const userClickHandler = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('User dropdown clicked');
+                userDropdown.classList.toggle('hidden');
+                
+                // Close other dropdowns
+                document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                    if (menu !== userDropdown) {
+                        menu.classList.add('hidden');
+                    }
+                });
+            };
+            
+            userMenuButton.addEventListener('click', userClickHandler);
+            window.dropdownEventListeners.push({
+                element: userMenuButton,
+                event: 'click',
+                handler: userClickHandler
+            });
+        }
+        
+        // Exercise type dropdown (for audio practice page)
+        const exerciseDropdown = document.getElementById('exerciseType');
+        if (exerciseDropdown) {
+            const exerciseChangeHandler = function(e) {
+                console.log('Exercise type changed to:', e.target.value);
+                if (window.loadPracticeText) {
+                    window.loadPracticeText(e.target.value);
+                }
+                if (window.clearResults) {
+                    window.clearResults();
+                }
+            };
+            
+            exerciseDropdown.addEventListener('change', exerciseChangeHandler);
+            window.dropdownEventListeners.push({
+                element: exerciseDropdown,
+                event: 'change',
+                handler: exerciseChangeHandler
+            });
+        }
+        
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        if (mobileMenuBtn && mobileMenu) {
+            const mobileClickHandler = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                mobileMenu.classList.toggle('hidden');
+            };
+            
+            mobileMenuBtn.addEventListener('click', mobileClickHandler);
+            window.dropdownEventListeners.push({
+                element: mobileMenuBtn,
+                event: 'click',
+                handler: mobileClickHandler
+            });
+        }
+        
+        // Global click handler for closing dropdowns
+        const globalClickHandler = function(e) {
+            // Close user dropdown
+            if (userMenuButton && userDropdown && !userMenuButton.contains(e.target)) {
+                userDropdown.classList.add('hidden');
+            }
+            
+            // Close mobile menu
+            if (mobileMenuBtn && mobileMenu && !mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+                mobileMenu.classList.add('hidden');
+            }
+            
+            // Close any other dropdowns
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                if (!menu.closest('.dropdown') || !menu.closest('.dropdown').contains(e.target)) {
+                    menu.classList.add('hidden');
+                }
+            });
+        };
+        
+        document.addEventListener('click', globalClickHandler);
+        window.dropdownEventListeners.push({
+            element: document,
+            event: 'click',
+            handler: globalClickHandler
+        });
+        
+        // Global keydown handler for escape key
+        const globalKeyHandler = function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.dropdown-menu, #userDropdown').forEach(menu => {
+                    menu.classList.add('hidden');
+                });
+                if (mobileMenu) {
+                    mobileMenu.classList.add('hidden');
+                }
+            }
+        };
+        
+        document.addEventListener('keydown', globalKeyHandler);
+        window.dropdownEventListeners.push({
+            element: document,
+            event: 'keydown',
+            handler: globalKeyHandler
+        });
+        
+        // Setup logout button
+        setupLogoutButton();
+        
+        window.dropdownInitialized = true;
+        console.log('Dropdowns initialized successfully');
+    }
+    
+    // Clean up existing event listeners
+    function cleanupDropdownListeners() {
+        if (window.dropdownEventListeners) {
+            window.dropdownEventListeners.forEach(listener => {
+                listener.element.removeEventListener(listener.event, listener.handler);
+            });
+            window.dropdownEventListeners = [];
+        }
+    }
+    
+    // Setup logout button functionality
+    function setupLogoutButton() {
+        const logoutBtn = document.getElementById('logoutBtn');
+        
+        if (logoutBtn) {
+            const logoutHandler = function(e) {
+                e.preventDefault();
+                if (confirm('Are you sure you want to logout?')) {
+                    if (window.api) {
+                        window.api.clearToken();
+                    }
+                    window.location.href = '/auth/login';
+                }
+            };
+            
+            logoutBtn.addEventListener('click', logoutHandler);
+            window.dropdownEventListeners.push({
+                element: logoutBtn,
+                event: 'click',
+                handler: logoutHandler
+            });
+            
+            console.log('Logout button setup complete');
+        }
+    }
+    
+    // Reinitialize dropdowns function for external use
+    window.reinitializeDropdowns = function() {
+        console.log('Reinitializing dropdowns...');
+        setTimeout(() => {
+            initializeDropdowns();
+        }, 100);
+    };
+    
+    // Initialize dropdowns immediately if DOM is ready
+    function initDropdownsWhenReady() {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                // Add small delay to ensure all scripts are loaded
+                setTimeout(initializeDropdowns, 100);
+            });
+        } else {
+            // Add small delay to ensure all scripts are loaded
+            setTimeout(initializeDropdowns, 100);
+        }
+    }
+    
+    // Initialize on script load
+    initDropdownsWhenReady();
+    
+    // Re-initialize on window load and focus (for page reloads)
+    window.addEventListener('load', function() {
+        setTimeout(initializeDropdowns, 200);
+    });
+    
+    window.addEventListener('focus', function() {
+        if (!window.dropdownInitialized) {
+            setTimeout(initializeDropdowns, 100);
+        }
+    });
+    
+    // Debug function for dropdown issues
+    window.debugDropdown = function() {
+        const userMenuButton = document.getElementById('userMenuButton');
+        const userDropdown = document.getElementById('userDropdown');
+        const logoutBtn = document.getElementById('logoutBtn');
+        
+        console.log('Dropdown Debug Info:', {
+            userMenuButton: !!userMenuButton,
+            userDropdown: !!userDropdown,
+            logoutBtn: !!logoutBtn,
+            dropdownInitialized: window.dropdownInitialized,
+            dropdownHidden: userDropdown ? userDropdown.classList.contains('hidden') : 'N/A',
+            eventListeners: window.dropdownEventListeners ? window.dropdownEventListeners.length : 0
+        });
+        
+        if (userMenuButton) {
+            console.log('Manually toggling dropdown...');
+            if (userDropdown) {
+                userDropdown.classList.toggle('hidden');
+            }
+        }
+    };
+    
+    // Periodic check to ensure dropdowns are working (fallback)
+    setInterval(function() {
+        const userMenuButton = document.getElementById('userMenuButton');
+        if (userMenuButton && !window.dropdownInitialized) {
+            console.log('Dropdown not initialized, reinitializing...');
+            initializeDropdowns();
+        }
+    }, 3000);
+</script>

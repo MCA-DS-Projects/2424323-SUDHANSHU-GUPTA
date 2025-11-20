@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ProSpeak AI - AI-Powered Communication Training</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}" />
+    <link rel="alternate icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='favicon.svg') }}" />
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+        
+        .loading-container {
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+        
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        .loading-text {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+  </head>
+<body>
+    {% block content %}
+    
+    <div class="loading-container">
+        <div class="logo">ProSpeak AI</div>
+        <div class="tagline">AI-Powered Communication Training</div>
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Initializing your communication journey...</div>
+    </div>
+
+    <script>
+        // Check if user is already logged in
+        setTimeout(function() {
+                // Check for existing access token (consistent with api.js)
+                const token = localStorage.getItem('access_token');
+                if (token) {
+                    // Let api.js manage auth and current user; avoid redundant fetch here.
+                    // If the api client is available, verify token via api.getCurrentUser()
+                    if (window.api && typeof window.api.getCurrentUser === 'function') {
+                        window.api.setToken(token);
+                        window.api.getCurrentUser()
+                            .then(() => {
+                                // Token valid, navigate using Flask-rendered route
+                                window.location.href = '{{ url_for("pages.render_page", filename="user/user_dashboard.html") }}';
+                            })
+                            .catch(() => {
+                                // Invalid token - clear and go to login
+                                localStorage.removeItem('access_token');
+                                window.location.href = '{{ url_for("pages.render_page", filename="auth/login_register.html") }}';
+                            });
+                    } else {
+                        // Fallback behaviour: go to dashboard and let client-side scripts handle verification
+                        window.location.href = '{{ url_for("pages.render_page", filename="user/user_dashboard.html") }}';
+                    }
+                } else {
+                    // No token, go to login using Flask route
+                    window.location.href = '{{ url_for("pages.render_page", filename="auth/login_register.html") }}';
+                }
+        }, 2000);
+        
+        // Optional: Add some dynamic loading text
+        const loadingTexts = [
+            'Initializing your communication journey...',
+            'Preparing AI-powered training modules...',
+            'Setting up your personalized experience...',
+            'Almost ready to transform your speaking skills...'
+        ];
+        
+        let textIndex = 0;
+        const loadingTextElement = document.querySelector('.loading-text');
+        
+        const textInterval = setInterval(function() {
+            textIndex = (textIndex + 1) % loadingTexts.length;
+            loadingTextElement.textContent = loadingTexts[textIndex];
+        }, 500);
+        
+        // Clear interval before redirect
+        setTimeout(function() {
+            clearInterval(textInterval);
+        }, 1900);
+    </script>
+
+
+    {% endblock %}
+</body>
+</html>

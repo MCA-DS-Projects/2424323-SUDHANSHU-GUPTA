@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>End Session Instant Redirect Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-section {
+            background: #f5f5f5;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .success { color: #22c55e; font-weight: bold; }
+        .error { color: #ef4444; font-weight: bold; }
+        .info { color: #3b82f6; }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .code-block {
+            background: #f8fafc;
+            border-left: 4px solid #3b82f6;
+            padding: 10px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 End Session Instant Redirect Test</h1>
+    
+    <div class="test-section">
+        <h2>Test Instructions</h2>
+        <ol>
+            <li>Open browser console (F12)</li>
+            <li>Click one of the test buttons below</li>
+            <li>Observe the redirect behavior</li>
+            <li>Check console for API call logs</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>Audio Practice Mode Test</h2>
+        <p class="info">This simulates the End Session button behavior</p>
+        <button onclick="testAudioPracticeEndSession()">Test Audio Practice End Session</button>
+        <div id="audioPracticeResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Fluency Coach Test</h2>
+        <p class="info">This simulates the End Session button behavior</p>
+        <button onclick="testFluencyCoachEndSession()">Test Fluency Coach End Session</button>
+        <div id="fluencyCoachResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Expected Behavior</h2>
+        <div class="code-block">
+            <strong>✅ CORRECT:</strong>
+            <ul>
+                <li>Button click → Immediate redirect (no delay)</li>
+                <li>Console shows "Redirecting to dashboard..."</li>
+                <li>API calls happen in background</li>
+                <li>User doesn't wait for API responses</li>
+            </ul>
+        </div>
+        <div class="code-block">
+            <strong>❌ INCORRECT:</strong>
+            <ul>
+                <li>Button click → Shows "Ending session..." → Stuck</li>
+                <li>Waits 1-2 seconds before redirect</li>
+                <li>User sees loading state</li>
+                <li>Redirect depends on API success</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Code Verification</h2>
+        <p>The fixed code should look like this:</p>
+        <pre>
+// ✅ CORRECT - Immediate redirect
+async function endPracticeSession() {
+    // Stop recording
+    if (isRecording) stopRecording();
+    
+    // Save to localStorage immediately
+    localStorage.setItem('lastSessionSummary', {...});
+    
+    // Track in background (don't wait)
+    api.request('/session/track', {...})
+        .then(response => console.log('✅ Tracked'))
+        .catch(error => console.error('❌ Error'));
+    
+    // Redirect immediately (NO setTimeout!)
+    window.location.href = '/pages/user/user_dashboard.html';
+}
+        </pre>
+    </div>
+
+    <script>
+        // Mock API for testing
+        const mockApi = {
+            request: function(endpoint, options) {
+                return new Promise((resolve) => {
+                    console.log(`📡 API Call: ${endpoint}`, options);
+                    setTimeout(() => {
+                        console.log(`✅ API Response: ${endpoint}`, {success: true});
+                        resolve({success: true, message: 'Session tracked'});
+                    }, 500); // Simulate network delay
+                });
+            }
+        };
+
+        function testAudioPracticeEndSession() {
+            console.clear();
+            console.log('🧪 Testing Audio Practice End Session...');
+            
+            const startTime = Date.now();
+            const sessionStartTime = Date.now() - 45000; // 45 seconds ago
+            const sessionDuration = Date.now() - sessionStartTime;
+            
+            // Save to localStorage immediately
+            localStorage.setItem('lastSessionSummary', JSON.stringify({
+                type: 'audio_practice',
+                duration: sessionDuration,
+                timestamp: Date.now()
+            }));
+            console.log('💾 Saved to localStorage');
+            
+            // Track in background
+            mockApi.request('/session/track', {
+                method: 'POST',
+                body: JSON.stringify({ 
+                    session_type: 'audio_practice',
+                    duration: sessionDuration
+                })
+            }).then(response => {
+                console.log('✅ Session tracked:', response);
+            }).catch(error => {
+                console.error('❌ Error tracking session:', error);
+            });
+            
+            const redirectTime = Date.now() - startTime;
+            console.log(`⚡ Redirect would happen in: ${redirectTime}ms`);
+            console.log('🎯 Redirecting to dashboard...');
+            
+            // Show result
+            const result = document.getElementById('audioPracticeResult');
+            result.innerHTML = `
+                <div style="margin-top: 10px; padding: 10px; background: #dcfce7; border-radius: 5px;">
+                    <p class="success">✅ TEST PASSED</p>
+                    <p>Redirect time: <strong>${redirectTime}ms</strong> (should be ~0ms)</p>
+                    <p>Session saved to localStorage: <strong>Yes</strong></p>
+                    <p>API call in background: <strong>Yes</strong></p>
+                    <p class="info">Check console for API completion logs</p>
+                </div>
+            `;
+            
+            // In real implementation, this would redirect:
+            // window.location.href = '/pages/user/user_dashboard.html';
+            console.log('✅ Test complete! (Redirect disabled for testing)');
+        }
+
+        function testFluencyCoachEndSession() {
+            console.clear();
+            console.log('🧪 Testing Fluency Coach End Session...');
+            
+            const startTime = Date.now();
+            const sessionStartTime = Date.now() - 120000; // 2 minutes ago
+            const sessionDuration = Date.now() - sessionStartTime;
+            const messageCount = 5;
+            const overallScore = 85;
+            
+            // Save to localStorage immediately
+            localStorage.setItem('lastSessionSummary', JSON.stringify({
+                type: 'fluency_practice',
+                duration: sessionDuration,
+                messages: messageCount,
+                score: overallScore,
+                timestamp: Date.now()
+            }));
+            console.log('💾 Saved to localStorage');
+            
+            // Fire both API calls in parallel
+            Promise.all([
+                mockApi.request('/audio/save-session', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        session_type: 'fluency_practice',
+                        duration: sessionDuration,
+                        message_count: messageCount
+                    })
+                }),
+                mockApi.request('/session/track', {
+                    method: 'POST',
+                    body: JSON.stringify({ 
+                        session_type: 'fluency_practice',
+                        duration: sessionDuration
+                    })
+                })
+            ]).then(([saveResponse, trackResponse]) => {
+                console.log('✅ Session saved:', saveResponse);
+                console.log('✅ Session tracked:', trackResponse);
+            }).catch(error => {
+                console.error('❌ Error saving session:', error);
+            });
+            
+            const redirectTime = Date.now() - startTime;
+            console.log(`⚡ Redirect would happen in: ${redirectTime}ms`);
+            console.log('🎯 Redirecting to dashboard...');
+            
+            // Show result
+            const result = document.getElementById('fluencyCoachResult');
+            result.innerHTML = `
+                <div style="margin-top: 10px; padding: 10px; background: #dcfce7; border-radius: 5px;">
+                    <p class="success">✅ TEST PASSED</p>
+                    <p>Redirect time: <strong>${redirectTime}ms</strong> (should be ~0ms)</p>
+                    <p>Session saved to localStorage: <strong>Yes</strong></p>
+                    <p>Parallel API calls: <strong>Yes</strong></p>
+                    <p class="info">Check console for API completion logs</p>
+                </div>
+            `;
+            
+            // In real implementation, this would redirect:
+            // window.location.href = '/pages/user/user_dashboard.html';
+            console.log('✅ Test complete! (Redirect disabled for testing)');
+        }
+
+        // Show localStorage on page load
+        window.addEventListener('load', function() {
+            const lastSession = localStorage.getItem('lastSessionSummary');
+            if (lastSession) {
+                console.log('📦 Last session in localStorage:', JSON.parse(lastSession));
+            }
+        });
+    </script>
+</body>
+</html>

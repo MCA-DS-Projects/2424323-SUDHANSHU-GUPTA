@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - ProSpeak AI</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}" />
+    <link rel="alternate icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='favicon.svg') }}" />
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.css" rel="stylesheet" />
+  
+  <script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fprospeaka9282back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.9"></script>
+  <script type="module" src="https://static.rocket.new/rocket-shot.js?v=0.0.1"></script>
+  </head>
+<body class="bg-gradient-to-br from-primary-50 via-white to-secondary-50 min-h-screen">
+    <!-- Admin Header -->
+    <header class="bg-white shadow-soft border-b border-border">
+        <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-10 w-10 text-primary" viewBox="0 0 40 40" fill="currentColor">
+                            <circle cx="20" cy="20" r="18" fill="currentColor" opacity="0.1"/>
+                            <path d="M12 16c0-4.4 3.6-8 8-8s8 3.6 8 8v8c0 4.4-3.6 8-8 8s-8-3.6-8-8v-8zm8-6c-3.3 0-6 2.7-6 6v8c0 3.3 2.7 6 6 6s6-2.7 6-6v-8c0-3.3-2.7-6-6-6z"/>
+                            <circle cx="20" cy="16" r="2" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h1 class="text-xl font-heading font-bold text-text-primary">ProSpeak AI</h1>
+                        <p class="text-xs text-accent">Administrator Panel</p>
+                    </div>
+                </div>
+                
+                <!-- Admin Navigation -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="admin_dashboard.html" class="text-primary font-medium transition-fast">Dashboard</a>
+                    <a href="progress_analytics.html" class="text-text-secondary hover:text-primary transition-fast">Analytics</a>
+                    <a href="user_dashboard.html" class="text-text-secondary hover:text-primary transition-fast">User View</a>
+                </nav>
+
+                <!-- Admin Menu -->
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <button class="p-2 text-text-secondary hover:text-primary transition-fast" id="alertsBtn">
+                            <i class="fas fa-bell text-lg"></i>
+                            <span class="absolute -top-1 -right-1 bg-accent text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">12</span>
+                        </button>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <img src="https://images.pexels.com/photos/1043473/pexels-photo-1043473.jpeg?auto=compress&cs=tinysrgb&w=150" alt="Admin avatar" class="w-8 h-8 rounded-full object-cover" loading="lazy" />
+                        <span class="text-sm font-medium text-text-primary hidden sm:block">Admin</span>
+                        <button class="text-text-secondary hover:text-primary transition-fast">
+                            <i class="fas fa-chevron-down text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Dashboard Header -->
+        <div class="mb-8">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <h1 class="text-3xl font-heading font-bold text-text-primary">Platform Overview</h1>
+                    <p class="text-text-secondary mt-1">Comprehensive system monitoring and management</p>
+                </div>
+                <div class="mt-4 sm:mt-0 flex space-x-3">
+                    <button class="btn-secondary" id="exportReportBtn">
+                        <i class="fas fa-download mr-2"></i>
+                        Export Report
+                    </button>
+                    <button class="btn-primary" id="refreshDataBtn">
+                        <i class="fas fa-sync-alt mr-2"></i>
+                        Refresh Data
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Performance Indicators -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Total Active Users -->
+            <div class="card-elevated">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-text-secondary font-medium">Total Active Users</p>
+                        <p class="text-3xl font-bold text-text-primary mt-1">2,847</p>
+                        <div class="flex items-center mt-2">
+                            <i class="fas fa-arrow-up text-secondary text-sm mr-1"></i>
+                            <span class="text-sm text-secondary font-medium">+12.3%</span>
+                            <span class="text-xs text-text-secondary ml-1">vs last month</span>
+                        </div>
+                    </div>
+                    <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-users text-2xl text-primary"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Session Completion Rate -->
+            <div class="card-elevated">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-text-secondary font-medium">Completion Rate</p>
+                        <p class="text-3xl font-bold text-text-primary mt-1">87.3%</p>
+                        <div class="flex items-center mt-2">
+                            <i class="fas fa-arrow-up text-secondary text-sm mr-1"></i>
+                            <span class="text-sm text-secondary font-medium">+5.2%</span>
+                            <span class="text-xs text-text-secondary ml-1">vs last month</span>
+                        </div>
+                    </div>
+                    <div class="w-16 h-16 bg-secondary-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-check-circle text-2xl text-secondary"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Average Score -->
+            <div class="card-elevated">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-text-secondary font-medium">Average Score</p>
+                        <p class="text-3xl font-bold text-text-primary mt-1">82.1%</p>
+                        <div class="flex items-center mt-2">
+                            <i class="fas fa-arrow-up text-secondary text-sm mr-1"></i>
+                            <span class="text-sm text-secondary font-medium">+3.8%</span>
+                            <span class="text-xs text-text-secondary ml-1">vs last month</span>
+                        </div>
+                    </div>
+                    <div class="w-16 h-16 bg-warning-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-star text-2xl text-warning"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Uptime -->
+            <div class="card-elevated">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-text-secondary font-medium">System Uptime</p>
+                        <p class="text-3xl font-bold text-text-primary mt-1">99.8%</p>
+                        <div class="flex items-center mt-2">
+                            <i class="fas fa-minus text-gray-400 text-sm mr-1"></i>
+                            <span class="text-sm text-text-secondary font-medium">No change</span>
+                            <span class="text-xs text-text-secondary ml-1">30 days</span>
+                        </div>
+                    </div>
+                    <div class="w-16 h-16 bg-accent-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-server text-2xl text-accent"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics and Management Panels -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <!-- Real-time Analytics -->
+            <div class="lg:col-span-2">
+                <div class="card">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-heading font-semibold text-text-primary">Platform Analytics</h2>
+                        <div class="flex space-x-2">
+                            <button class="text-sm px-3 py-1 bg-primary-100 text-primary rounded-full" id="weeklyBtn">7D</button>
+                            <button class="text-sm px-3 py-1 text-text-secondary hover:bg-gray-100 rounded-full" id="monthlyBtn">30D</button>
+                            <button class="text-sm px-3 py-1 text-text-secondary hover:bg-gray-100 rounded-full" id="yearlyBtn">1Y</button>
+                        </div>
+                    </div>
+                    <div class="h-80">
+                        <canvas id="analyticsChart" class="w-full h-full"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions & System Status -->
+            <div class="space-y-6">
+                <!-- System Monitoring -->
+                <div class="card">
+                    <h3 class="text-lg font-heading font-semibold text-text-primary mb-4">System Status</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 bg-secondary rounded-full"></div>
+                                <span class="text-sm font-medium text-text-primary">API Response</span>
+                            </div>
+                            <span class="text-sm text-text-secondary">125ms</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 bg-secondary rounded-full"></div>
+                                <span class="text-sm font-medium text-text-primary">Database</span>
+                            </div>
+                            <span class="text-sm text-text-secondary">Healthy</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 bg-warning rounded-full"></div>
+                                <span class="text-sm font-medium text-text-primary">Storage Usage</span>
+                            </div>
+                            <span class="text-sm text-text-secondary">78%</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 bg-secondary rounded-full"></div>
+                                <span class="text-sm font-medium text-text-primary">AI Services</span>
+                            </div>
+                            <span class="text-sm text-text-secondary">Active</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card">
+                    <h3 class="text-lg font-heading font-semibold text-text-primary mb-4">Quick Actions</h3>
+                    <div class="space-y-2">
+                        <button class="w-full text-left p-3 rounded-lg hover:bg-gray-50 transition-fast flex items-center space-x-3" id="userManagementBtn">
+                            <i class="fas fa-user-cog text-primary"></i>
+                            <span class="text-sm text-text-primary">User Management</span>
+                        </button>
+                        <button class="w-full text-left p-3 rounded-lg hover:bg-gray-50 transition-fast flex items-center space-x-3" id="contentManagementBtn">
+                            <i class="fas fa-edit text-secondary"></i>
+                            <span class="text-sm text-text-primary">Content Management</span>
+                        </button>
+                        <button class="w-full text-left p-3 rounded-lg hover:bg-gray-50 transition-fast flex items-center space-x-3" id="systemConfigBtn">
+                            <i class="fas fa-cogs text-warning"></i>
+                            <span class="text-sm text-text-primary">System Configuration</span>
+                        </button>
+                        <button class="w-full text-left p-3 rounded-lg hover:bg-gray-50 transition-fast flex items-center space-x-3" id="backupBtn">
+                            <i class="fas fa-database text-accent"></i>
+                            <span class="text-sm text-text-primary">Data Backup</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Management Panel -->
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
+            <!-- Active Users -->
+            <div class="card">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-heading font-semibold text-text-primary">User Management</h2>
+                    <div class="flex space-x-2">
+                        <input type="text" placeholder="Search users..." class="text-sm px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" id="userSearchInput" />
+                        <button class="btn-primary text-sm px-3 py-2" id="addUserBtn">
+                            <i class="fas fa-plus mr-1"></i>
+                            Add User
+                        </button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-border">
+                                <th class="text-left py-3 text-sm font-medium text-text-secondary">User</th>
+                                <th class="text-left py-3 text-sm font-medium text-text-secondary">Status</th>
+                                <th class="text-left py-3 text-sm font-medium text-text-secondary">Score</th>
+                                <th class="text-left py-3 text-sm font-medium text-text-secondary">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-border hover:bg-gray-50">
+                                <td class="py-3">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=100" alt="User" class="w-8 h-8 rounded-full object-cover" />
+                                        <div>
+                                            <p class="text-sm font-medium text-text-primary">John Doe</p>
+                                            <p class="text-xs text-text-secondary">john@email.com</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-3">
+                                    <span class="text-xs bg-secondary-100 text-secondary px-2 py-1 rounded-full">Premium</span>
+                                </td>
+                                <td class="py-3">
+                                    <span class="text-sm font-medium text-text-primary">85%</span>
+                                </td>
+                                <td class="py-3">
+                                    <div class="flex space-x-2">
+                                        <button class="p-1 text-text-secondary hover:text-primary transition-fast">
+                                            <i class="fas fa-eye text-sm"></i>
+                                        </button>
+                                        <button class="p-1 text-text-secondary hover:text-warning transition-fast">
+                                            <i class="fas fa-edit text-sm"></i>
+                                        </button>
+                                        <button class="p-1 text-text-secondary hover:text-red-500 transition-fast">
+                                            <i class="fas fa-trash text-sm"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="border-b border-border hover:bg-gray-50">
+                                <td class="py-3">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=100" alt="User" class="w-8 h-8 rounded-full object-cover" />
+                                        <div>
+                                            <p class="text-sm font-medium text-text-primary">Sarah Wilson</p>
+                                            <p class="text-xs text-text-secondary">sarah@email.com</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-3">
+                                    <span class="text-xs bg-warning-100 text-warning px-2 py-1 rounded-full">Basic</span>
+                                </td>
+                                <td class="py-3">
+                                    <span class="text-sm font-medium text-text-primary">92%</span>
+                                </td>
+                                <td class="py-3">
+                                    <div class="flex space-x-2">
+                                        <button class="p-1 text-text-secondary hover:text-primary transition-fast">
+                                            <i class="fas fa-eye text-sm"></i>
+                                        </button>
+                                        <button class="p-1 text-text-secondary hover:text-warning transition-fast">
+                                            <i class="fas fa-edit text-sm"></i>
+                                        </button>
+                                        <button class="p-1 text-text-secondary hover:text-red-500 transition-fast">
+                                            <i class="fas fa-trash text-sm"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="border-b border-border hover:bg-gray-50">
+                                <td class="py-3">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="https://images.pexels.com/photos/1462637/pexels-photo-1462637.jpeg?auto=compress&cs=tinysrgb&w=100" alt="User" class="w-8 h-8 rounded-full object-cover" />
+                                        <div>
+                                            <p class="text-sm font-medium text-text-primary">Mike Chen</p>
+                                            <p class="text-xs text-text-secondary">mike@email.com</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-3">
+                                    <span class="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded-full">Free</span>
+                                </td>
+                                <td class="py-3">
+                                    <span class="text-sm font-medium text-text-primary">78%</span>
+                                </td>
+                                <td class="py-3">
+                                    <div class="flex space-x-2">
+                                        <button class="p-1 text-text-secondary hover:text-primary transition-fast">
+                                            <i class="fas fa-eye text-sm"></i>
+                                        </button>
+                                        <button class="p-1 text-text-secondary hover:text-warning transition-fast">
+                                            <i class="fas fa-edit text-sm"></i>
+                                        </button>
+                                        <button class="p-1 text-text-secondary hover:text-red-500 transition-fast">
+                                            <i class="fas fa-trash text-sm"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-4 flex items-center justify-between">
+                    <p class="text-sm text-text-secondary">Showing 3 of 2,847 users</p>
+                    <div class="flex space-x-2">
+                        <button class="px-3 py-1 text-sm border border-border rounded hover:bg-gray-50 transition-fast">Previous</button>
+                        <button class="px-3 py-1 text-sm bg-primary text-white rounded">1</button>
+                        <button class="px-3 py-1 text-sm border border-border rounded hover:bg-gray-50 transition-fast">2</button>
+                        <button class="px-3 py-1 text-sm border border-border rounded hover:bg-gray-50 transition-fast">Next</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Management -->
+            <div class="card">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-heading font-semibold text-text-primary">Content Overview</h2>
+                    <button class="btn-secondary text-sm" id="manageContentBtn">
+                        <i class="fas fa-cog mr-2"></i>
+                        Manage Content
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Interview Scenarios -->
+                    <div class="flex items-center justify-between p-4 bg-primary-50 border border-primary-200 rounded-lg">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-briefcase text-primary"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-text-primary">Interview Scenarios</p>
+                                <p class="text-xs text-text-secondary">247 active scenarios</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs bg-secondary-100 text-secondary px-2 py-1 rounded-full">Updated 2h ago</span>
+                            <button class="p-1 text-text-secondary hover:text-primary transition-fast">
+                                <i class="fas fa-edit text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Fluency Topics -->
+                    <div class="flex items-center justify-between p-4 bg-secondary-50 border border-secondary-200 rounded-lg">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-secondary-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-comments text-secondary"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-text-primary">Fluency Topics</p>
+                                <p class="text-xs text-text-secondary">189 conversation topics</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs bg-warning-100 text-warning px-2 py-1 rounded-full">Needs review</span>
+                            <button class="p-1 text-text-secondary hover:text-primary transition-fast">
+                                <i class="fas fa-edit text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Pronunciation Exercises -->
+                    <div class="flex items-center justify-between p-4 bg-warning-50 border border-warning-200 rounded-lg">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-warning-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-microphone text-warning"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-text-primary">Audio Exercises</p>
+                                <p class="text-xs text-text-secondary">156 pronunciation drills</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs bg-secondary-100 text-secondary px-2 py-1 rounded-full">Up to date</span>
+                            <button class="p-1 text-text-secondary hover:text-primary transition-fast">
+                                <i class="fas fa-edit text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- AI Feedback Parameters -->
+                    <div class="flex items-center justify-between p-4 bg-accent-50 border border-accent-200 rounded-lg">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-accent-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-robot text-accent"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-text-primary">AI Parameters</p>
+                                <p class="text-xs text-text-secondary">Feedback algorithms</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs bg-secondary-100 text-secondary px-2 py-1 rounded-full">Optimized</span>
+                            <button class="p-1 text-text-secondary hover:text-primary transition-fast">
+                                <i class="fas fa-edit text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity & Error Logs -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Recent Administrative Actions -->
+            <div class="card">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-heading font-semibold text-text-primary">Recent Activity</h2>
+                    <button class="text-sm text-primary hover:text-primary-700 transition-fast">View All</button>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
+                        <div class="w-2 h-2 bg-secondary rounded-full"></div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-text-primary">User account created</p>
+                            <p class="text-xs text-text-secondary">sarah.wilson@email.com joined premium plan</p>
+                            <p class="text-xs text-text-secondary mt-1">2 hours ago</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
+                        <div class="w-2 h-2 bg-warning rounded-full"></div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-text-primary">Content updated</p>
+                            <p class="text-xs text-text-secondary">Interview scenario #247 modified</p>
+                            <p class="text-xs text-text-secondary mt-1">4 hours ago</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
+                        <div class="w-2 h-2 bg-primary rounded-full"></div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-text-primary">System maintenance</p>
+                            <p class="text-xs text-text-secondary">Database optimization completed</p>
+                            <p class="text-xs text-text-secondary mt-1">6 hours ago</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
+                        <div class="w-2 h-2 bg-accent rounded-full"></div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-text-primary">AI model updated</p>
+                            <p class="text-xs text-text-secondary">Speech recognition accuracy improved</p>
+                            <p class="text-xs text-text-secondary mt-1">8 hours ago</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Alerts & Error Logs -->
+            <div class="card">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-heading font-semibold text-text-primary">System Alerts</h2>
+                    <button class="text-sm text-primary hover:text-primary-700 transition-fast">Clear All</button>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <i class="fas fa-exclamation-triangle text-yellow-500"></i>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-text-primary">Storage Warning</p>
+                            <p class="text-xs text-text-secondary">Storage usage at 78% capacity</p>
+                            <p class="text-xs text-text-secondary mt-1">Recommended action: Archive old sessions</p>
+                        </div>
+                        <button class="text-xs text-yellow-700 hover:text-yellow-800">Resolve</button>
+                    </div>
+
+                    <div class="flex items-center space-x-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <i class="fas fa-info-circle text-blue-500"></i>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-text-primary">Performance Update</p>
+                            <p class="text-xs text-text-secondary">API response time improved by 15ms</p>
+                            <p class="text-xs text-text-secondary mt-1">All systems running optimally</p>
+                        </div>
+                        <button class="text-xs text-blue-700 hover:text-blue-800">Dismiss</button>
+                    </div>
+
+                    <div class="flex items-center space-x-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <i class="fas fa-check-circle text-green-500"></i>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-text-primary">Backup Completed</p>
+                            <p class="text-xs text-text-secondary">Daily backup successful</p>
+                            <p class="text-xs text-text-secondary mt-1">All data secured and validated</p>
+                        </div>
+                        <button class="text-xs text-green-700 hover:text-green-800">Dismiss</button>
+                    </div>
+
+                    <div class="flex items-center space-x-4 p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                        <i class="fas fa-users text-purple-500"></i>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-text-primary">User Milestone</p>
+                            <p class="text-xs text-text-secondary">Platform reached 2,850+ active users</p>
+                            <p class="text-xs text-text-secondary mt-1">Growth target achieved ahead of schedule</p>
+                        </div>
+                        <button class="text-xs text-purple-700 hover:text-purple-800">Dismiss</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-border mt-16">
+        <div class="max-w-full mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <svg class="h-8 w-8 text-primary mr-2" viewBox="0 0 40 40" fill="currentColor">
+                        <circle cx="20" cy="20" r="18" fill="currentColor" opacity="0.1"/>
+                        <path d="M12 16c0-4.4 3.6-8 8-8s8 3.6 8 8v8c0 4.4-3.6 8-8 8s-8-3.6-8-8v-8zm8-6c-3.3 0-6 2.7-6 6v8c0 3.3 2.7 6 6 6s6-2.7 6-6v-8c0-3.3-2.7-6-6-6z"/>
+                        <circle cx="20" cy="16" r="2" fill="currentColor"/>
+                    </svg>
+                    <span class="text-text-primary font-medium">ProSpeak AI - Admin Panel</span>
+                </div>
+                <div class="flex space-x-6 text-sm text-text-secondary">
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">System Documentation</a>
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">API Reference</a>
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Support</a>
+                </div>
+                <div class="text-sm text-text-secondary mt-4 md:mt-0">
+                    © 2025 ProSpeak AI. Administrator Access.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Analytics Chart
+            const ctx = document.getElementById('analyticsChart').getContext('2d');
+            const analyticsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [
+                        {
+                            label: 'Active Users',
+                            data: [2650, 2720, 2800, 2890, 2750, 2680, 2847],
+                            borderColor: 'rgb(99, 102, 241)',
+                            backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'Session Completion',
+                            data: [84, 87, 89, 85, 88, 91, 87],
+                            borderColor: 'rgb(34, 197, 94)',
+                            backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                            tension: 0.4,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            align: 'end'
+                        }
+                    }
+                }
+            });
+
+            // Chart Time Period Buttons
+            document.getElementById('weeklyBtn').addEventListener('click', function() {
+                updateChartPeriod(this, 'weekly');
+            });
+
+            document.getElementById('monthlyBtn').addEventListener('click', function() {
+                updateChartPeriod(this, 'monthly');
+            });
+
+            document.getElementById('yearlyBtn').addEventListener('click', function() {
+                updateChartPeriod(this, 'yearly');
+            });
+
+            function updateChartPeriod(button, period) {
+                // Remove active state from all buttons
+                document.querySelectorAll('#weeklyBtn, #monthlyBtn, #yearlyBtn').forEach(btn => {
+                    btn.className = 'text-sm px-3 py-1 text-text-secondary hover:bg-gray-100 rounded-full';
+                });
+                
+                // Add active state to clicked button
+                button.className = 'text-sm px-3 py-1 bg-primary-100 text-primary rounded-full';
+                
+                // Update chart data based on period
+                // This would typically fetch new data from an API
+                console.log('Updating chart for period:', period);
+            }
+
+            // Quick Action Event Listeners
+            document.getElementById('refreshDataBtn').addEventListener('click', function() {
+                // Simulate data refresh
+                this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Refreshing...';
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-sync-alt mr-2"></i>Refresh Data';
+                    // You could update the dashboard data here
+                }, 2000);
+            });
+
+            document.getElementById('exportReportBtn').addEventListener('click', function() {
+                // Simulate report export
+                alert('Exporting comprehensive system report...');
+                // This would typically trigger a file download
+            });
+
+            document.getElementById('userManagementBtn').addEventListener('click', function() {
+                alert('Opening user management interface...');
+            });
+
+            document.getElementById('contentManagementBtn').addEventListener('click', function() {
+                alert('Opening content management system...');
+            });
+
+            document.getElementById('systemConfigBtn').addEventListener('click', function() {
+                alert('Opening system configuration panel...');
+            });
+
+            document.getElementById('backupBtn').addEventListener('click', function() {
+                alert('Initiating system backup...');
+            });
+
+            // User Search Functionality
+            document.getElementById('userSearchInput').addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                // This would typically filter the user table
+                console.log('Searching for:', searchTerm);
+            });
+
+            document.getElementById('addUserBtn').addEventListener('click', function() {
+                alert('Opening add user dialog...');
+            });
+
+            document.getElementById('manageContentBtn').addEventListener('click', function() {
+                alert('Opening detailed content management interface...');
+            });
+
+            // Real-time updates simulation
+            setInterval(function() {
+                // Simulate real-time data updates
+                // Update KPI values, system status, etc.
+                // This would typically fetch from an API
+            }, 30000); // Update every 30 seconds
+        });
+    </script>
+
+    <!-- Load API Client -->
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+
+</body>
+</html>

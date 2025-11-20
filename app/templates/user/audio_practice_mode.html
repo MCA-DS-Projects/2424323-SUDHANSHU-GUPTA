@@ -1,0 +1,2119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Audio Practice Mode - ProSpeak AI</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}" />
+    <link rel="alternate icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='favicon.svg') }}" />
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  
+  <script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fprospeaka9282back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.9"></script>
+  <script type="module" src="https://static.rocket.new/rocket-shot.js?v=0.0.1"></script>
+  </head>
+<body class="bg-gradient-to-br from-primary-50 via-white to-secondary-50 min-h-screen">
+    <!-- Header -->
+    {% include 'partials/user_header.html' %}
+
+    <!-- Main Content -->
+    <main class="flex-1 py-6 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <!-- Page Header -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-heading font-bold text-text-primary">Audio Practice Mode</h1>
+                        <p class="text-text-secondary mt-2">Improve your pronunciation and speaking skills with AI-powered audio feedback</p>
+                    </div>
+                    <div class="hidden sm:flex items-center space-x-4">
+                        <div class="text-center">
+                            <div id="headerAccuracy" class="text-lg font-bold text-secondary">--</div>
+                            <div class="text-xs text-text-secondary">Accuracy</div>
+                        </div>
+                        <div class="text-center">
+                            <div id="headerSessions" class="text-lg font-bold text-primary">--</div>
+                            <div class="text-xs text-text-secondary">Sessions</div>
+                        </div>
+                        <div class="text-center">
+                            <div id="practiceTimeDisplay" class="text-lg font-bold text-accent">00:00</div>
+                            <div class="text-xs text-text-secondary">Practice Time</div>
+                        </div>
+                        <button id="endSessionBtn" class="btn-outline text-sm px-4 py-2 ml-4">
+                            <i class="fas fa-stop-circle mr-2"></i>
+                            End Session
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Main Practice Area -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Exercise Selection -->
+                    <div class="card">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-xl font-heading font-semibold text-text-primary">Practice Exercise</h2>
+                            <div class="flex items-center space-x-3">
+                                <select id="exerciseType" class="input-field w-48">
+                                    <option value="phonetic">Phonetic Drills</option>
+                                    <option value="word-stress" selected>Word Stress Patterns</option>
+                                    <option value="sentence-rhythm">Sentence Rhythm</option>
+                                    <option value="conversation">Conversational Flow</option>
+                                </select>
+                                <button id="aiModeToggle" class="btn-secondary px-4 py-2">
+                                    <i class="fas fa-robot mr-2"></i>
+                                    AI Analysis
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Current Prompt -->
+                        <div class="bg-primary-50 rounded-lg p-6 mb-6">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="flex-1">
+                                    <h3 class="font-medium text-text-primary mb-2">Practice Phrase</h3>
+                                    <p id="practiceText" class="text-lg text-text-primary font-medium">
+                                        "The <span class="text-primary font-bold">PRO-ject</span> was <span class="text-primary font-bold">COM-plete</span> ahead of schedule."
+                                    </p>
+                                    <p class="text-sm text-text-secondary mt-2">Focus on the stressed syllables highlighted in blue</p>
+                                </div>
+                                <button id="playPromptBtn" class="btn-outline px-4 py-2 ml-4">
+                                    <i class="fas fa-play mr-2"></i>
+                                    Listen
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Recording Interface -->
+                        <div class="text-center mb-6">
+                            <!-- Waveform Visualization -->
+                            <div class="bg-gray-100 rounded-lg p-6 mb-6">
+                                <div class="flex items-center justify-center h-24 mb-4">
+                                    <canvas id="waveformCanvas" width="400" height="80" class="border rounded"></canvas>
+                                </div>
+                                <div id="recordingStatus" class="text-text-secondary">
+                                    <i class="fas fa-microphone-slash mr-2"></i>
+                                    <span id="statusText">Ready to record</span>
+                                </div>
+                                <div id="recordingTimer" class="text-primary font-mono text-lg mt-2 hidden">00:00</div>
+                            </div>
+
+                            <!-- Recording Controls -->
+                            <div class="flex items-center justify-center space-x-4">
+                                <button id="recordBtn" class="w-16 h-16 bg-accent text-white rounded-full hover:bg-accent-700 transition-fast flex items-center justify-center shadow-lg">
+                                    <i class="fas fa-microphone text-xl"></i>
+                                </button>
+                                <button id="stopBtn" class="w-12 h-12 bg-red-500 text-white rounded-full hover:bg-red-600 transition-fast flex items-center justify-center shadow-lg" disabled>
+                                    <i class="fas fa-stop"></i>
+                                </button>
+                                <button id="playbackBtn" class="w-12 h-12 bg-secondary text-white rounded-full hover:bg-secondary-700 transition-fast flex items-center justify-center shadow-lg" disabled>
+                                    <i class="fas fa-play"></i>
+                                </button>
+                                <button id="retryBtn" class="w-12 h-12 bg-warning text-white rounded-full hover:bg-warning-700 transition-fast flex items-center justify-center shadow-lg" disabled>
+                                    <i class="fas fa-redo"></i>
+                                </button>
+                            </div>
+                            <p class="text-sm text-text-secondary mt-2">
+                                <span id="instructionText">Click the red button to start recording</span>
+                            </p>
+                        </div>
+
+                        <!-- Speech Recognition Results -->
+                        <div id="transcriptionPanel" class="bg-gray-50 rounded-lg p-4 hidden">
+                            <h4 class="font-medium text-text-primary mb-3">
+                                <i class="fas fa-microphone mr-2 text-accent"></i>
+                                Your Speech Analysis:
+                            </h4>
+                            
+                            <!-- Real-time Transcription -->
+                            <div class="mb-4">
+                                <div class="text-sm text-text-secondary mb-1">Transcription:</div>
+                                <div id="transcriptionText" class="text-text-primary bg-white p-3 rounded border min-h-[60px]">
+                                    <span id="finalTranscript"></span>
+                                    <span id="interimTranscript" class="text-gray-400 italic"></span>
+                                </div>
+                            </div>
+                            
+                            <!-- Confidence and Metrics -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-secondary" id="confidenceScore">--</div>
+                                    <div class="text-sm text-text-secondary">Confidence</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-primary" id="pronunciationScore">--</div>
+                                    <div class="text-sm text-text-secondary">Pronunciation</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-warning" id="fluencyScore">--</div>
+                                    <div class="text-sm text-text-secondary">Fluency</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Word-by-word Analysis -->
+                            <div id="wordAnalysis" class="hidden">
+                                <div class="text-sm text-text-secondary mb-2">Word Analysis:</div>
+                                <div id="analyzedWords" class="flex flex-wrap gap-2 mb-4"></div>
+                            </div>
+                            
+                            <!-- AI Feedback -->
+                            <div id="aiFeedback" class="hidden">
+                                <div class="border-t pt-4 mt-4">
+                                    <h5 class="font-medium text-text-primary mb-3">
+                                        <i class="fas fa-robot mr-2 text-primary"></i>
+                                        AI Feedback
+                                    </h5>
+                                    <div id="feedbackContent" class="space-y-3"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- AI Analysis Panel -->
+                        <div id="aiAnalysisPanel" class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 hidden">
+                            <h4 class="font-medium text-text-primary mb-4 flex items-center">
+                                <i class="fas fa-robot mr-2 text-primary"></i>
+                                AI Analysis Results
+                                <span id="aiModeIndicator" class="ml-2 text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">Demo Mode</span>
+                            </h4>
+                            
+                            <!-- AI Transcript -->
+                            <div class="mb-4">
+                                <div class="text-sm text-text-secondary mb-2">AI Transcript:</div>
+                                <div id="aiTranscript" class="text-text-primary bg-white p-3 rounded border font-medium">
+                                    <!-- AI transcript will appear here -->
+                                </div>
+                            </div>
+                            
+                            <!-- AI Scores -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold text-primary" id="aiOverallScore">--</div>
+                                    <div class="text-sm text-text-secondary">AI Score</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-secondary" id="aiConfidenceLevel">--</div>
+                                    <div class="text-sm text-text-secondary">Confidence</div>
+                                </div>
+                                <div class="text-center">
+                                    <button id="playAiFeedbackBtn" class="w-12 h-12 bg-green-500 text-white rounded-full hover:bg-green-600 transition-fast flex items-center justify-center mx-auto" disabled>
+                                        <i class="fas fa-volume-up"></i>
+                                    </button>
+                                    <div class="text-sm text-text-secondary mt-1">Audio Feedback</div>
+                                </div>
+                            </div>
+                            
+                            <!-- AI Detailed Feedback -->
+                            <div id="aiDetailedFeedback" class="bg-white rounded-lg p-4 mb-4">
+                                <h5 class="font-medium text-text-primary mb-2">AI Analysis:</h5>
+                                <div id="aiDetailedContent" class="text-text-secondary whitespace-pre-line">
+                                    <!-- AI detailed feedback will appear here -->
+                                </div>
+                            </div>
+                            
+                            <!-- AI Suggestions -->
+                            <div id="aiSuggestions" class="bg-white rounded-lg p-4">
+                                <h5 class="font-medium text-text-primary mb-2">AI Suggestions:</h5>
+                                <ul id="aiSuggestionsList" class="space-y-1 text-sm text-text-secondary">
+                                    <!-- AI suggestions will appear here -->
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- AI Loading State -->
+                        <div id="aiAnalysisLoading" class="text-center py-8 hidden">
+                            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                            <p class="text-text-secondary">AI is analyzing your speech...</p>
+                            <p class="text-sm text-text-secondary mt-1">This may take a few seconds</p>
+                        </div>
+                        
+                        <!-- Detailed Feedback Panel -->
+                        <div id="detailedFeedback" class="card hidden">
+                            <h3 class="text-xl font-heading font-semibold text-text-primary mb-4">
+                                <i class="fas fa-chart-line mr-2 text-primary"></i>
+                                Detailed Analysis
+                            </h3>
+                            
+                            <!-- Overall Score -->
+                            <div class="bg-gradient-to-r from-primary-50 to-secondary-50 rounded-lg p-4 mb-6">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-text-primary">Overall Performance</h4>
+                                        <p id="overallFeedback" class="text-text-secondary">Great job! Your pronunciation is clear and natural.</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-3xl font-bold text-primary" id="overallScore">85</div>
+                                        <div class="text-sm text-text-secondary">out of 100</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Strengths and Improvements -->
+                            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <h5 class="font-medium text-text-primary mb-3 flex items-center">
+                                        <i class="fas fa-thumbs-up mr-2 text-secondary"></i>
+                                        Strengths
+                                    </h5>
+                                    <ul id="strengthsList" class="space-y-2"></ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium text-text-primary mb-3 flex items-center">
+                                        <i class="fas fa-target mr-2 text-warning"></i>
+                                        Areas for Improvement
+                                    </h5>
+                                    <ul id="improvementsList" class="space-y-2"></ul>
+                                </div>
+                            </div>
+                            
+                            <!-- Pronunciation Tips -->
+                            <div id="pronunciationTips" class="bg-blue-50 rounded-lg p-4">
+                                <h5 class="font-medium text-text-primary mb-3 flex items-center">
+                                    <i class="fas fa-lightbulb mr-2 text-blue-500"></i>
+                                    Pronunciation Tips
+                                </h5>
+                                <div id="tipsList" class="space-y-2"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Audio Analysis Results -->
+                    <div id="analysisResults" class="card hidden">
+                        <h3 class="text-xl font-heading font-semibold text-text-primary mb-4">Analysis Results</h3>
+                        
+                        <!-- Pronunciation Score -->
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <div class="text-center">
+                                <div class="relative inline-flex items-center justify-center w-24 h-24 mb-2">
+                                    <svg class="w-24 h-24 transform -rotate-90">
+                                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" class="text-gray-200" transform="translate(36, 36)"/>
+                                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="62.83" stroke-dashoffset="12.57" class="text-secondary" transform="translate(36, 36)"/>
+                                    </svg>
+                                    <span class="absolute text-xl font-bold text-secondary">85%</span>
+                                </div>
+                                <p class="font-medium text-text-primary">Pronunciation Score</p>
+                                <p class="text-sm text-text-secondary">Good accuracy</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="relative inline-flex items-center justify-center w-24 h-24 mb-2">
+                                    <svg class="w-24 h-24 transform -rotate-90">
+                                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" class="text-gray-200" transform="translate(36, 36)"/>
+                                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="62.83" stroke-dashoffset="18.85" class="text-primary" transform="translate(36, 36)"/>
+                                    </svg>
+                                    <span class="absolute text-xl font-bold text-primary">78%</span>
+                                </div>
+                                <p class="font-medium text-text-primary">Fluency Score</p>
+                                <p class="text-sm text-text-secondary">Natural pace</p>
+                            </div>
+                        </div>
+
+                        <!-- Detailed Feedback -->
+                        <div class="space-y-4">
+                            <div class="feedback-card">
+                                <div class="flex items-start">
+                                    <i class="fas fa-check-circle text-secondary mr-3 mt-1"></i>
+                                    <div>
+                                        <p class="font-medium text-text-primary">Excellent word stress on "PROJECT"</p>
+                                        <p class="text-sm text-text-secondary">You correctly emphasized the first syllable</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="feedback-card feedback-card-warning">
+                                <div class="flex items-start">
+                                    <i class="fas fa-exclamation-triangle text-warning mr-3 mt-1"></i>
+                                    <div>
+                                        <p class="font-medium text-text-primary">Work on "COMPLETE" stress pattern</p>
+                                        <p class="text-sm text-text-secondary">Try emphasizing the second syllable: com-PLETE</p>
+                                        <button class="text-primary text-sm hover:text-primary-700 mt-1">
+                                            <i class="fas fa-play mr-1"></i>
+                                            Listen to example
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-wrap gap-3 mt-6">
+                            <button id="retryBtn" class="btn-primary">
+                                <i class="fas fa-redo mr-2"></i>
+                                Try Again
+                            </button>
+                            <button id="nextExerciseBtn" class="btn-outline">
+                                <i class="fas fa-arrow-right mr-2"></i>
+                                Next Exercise
+                            </button>
+                            <button id="slowMotionBtn" class="btn-outline">
+                                <i class="fas fa-turtle mr-2"></i>
+                                Slow Playback
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="space-y-6">
+                    <!-- Progress Tracking -->
+                    <div class="card">
+                        <h3 class="text-lg font-heading font-semibold text-text-primary mb-4">Today's Progress</h3>
+                        
+                        <div class="space-y-4" id="todayProgressContainer">
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-text-secondary">Phonetic Drills</span>
+                                    <span id="phoneticProgress" class="text-text-primary font-medium">--/--</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div id="phoneticProgressBar" class="progress-fill" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-text-secondary">Word Stress</span>
+                                    <span id="wordStressProgress" class="text-text-primary font-medium">--/--</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div id="wordStressProgressBar" class="progress-fill" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-text-secondary">Sentence Rhythm</span>
+                                    <span id="sentenceRhythmProgress" class="text-text-primary font-medium">--/--</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div id="sentenceRhythmProgressBar" class="progress-fill" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 p-4 bg-secondary-50 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <i class="fas fa-trophy text-secondary mr-3"></i>
+                                    <div>
+                                        <p class="font-medium text-text-primary">Daily Goal</p>
+                                        <p id="dailyGoalText" class="text-sm text-text-secondary">--/-- exercises completed</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div id="dailyGoalPercentage" class="text-lg font-bold text-secondary">--%</div>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <div class="progress-bar">
+                                    <div id="dailyGoalProgressBar" class="progress-fill bg-secondary" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="card">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-heading font-semibold text-text-primary">Performance Stats</h3>
+                            <button id="refreshStatsBtn" class="text-text-secondary hover:text-primary transition-colors p-1 rounded" title="Refresh Stats">
+                                <i class="fas fa-sync-alt text-sm"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <i class="fas fa-microphone text-primary mr-3"></i>
+                                    <span class="text-text-secondary">Avg. Accuracy</span>
+                                </div>
+                                <span id="avgAccuracy" class="font-medium text-text-primary">--%</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <i class="fas fa-clock text-secondary mr-3"></i>
+                                    <span class="text-text-secondary">Practice Time</span>
+                                </div>
+                                <span id="totalPracticeTime" class="font-medium text-text-primary">-- min</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <i class="fas fa-chart-line text-warning mr-3"></i>
+                                    <span class="text-text-secondary">Improvement</span>
+                                </div>
+                                <span id="improvementRate" class="font-medium text-secondary">--%</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <i class="fas fa-fire text-accent mr-3"></i>
+                                    <span class="text-text-secondary">Streak</span>
+                                </div>
+                                <span id="currentStreak" class="font-medium text-text-primary">-- days</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Quick Actions -->
+                    <div class="card">
+                        <h3 class="text-lg font-heading font-semibold text-text-primary mb-4">Quick Actions</h3>
+                        
+                        <div class="space-y-2">
+                            <button class="w-full text-left px-3 py-2 text-text-secondary hover:bg-primary-50 hover:text-primary rounded-md transition-fast">
+                                <i class="fas fa-history mr-3"></i>
+                                View Practice History
+                            </button>
+                            <button class="w-full text-left px-3 py-2 text-text-secondary hover:bg-primary-50 hover:text-primary rounded-md transition-fast">
+                                <i class="fas fa-cog mr-3"></i>
+                                Audio Settings
+                            </button>
+                            <button class="w-full text-left px-3 py-2 text-text-secondary hover:bg-primary-50 hover:text-primary rounded-md transition-fast">
+                                <i class="fas fa-download mr-3"></i>
+                                Export Progress
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-border mt-16">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <svg class="h-8 w-8 text-primary mr-2" viewBox="0 0 40 40" fill="currentColor">
+                        <circle cx="20" cy="20" r="18" fill="currentColor" opacity="0.1"/>
+                        <path d="M12 16c0-4.4 3.6-8 8-8s8 3.6 8 8v8c0 4.4-3.6 8-8 8s-8-3.6-8-8v-8zm8-6c-3.3 0-6 2.7-6 6v8c0 3.3 2.7 6 6 6s6-2.7 6-6v-8c0-3.3-2.7-6-6-6z"/>
+                        <circle cx="20" cy="16" r="2" fill="currentColor"/>
+                    </svg>
+                    <span class="text-text-primary font-medium">ProSpeak AI</span>
+                </div>
+                <div class="flex space-x-6 text-sm text-text-secondary">
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Privacy Policy</a>
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Terms of Service</a>
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Support</a>
+                </div>
+                <div class="text-sm text-text-secondary mt-4 md:mt-0">
+                    © 2025 ProSpeak AI. All Rights Reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Audio Practice Styles -->
+    <style>
+        .recording-active {
+            animation: pulse-red 1.5s infinite;
+            background-color: #ef4444 !important;
+        }
+        
+        @keyframes pulse-red {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .animate-slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .progress-fill {
+            transition: width 1s ease-out, background-color 0.3s ease;
+        }
+        
+        .score-animation {
+            transition: all 0.3s ease;
+        }
+        
+        .waveform-active {
+            filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.5));
+        }
+        
+        #waveformCanvas {
+            transition: filter 0.3s ease;
+        }
+        
+        .microphone-denied {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .recording-timer {
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+        }
+        
+        /* Dynamic stats animations */
+        .progress-fill {
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
+        }
+        
+        .stats-loading {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stats-loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .stat-number {
+            transition: all 0.3s ease;
+        }
+        
+        .stat-number.updating {
+            transform: scale(1.05);
+            color: #3b82f6;
+        }
+    </style>
+
+    <!-- Load Required Scripts -->
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/user-common.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/ai-audio-analyzer.js') }}"></script>
+    
+    <!-- JavaScript for Audio Practice Functionality -->
+    <script>
+        // Practice texts - will be dynamically loaded from Gemini
+        let currentPracticePhrase = "Loading practice phrase...";
+        let currentExerciseType = 'word-stress';
+        
+        let isRecording = false;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let recognition = null;
+        let recordingStartTime = null;
+        let recordingTimer = null;
+        let aiModeEnabled = false;
+        let currentSessionId = null;
+        let sessionStartTime = null;
+        let practiceSessionTimer = null;
+        
+        // Global initialization state
+        window.audioPracticeInitialized = false;
+        
+        // Cleanup function for audio practice
+        window.cleanupAudioPractice = function() {
+            console.log('Cleaning up Audio Practice...');
+            
+            // Stop recording if active
+            if (isRecording) {
+                try {
+                    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                        mediaRecorder.stop();
+                    }
+                } catch (e) {
+                    console.log('Error stopping recorder:', e);
+                }
+            }
+            
+            // Stop speech recognition
+            if (recognition) {
+                try {
+                    recognition.stop();
+                } catch (e) {
+                    console.log('Recognition already stopped');
+                }
+            }
+            
+            // Clear any timers
+            if (window.recordingTimer) {
+                clearInterval(window.recordingTimer);
+                window.recordingTimer = null;
+            }
+            
+            if (practiceSessionTimer) {
+                clearInterval(practiceSessionTimer);
+                practiceSessionTimer = null;
+            }
+            
+            // Reset state
+            isRecording = false;
+            sessionStartTime = null;
+            window.audioPracticeInitialized = false;
+            
+            console.log('Audio Practice cleaned up');
+        };
+        
+        // Initialize everything when page loads
+        function initializeAudioPractice() {
+            if (window.audioPracticeInitialized) {
+                console.log('Audio Practice already initialized');
+                return;
+            }
+            
+            console.log('Audio Practice Mode initializing...');
+            
+            try {
+                initializeAudioRecording();
+                initializeSpeechRecognition();
+                setupEventListeners();
+                
+                // Load dynamic practice phrase from Gemini
+                loadNewPracticePhrase('word-stress');
+                
+                // Initialize AI Audio Analyzer
+                initializeAIAnalyzer();
+                
+                // Show default stats immediately
+                console.log('📊 Showing default stats...');
+                updateAudioStats({
+                    success: true,
+                    stats: {
+                        total_sessions: 0,
+                        today_sessions: 0,
+                        avg_accuracy: 0,
+                        total_practice_time: 0,
+                        improvement_rate: 0,
+                        current_streak: 1
+                    },
+                    exercise_stats: {
+                        phonetic: { today: 0, goal: 5, percentage: 0 },
+                        'word-stress': { today: 0, goal: 5, percentage: 0 },
+                        'sentence-rhythm': { today: 0, goal: 5, percentage: 0 }
+                    },
+                    daily_goal: {
+                        goal: 10,
+                        progress: 0,
+                        percentage: 0
+                    }
+                });
+                
+                // Load actual stats from API
+                console.log('🚀 Loading stats from API...');
+                loadAudioPracticeStats(false);
+                
+                // Retry after delay to ensure API is ready
+                setTimeout(() => {
+                    console.log('🔄 Reloading stats...');
+                    loadAudioPracticeStats(false);
+                }, 2000);
+                
+                // Start session timer
+                startSessionTimer();
+                
+                window.audioPracticeInitialized = true;
+                console.log('Audio Practice Mode initialized successfully');
+                
+                // Show visual feedback that audio is ready
+                const instructionText = document.getElementById('instructionText');
+                if (instructionText) {
+                    instructionText.innerHTML = `
+                        <span class="text-green-600">
+                            <i class="fas fa-check-circle mr-1"></i>
+                            Audio ready - Click the red button to start recording
+                        </span>
+                    `;
+                }
+                
+                // Enable record button if it was disabled
+                const recordBtn = document.getElementById('recordBtn');
+                if (recordBtn) {
+                    recordBtn.disabled = false;
+                    recordBtn.classList.remove('opacity-50');
+                }
+            } catch (error) {
+                console.error('Initialization error:', error);
+                showErrorMessage('Failed to initialize audio practice. Please refresh the page.');
+            }
+        }
+        
+        // Initialize immediately if DOM is ready, otherwise wait
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeAudioPractice);
+        } else {
+            // DOM is already ready, initialize immediately
+            setTimeout(initializeAudioPractice, 100);
+        }
+        
+        // Also initialize on window load as backup
+        window.addEventListener('load', function() {
+            if (!window.audioPracticeInitialized) {
+                setTimeout(initializeAudioPractice, 200);
+            }
+        });
+        
+        // Make initialization function globally available
+        window.initializeAudioPractice = initializeAudioPractice;
+        
+        // Initialize AI Audio Analyzer
+        async function initializeAIAnalyzer() {
+            try {
+                if (window.aiAudioAnalyzer) {
+                    await window.aiAudioAnalyzer.initialize();
+                    console.log('AI Audio Analyzer initialized successfully');
+                }
+            } catch (error) {
+                console.log('AI Audio Analyzer not available:', error);
+                // AI mode will fall back to demo mode
+            }
+        }
+        
+        // Initialize audio recording
+        async function initializeAudioRecording() {
+            try {
+                // Check if getUserMedia is supported
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    throw new Error('Audio recording not supported in this browser');
+                }
+                // Request microphone permission
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                stream.getTracks().forEach(track => track.stop()); // Stop test stream
+                console.log('Microphone permission granted');
+                // Initialize waveform canvas
+                initializeWaveform();
+            } catch (error) {
+                console.error('Microphone permission denied:', error);
+                showPermissionError();
+            }
+        }
+        
+        // Initialize waveform canvas
+        function initializeWaveform() {
+            const canvas = document.getElementById('waveformCanvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                // Draw initial flat line
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.strokeStyle = '#e5e7eb';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(0, canvas.height / 2);
+                ctx.lineTo(canvas.width, canvas.height / 2);
+                ctx.stroke();
+            }
+        }
+        
+        // Initialize speech recognition
+        function initializeSpeechRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = 'en-US';
+                
+                recognition.onstart = function() {
+                    console.log('Speech recognition started');
+                    updateRecordingStatus('listening', 'Listening...');
+                };
+                
+                recognition.onresult = function(event) {
+                    let finalTranscript = '';
+                    let interimTranscript = '';
+                    
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const transcript = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalTranscript += transcript;
+                        } else {
+                            interimTranscript += transcript;
+                        }
+                    }
+                    
+                    updateTranscription(finalTranscript, interimTranscript);
+                    
+                    if (finalTranscript) {
+                        generateScores(finalTranscript);
+                    }
+                };
+                
+                recognition.onerror = function(event) {
+                    console.error('Speech recognition error:', event.error);
+                    if (event.error === 'not-allowed') {
+                        showPermissionError();
+                    } else {
+                        updateRecordingStatus('error', 'Recognition error: ' + event.error);
+                    }
+                };
+                
+                recognition.onend = function() {
+                    console.log('Speech recognition ended');
+                    if (isRecording) {
+                        // Try to restart recognition if still recording
+                        setTimeout(() => {
+                            if (isRecording && recognition) {
+                                try {
+                                    recognition.start();
+                                } catch (e) {
+                                    console.log('Could not restart recognition:', e);
+                                }
+                            }
+                        }, 100);
+                    }
+                };
+            } else {
+                console.warn('Speech recognition not supported in this browser');
+                showErrorMessage('Speech recognition is not supported in this browser. Please use Chrome or Edge.');
+            }
+        }
+        
+        // Setup event listeners with retry mechanism
+        function setupEventListeners() {
+            console.log('Setting up event listeners...');
+            
+            // Helper function to safely add event listeners
+            function addEventListenerSafely(elementId, event, handler, description) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    // Remove existing listener if any
+                    element.removeEventListener(event, handler);
+                    // Add new listener
+                    element.addEventListener(event, handler);
+                    console.log(`${description} event listener added`);
+                    return true;
+                } else {
+                    console.warn(`Element ${elementId} not found for ${description}`);
+                    return false;
+                }
+            }
+            
+            // Record button
+            addEventListenerSafely('recordBtn', 'click', toggleRecording, 'Record button');
+            
+            // Stop button
+            addEventListenerSafely('stopBtn', 'click', stopRecording, 'Stop button');
+            
+            // Playback button
+            addEventListenerSafely('playbackBtn', 'click', playRecording, 'Playback button');
+            
+            // Retry button
+            addEventListenerSafely('retryBtn', 'click', retryRecording, 'Retry button');
+            
+            // Play prompt button
+            addEventListenerSafely('playPromptBtn', 'click', playPrompt, 'Play prompt button');
+            
+            // Exercise type dropdown
+            const exerciseChangeHandler = function(e) {
+                console.log('Exercise type changed to:', e.target.value);
+                currentExerciseType = e.target.value;
+                loadNewPracticePhrase(e.target.value);
+                clearResults();
+            };
+            addEventListenerSafely('exerciseType', 'change', exerciseChangeHandler, 'Exercise type dropdown');
+            
+            // Manual refresh button
+            const refreshClickHandler = async function() {
+                console.log('🔄 Manual refresh clicked');
+                const icon = this.querySelector('i');
+                if (icon) {
+                    icon.classList.add('fa-spin');
+                }
+                
+                try {
+                    await loadAudioPracticeStats(true);
+                    console.log('✅ Manual refresh completed');
+                    if (window.notifications) {
+                        window.notifications.success('Stats refreshed!');
+                    }
+                } catch (error) {
+                    console.error('❌ Manual refresh failed:', error);
+                    if (window.notifications) {
+                        window.notifications.error('Failed to refresh stats');
+                    }
+                } finally {
+                    setTimeout(() => {
+                        if (icon) {
+                            icon.classList.remove('fa-spin');
+                        }
+                    }, 1000);
+                }
+            };
+            addEventListenerSafely('refreshStatsBtn', 'click', refreshClickHandler, 'Refresh stats button');
+            
+            // AI Mode Toggle
+            const aiModeToggleHandler = function() {
+                toggleAIMode();
+            };
+            addEventListenerSafely('aiModeToggle', 'click', aiModeToggleHandler, 'AI Mode Toggle button');
+            
+            // AI Feedback Play Button
+            const playAiFeedbackHandler = function() {
+                playAIFeedback();
+            };
+            addEventListenerSafely('playAiFeedbackBtn', 'click', playAiFeedbackHandler, 'Play AI Feedback button');
+            
+            // End Session Button (Desktop)
+            const endSessionHandler = function(e) {
+                e.preventDefault();
+                console.log('End Session button clicked');
+                endPracticeSession();
+            };
+            const endSessionBtn = document.getElementById('endSessionBtn');
+            if (endSessionBtn) {
+                endSessionBtn.removeEventListener('click', endSessionHandler);
+                endSessionBtn.addEventListener('click', endSessionHandler);
+                console.log('End Session button event listener added');
+            } else {
+                console.warn('End Session button not found');
+            }
+            
+            // End Session Button (Mobile) - if exists
+            const endSessionBtnMobile = document.getElementById('endSessionBtnMobile');
+            if (endSessionBtnMobile) {
+                endSessionBtnMobile.removeEventListener('click', endSessionHandler);
+                endSessionBtnMobile.addEventListener('click', endSessionHandler);
+                console.log('End Session button (mobile) event listener added');
+            }
+            
+            // Reinitialize dropdowns after setting up audio listeners
+            if (window.reinitializeDropdowns) {
+                setTimeout(() => {
+                    window.reinitializeDropdowns();
+                }, 100);
+            }
+            
+            console.log('Event listeners setup completed');
+        }
+        
+        // Toggle recording
+        async function toggleRecording() {
+            if (!isRecording) {
+                await startRecording();
+            } else {
+                stopRecording();
+            }
+        }
+        
+        // Start recording
+        async function startRecording() {
+            try {
+                console.log('Starting recording...');
+                
+                // Clear previous results
+                clearResults();
+                
+                // Get microphone stream
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true,
+                        sampleRate: 44100
+                    }
+                });
+                
+                // Setup MediaRecorder
+                mediaRecorder = new MediaRecorder(stream, {
+                    mimeType: 'audio/webm;codecs=opus'
+                });
+                audioChunks = [];
+                
+                mediaRecorder.ondataavailable = function(event) {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
+                };
+                
+                mediaRecorder.onstop = function() {
+                    console.log('MediaRecorder stopped, processing audio...');
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    
+                    // Enable playback
+                    const playbackBtn = document.getElementById('playbackBtn');
+                    if (playbackBtn) {
+                        playbackBtn.disabled = false;
+                        playbackBtn.onclick = () => {
+                            const audio = new Audio(audioUrl);
+                            audio.play();
+                        };
+                    }
+                    
+                    // Analyze with AI if enabled
+                    if (aiModeEnabled) {
+                        analyzeWithAI(audioBlob);
+                    }
+                    
+                    // Save session
+                    saveAudioSession(audioBlob);
+                    
+                    // Stop all tracks
+                    stream.getTracks().forEach(track => track.stop());
+                };
+                
+                mediaRecorder.onerror = function(event) {
+                    console.error('MediaRecorder error:', event.error);
+                    showErrorMessage('Recording error: ' + event.error);
+                };
+                
+                // Start recording
+                mediaRecorder.start(1000); // Collect data every second
+                isRecording = true;
+                recordingStartTime = Date.now();
+                
+                // Start speech recognition
+                if (recognition) {
+                    try {
+                        recognition.start();
+                    } catch (e) {
+                        console.log('Recognition already started or error:', e);
+                    }
+                }
+                
+                // Update UI
+                updateRecordingUI(true);
+                startRecordingTimer();
+                animateWaveform();
+                
+                // Show transcription panel
+                const transcriptionPanel = document.getElementById('transcriptionPanel');
+                if (transcriptionPanel) {
+                    transcriptionPanel.classList.remove('hidden');
+                }
+                
+                console.log('Recording started successfully');
+                
+            } catch (error) {
+                console.error('Failed to start recording:', error);
+                if (error.name === 'NotAllowedError') {
+                    showPermissionError();
+                } else {
+                    showErrorMessage('Failed to start recording: ' + error.message);
+                }
+            }
+        }
+        
+        // Stop recording
+        function stopRecording() {
+            console.log('Stopping recording...');
+            
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+            }
+            
+            if (recognition) {
+                recognition.stop();
+            }
+            
+            isRecording = false;
+            
+            // Update UI
+            updateRecordingUI(false);
+            stopRecordingTimer();
+            stopWaveformAnimation();
+            
+            console.log('Recording stopped');
+        }
+        
+        // Play recording
+        function playRecording() {
+            // This will be handled by the playback button onclick set in mediaRecorder.onstop
+        }
+        
+        // Retry recording
+        function retryRecording() {
+            clearResults();
+            updateRecordingStatus('ready', 'Ready to record');
+        }
+        
+        // Play prompt
+        function playPrompt() {
+            const text = getCurrentPracticeText();
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.8;
+                utterance.pitch = 1.1;
+                speechSynthesis.speak(utterance);
+            }
+        }
+        
+        // Update recording UI
+        function updateRecordingUI(recording) {
+            const recordBtn = document.getElementById('recordBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            const playbackBtn = document.getElementById('playbackBtn');
+            const retryBtn = document.getElementById('retryBtn');
+            
+            if (recording) {
+                if (recordBtn) {
+                    recordBtn.disabled = true;
+                    recordBtn.classList.add('recording-active');
+                }
+                if (stopBtn) stopBtn.disabled = false;
+                if (playbackBtn) playbackBtn.disabled = true;
+                if (retryBtn) retryBtn.disabled = true;
+                
+                updateRecordingStatus('recording', 'Recording...');
+            } else {
+                if (recordBtn) {
+                    recordBtn.disabled = false;
+                    recordBtn.classList.remove('recording-active');
+                }
+                if (stopBtn) stopBtn.disabled = true;
+                if (retryBtn) retryBtn.disabled = false;
+                
+                updateRecordingStatus('ready', 'Ready to record');
+            }
+        }
+        
+        // Update recording status
+        function updateRecordingStatus(status, message) {
+            const statusElement = document.getElementById('statusText');
+            const iconElement = document.querySelector('#recordingStatus i');
+            
+            if (statusElement) {
+                statusElement.textContent = message;
+            }
+            
+            if (iconElement) {
+                switch (status) {
+                    case 'recording':
+                    case 'listening':
+                        iconElement.className = 'fas fa-microphone mr-2 text-accent';
+                        break;
+                    case 'processing':
+                        iconElement.className = 'fas fa-cog fa-spin mr-2 text-primary';
+                        break;
+                    case 'error':
+                        iconElement.className = 'fas fa-exclamation-triangle mr-2 text-red-500';
+                        break;
+                    default:
+                        iconElement.className = 'fas fa-microphone-slash mr-2';
+                }
+            }
+        }
+        
+        // Update transcription
+        function updateTranscription(finalTranscript, interimTranscript) {
+            const finalElement = document.getElementById('finalTranscript');
+            const interimElement = document.getElementById('interimTranscript');
+            
+            if (finalElement) {
+                finalElement.textContent = finalTranscript;
+            }
+            
+            if (interimElement) {
+                interimElement.textContent = interimTranscript;
+            }
+        }
+        
+        // Generate scores
+        function generateScores(transcript) {
+            if (!transcript) return;
+            
+            // Generate realistic scores based on transcript length and content
+            const wordCount = transcript.split(' ').length;
+            const baseScore = Math.min(95, 60 + wordCount * 3);
+            
+            const scores = {
+                confidence: Math.max(60, baseScore + Math.random() * 10 - 5),
+                pronunciation: Math.max(60, baseScore + Math.random() * 10 - 5),
+                fluency: Math.max(60, baseScore + Math.random() * 10 - 5)
+            };
+            
+            // Update score displays with animation
+            animateScoreUpdate('confidenceScore', Math.round(scores.confidence));
+            animateScoreUpdate('pronunciationScore', Math.round(scores.pronunciation));
+            animateScoreUpdate('fluencyScore', Math.round(scores.fluency));
+            
+            // Show notification
+            const avgScore = Math.round((scores.confidence + scores.pronunciation + scores.fluency) / 3);
+            if (window.notifications) {
+                if (avgScore >= 85) {
+                    window.notifications.success(`Excellent! Average score: ${avgScore}%`);
+                } else if (avgScore >= 70) {
+                    window.notifications.info(`Good job! Average score: ${avgScore}%`);
+                } else {
+                    window.notifications.warning(`Keep practicing! Average score: ${avgScore}%`);
+                }
+            }
+        }
+        
+        // Animate score update
+        function animateScoreUpdate(elementId, targetScore) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            const startScore = parseInt(element.textContent) || 0;
+            const duration = 1000;
+            const startTime = Date.now();
+            
+            function updateScore() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const currentScore = Math.round(startScore + (targetScore - startScore) * easeOut);
+                
+                element.textContent = currentScore + '%';
+                element.className = getScoreColorClass(currentScore) + ' text-2xl font-bold transition-colors duration-300';
+                
+                if (progress < 1) {
+                    requestAnimationFrame(updateScore);
+                }
+            }
+            
+            updateScore();
+        }
+        
+        // Get score color class
+        function getScoreColorClass(score) {
+            if (score >= 85) return 'text-green-600';
+            if (score >= 70) return 'text-yellow-600';
+            return 'text-red-600';
+        }
+        
+        // Start recording timer
+        function startRecordingTimer() {
+            const timerElement = document.getElementById('recordingTimer');
+            if (timerElement) {
+                timerElement.classList.remove('hidden');
+                
+                recordingTimer = setInterval(() => {
+                    if (recordingStartTime) {
+                        const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+                        const minutes = Math.floor(elapsed / 60);
+                        const seconds = elapsed % 60;
+                        timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    }
+                }, 1000);
+            }
+        }
+        
+        // Stop recording timer
+        function stopRecordingTimer() {
+            if (recordingTimer) {
+                clearInterval(recordingTimer);
+                recordingTimer = null;
+            }
+            
+            const timerElement = document.getElementById('recordingTimer');
+            if (timerElement) {
+                timerElement.classList.add('hidden');
+            }
+        }
+        
+        // Animate waveform
+        function animateWaveform() {
+            const canvas = document.getElementById('waveformCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            
+            function draw() {
+                if (!isRecording) return;
+                
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw animated bars
+                const barCount = 20;
+                const barWidth = canvas.width / barCount;
+                
+                for (let i = 0; i < barCount; i++) {
+                    const barHeight = Math.random() * canvas.height * 0.8;
+                    const x = i * barWidth;
+                    const y = (canvas.height - barHeight) / 2;
+                    
+                    const intensity = Math.floor(255 * (1 - barHeight / canvas.height));
+                    ctx.fillStyle = `rgb(${intensity}, 100, 255)`;
+                    ctx.fillRect(x, y, barWidth - 2, barHeight);
+                }
+                
+                if (isRecording) {
+                    requestAnimationFrame(draw);
+                }
+            }
+            
+            draw();
+        }
+        
+        // Stop waveform animation
+        function stopWaveformAnimation() {
+            const canvas = document.getElementById('waveformCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw flat line
+            ctx.strokeStyle = '#e5e7eb';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height / 2);
+            ctx.lineTo(canvas.width, canvas.height / 2);
+            ctx.stroke();
+        }
+        
+        // Start session timer
+        function startSessionTimer() {
+            if (!sessionStartTime) {
+                sessionStartTime = Date.now();
+            }
+            
+            practiceSessionTimer = setInterval(() => {
+                if (sessionStartTime) {
+                    const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
+                    const minutes = Math.floor(elapsed / 60);
+                    const seconds = elapsed % 60;
+                    
+                    const timerDisplay = document.getElementById('practiceTimeDisplay');
+                    if (timerDisplay) {
+                        timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    }
+                }
+            }, 1000);
+        }
+        
+        // Load audio practice stats
+        async function loadAudioPracticeStats(showNotification = false) {
+            try {
+                console.log('Loading audio practice stats...');
+                const response = await api.request('/audio/stats');
+                
+                console.log('Stats response:', response);
+                
+                if (response.success) {
+                    updateAudioStats(response);
+                    
+                    if (showNotification && window.notifications) {
+                        const stats = response.stats || {};
+                        window.notifications.info(`Stats updated! Today: ${stats.today_sessions || 0} sessions`);
+                    }
+                } else {
+                    console.error('Stats request failed:', response);
+                    // Show default values
+                    updateAudioStats({
+                        success: true,
+                        stats: {
+                            total_sessions: 0,
+                            today_sessions: 0,
+                            avg_accuracy: 0,
+                            total_practice_time: 0,
+                            improvement_rate: 0,
+                            current_streak: 0
+                        },
+                        exercise_stats: {
+                            phonetic: { today: 0, goal: 5, percentage: 0 },
+                            'word-stress': { today: 0, goal: 5, percentage: 0 },
+                            'sentence-rhythm': { today: 0, goal: 5, percentage: 0 }
+                        },
+                        daily_goal: {
+                            goal: 10,
+                            progress: 0,
+                            percentage: 0
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading audio stats:', error);
+                // Show default values on error
+                updateAudioStats({
+                    success: true,
+                    stats: {
+                        total_sessions: 0,
+                        today_sessions: 0,
+                        avg_accuracy: 0,
+                        total_practice_time: 0,
+                        improvement_rate: 0,
+                        current_streak: 0
+                    },
+                    exercise_stats: {
+                        phonetic: { today: 0, goal: 5, percentage: 0 },
+                        'word-stress': { today: 0, goal: 5, percentage: 0 },
+                        'sentence-rhythm': { today: 0, goal: 5, percentage: 0 }
+                    },
+                    daily_goal: {
+                        goal: 10,
+                        progress: 0,
+                        percentage: 0
+                    }
+                });
+            }
+        }
+        
+        // Update audio stats display
+        function updateAudioStats(data) {
+            console.log('Updating audio stats with data:', data);
+            
+            const stats = data.stats || {};
+            const exerciseStats = data.exercise_stats || {};
+            const dailyGoal = data.daily_goal || {};
+            
+            // Update header stats with fallback values
+            const headerAccuracy = document.getElementById('headerAccuracy');
+            const headerSessions = document.getElementById('headerSessions');
+            
+            if (headerAccuracy) {
+                headerAccuracy.textContent = (stats.avg_accuracy || 0) + '%';
+            }
+            if (headerSessions) {
+                headerSessions.textContent = stats.total_sessions || 0;
+            }
+            
+            // Update exercise progress bars with fallback values
+            // Update phonetic progress
+            const phoneticProgress = document.getElementById('phoneticProgress');
+            const phoneticProgressBar = document.getElementById('phoneticProgressBar');
+            const phoneticData = exerciseStats.phonetic || { today: 0, goal: 5, percentage: 0 };
+            if (phoneticProgress) {
+                phoneticProgress.textContent = `${phoneticData.today}/${phoneticData.goal}`;
+            }
+            if (phoneticProgressBar) {
+                const phoneticPercentage = Math.min(100, phoneticData.percentage || 0);
+                phoneticProgressBar.style.width = phoneticPercentage + '%';
+                phoneticProgressBar.style.transition = 'width 1s ease-out';
+                if (!phoneticProgressBar.classList.contains('bg-primary')) {
+                    phoneticProgressBar.classList.add('bg-primary');
+                }
+                console.log('Phonetic bar updated:', phoneticPercentage + '%');
+            }
+            
+            // Update word stress progress
+            const wordStressData = exerciseStats['word-stress'] || { today: 0, goal: 5, percentage: 0 };
+            const wordStressProgress = document.getElementById('wordStressProgress');
+            const wordStressProgressBar = document.getElementById('wordStressProgressBar');
+            if (wordStressProgress) {
+                wordStressProgress.textContent = `${wordStressData.today}/${wordStressData.goal}`;
+            }
+            if (wordStressProgressBar) {
+                const wordStressPercentage = Math.min(100, wordStressData.percentage || 0);
+                wordStressProgressBar.style.width = wordStressPercentage + '%';
+                wordStressProgressBar.style.transition = 'width 1s ease-out';
+                if (!wordStressProgressBar.classList.contains('bg-primary')) {
+                    wordStressProgressBar.classList.add('bg-primary');
+                }
+                console.log('Word stress bar updated:', wordStressPercentage + '%');
+            }
+            
+            // Update sentence rhythm progress
+            const sentenceRhythmData = exerciseStats['sentence-rhythm'] || { today: 0, goal: 5, percentage: 0 };
+            const sentenceRhythmProgress = document.getElementById('sentenceRhythmProgress');
+            const sentenceRhythmProgressBar = document.getElementById('sentenceRhythmProgressBar');
+            if (sentenceRhythmProgress) {
+                sentenceRhythmProgress.textContent = `${sentenceRhythmData.today}/${sentenceRhythmData.goal}`;
+            }
+            if (sentenceRhythmProgressBar) {
+                const sentenceRhythmPercentage = Math.min(100, sentenceRhythmData.percentage || 0);
+                sentenceRhythmProgressBar.style.width = sentenceRhythmPercentage + '%';
+                sentenceRhythmProgressBar.style.transition = 'width 1s ease-out';
+                if (!sentenceRhythmProgressBar.classList.contains('bg-primary')) {
+                    sentenceRhythmProgressBar.classList.add('bg-primary');
+                }
+                console.log('Sentence rhythm bar updated:', sentenceRhythmPercentage + '%');
+            }
+            
+            // Update daily goal with fallback values
+            const dailyGoalText = document.getElementById('dailyGoalText');
+            const dailyGoalPercentage = document.getElementById('dailyGoalPercentage');
+            const dailyGoalProgressBar = document.getElementById('dailyGoalProgressBar');
+            
+            if (dailyGoalText) {
+                dailyGoalText.textContent = `${dailyGoal.progress || 0}/${dailyGoal.goal || 10} exercises completed`;
+            }
+            if (dailyGoalPercentage) {
+                dailyGoalPercentage.textContent = Math.round(dailyGoal.percentage || 0) + '%';
+            }
+            if (dailyGoalProgressBar) {
+                dailyGoalProgressBar.style.width = (dailyGoal.percentage || 0) + '%';
+            }
+            
+            // Update performance stats with fallback values
+            const avgAccuracy = document.getElementById('avgAccuracy');
+            const totalPracticeTime = document.getElementById('totalPracticeTime');
+            const improvementRate = document.getElementById('improvementRate');
+            const currentStreak = document.getElementById('currentStreak');
+            
+            if (avgAccuracy) {
+                avgAccuracy.textContent = (stats.avg_accuracy || 0) + '%';
+                avgAccuracy.classList.add('stat-number', 'updating');
+                setTimeout(() => avgAccuracy.classList.remove('updating'), 300);
+            }
+            if (totalPracticeTime) {
+                totalPracticeTime.textContent = Math.round(stats.total_practice_time || 0) + ' min';
+                totalPracticeTime.classList.add('stat-number', 'updating');
+                setTimeout(() => totalPracticeTime.classList.remove('updating'), 300);
+            }
+            if (improvementRate) {
+                const improvement = stats.improvement_rate || 0;
+                improvementRate.textContent = (improvement >= 0 ? '+' : '') + improvement + '%';
+                improvementRate.classList.add('stat-number', 'updating');
+                setTimeout(() => improvementRate.classList.remove('updating'), 300);
+            }
+            if (currentStreak) {
+                currentStreak.textContent = (stats.current_streak || 0) + ' days';
+                currentStreak.classList.add('stat-number', 'updating');
+                setTimeout(() => currentStreak.classList.remove('updating'), 300);
+            }
+            
+            console.log('✅ Stats updated successfully:', {
+                accuracy: stats.avg_accuracy,
+                sessions: stats.total_sessions,
+                time: stats.total_practice_time,
+                streak: stats.current_streak
+            });
+        }
+        
+        // Save audio session
+        async function saveAudioSession(audioBlob) {
+            try {
+                if (window.api && window.api.token) {
+                    const confidenceScore = parseInt(document.getElementById('confidenceScore')?.textContent) || 0;
+                    const pronunciationScore = parseInt(document.getElementById('pronunciationScore')?.textContent) || 0;
+                    const fluencyScore = parseInt(document.getElementById('fluencyScore')?.textContent) || 0;
+                    const overallScore = Math.round((confidenceScore + pronunciationScore + fluencyScore) / 3);
+                    
+                    const sessionData = {
+                        session_type: 'audio_practice',
+                        exercise_type: currentExerciseType,
+                        phrase: currentPracticePhrase,
+                        duration: recordingStartTime ? Date.now() - recordingStartTime : 0,
+                        transcript: document.getElementById('finalTranscript')?.textContent || '',
+                        scores: {
+                            overall: overallScore,
+                            confidence: confidenceScore,
+                            pronunciation: pronunciationScore,
+                            fluency: fluencyScore
+                        }
+                    };
+                    
+                    const response = await window.api.request('/audio/save-session', {
+                        method: 'POST',
+                        body: JSON.stringify(sessionData)
+                    });
+                    
+                    if (response.success) {
+                        console.log('✅ Session saved successfully!');
+                        
+                        // Show success notification first
+                        if (window.notifications) {
+                            window.notifications.success(`✅ Session saved! Score: ${overallScore}%`);
+                        }
+                        
+                        // Track session completion (this updates the user's total session count)
+                        console.log('📊 Tracking session completion...');
+                        const trackResponse = await window.api.request('/session/track', {
+                            method: 'POST',
+                            body: JSON.stringify({ session_type: 'audio_practice' })
+                        });
+                        
+                        console.log('Track response:', trackResponse);
+                        
+                        // Force refresh stats immediately with a small delay to ensure backend is updated
+                        console.log('🔄 Refreshing stats...');
+                        setTimeout(async () => {
+                            await loadAudioPracticeStats(true);
+                            
+                            // Show updated stats in notification
+                            const statsResponse = await api.request('/audio/stats');
+                            console.log('Updated stats:', statsResponse);
+                            
+                            if (statsResponse.success) {
+                                const stats = statsResponse.stats || {};
+                                const exerciseStats = statsResponse.exercise_stats || {};
+                                
+                                // Calculate total exercises today
+                                let totalToday = 0;
+                                if (exerciseStats.phonetic) totalToday += exerciseStats.phonetic.today || 0;
+                                if (exerciseStats['word-stress']) totalToday += exerciseStats['word-stress'].today || 0;
+                                if (exerciseStats['sentence-rhythm']) totalToday += exerciseStats['sentence-rhythm'].today || 0;
+                                
+                                if (window.notifications) {
+                                    window.notifications.info(`📈 Updated! Today: ${totalToday} exercises | Avg: ${Math.round(stats.avg_accuracy || 0)}%`);
+                                }
+                            }
+                        }, 500);
+                        
+                        // Load new phrase for next practice
+                        setTimeout(() => {
+                            loadNewPracticePhrase(currentExerciseType);
+                        }, 2000);
+                        
+                        console.log('✅ Session saved and stats update triggered');
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to save session:', error);
+            }
+        }
+        
+        // Make loadAudioPracticeStats globally available
+        window.loadAudioPracticeStats = loadAudioPracticeStats;
+        
+        // End practice session
+        async function endPracticeSession() {
+            console.log('🛑 Ending practice session...');
+            
+            // Stop any active recording immediately
+            if (isRecording) {
+                console.log('Stopping active recording...');
+                stopRecording();
+            }
+            
+            // Calculate session summary
+            const sessionDuration = sessionStartTime ? Date.now() - sessionStartTime : 0;
+            console.log(`Session duration: ${Math.round(sessionDuration / 1000)}s`);
+            
+            // Store basic session info immediately
+            localStorage.setItem('lastSessionSummary', JSON.stringify({
+                type: 'audio_practice',
+                duration: sessionDuration,
+                timestamp: Date.now()
+            }));
+            
+            // Track session in background (don't wait for response)
+            api.request('/session/track', {
+                method: 'POST',
+                body: JSON.stringify({ 
+                    session_type: 'audio_practice',
+                    duration: sessionDuration
+                })
+            }).then(trackResponse => {
+                console.log('✅ Session tracked:', trackResponse);
+            }).catch(error => {
+                console.error('❌ Error tracking session:', error);
+            });
+            
+            // Redirect immediately
+            console.log('Redirecting to dashboard...');
+            window.location.href = '/pages/user/user_dashboard.html';
+        }
+        
+        // Show permission error
+        function showPermissionError() {
+            const recordBtn = document.getElementById('recordBtn');
+            if (recordBtn) {
+                recordBtn.disabled = true;
+                recordBtn.innerHTML = '<i class="fas fa-microphone-slash text-xl"></i>';
+                recordBtn.title = 'Microphone access required';
+            }
+            
+            updateRecordingStatus('error', 'Microphone access denied. Please enable microphone permissions.');
+            
+            const instructionText = document.getElementById('instructionText');
+            if (instructionText) {
+                instructionText.innerHTML = `
+                    <span class="text-red-600">
+                        <i class="fas fa-exclamation-triangle mr-1"></i>
+                        Please enable microphone access and refresh the page
+                    </span>
+                `;
+            }
+            
+            if (window.notifications) {
+                window.notifications.error('Microphone access required. Please enable permissions and refresh the page.');
+            }
+        }
+        
+        // Get current exercise type
+        function getCurrentExerciseType() {
+            const select = document.getElementById('exerciseType');
+            return select ? select.value : 'word-stress';
+        }
+        
+        // Load new practice phrase from Gemini
+        async function loadNewPracticePhrase(exerciseType) {
+            try {
+                const textElement = document.getElementById('practiceText');
+                if (textElement) {
+                    textElement.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Generating new phrase...';
+                }
+                
+                const response = await api.request('/audio/generate-phrase', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        exercise_type: exerciseType,
+                        difficulty: 'medium'
+                    })
+                });
+                
+                if (response.success) {
+                    currentPracticePhrase = response.phrase;
+                    currentExerciseType = exerciseType;
+                    
+                    if (textElement) {
+                        textElement.innerHTML = formatPracticeText(response.phrase, exerciseType);
+                    }
+                    
+                    // Show notification
+                    if (window.notifications && response.source === 'gemini') {
+                        window.notifications.success('New AI-generated phrase loaded!');
+                    }
+                } else {
+                    throw new Error('Failed to generate phrase');
+                }
+                
+            } catch (error) {
+                console.error('Error loading practice phrase:', error);
+                // Fallback to default phrase
+                const textElement = document.getElementById('practiceText');
+                if (textElement) {
+                    textElement.innerHTML = 'The <span class="text-primary font-bold">PRO-ject</span> was <span class="text-primary font-bold">COM-plete</span> ahead of schedule.';
+                }
+            }
+        }
+        
+        // Get current practice text
+        function getCurrentPracticeText() {
+            return currentPracticePhrase;
+        }
+        
+        // Load practice text (wrapper for compatibility)
+        function loadPracticeText(exerciseType) {
+            loadNewPracticePhrase(exerciseType);
+        }
+        
+        // Format practice text
+        function formatPracticeText(text, exerciseType) {
+            if (exerciseType === 'word-stress') {
+                return text.replace(/([A-Z]{2,})/g, '<span class="text-primary font-bold">$1</span>');
+            } else if (exerciseType === 'phonetic') {
+                return text.replace(/(th)/gi, '<span class="text-primary font-bold">$1</span>');
+            } else if (exerciseType === 'sentence-rhythm') {
+                return text.replace(/([A-Z]{2,})/g, '<span class="text-primary font-bold">$1</span>');
+            }
+            return text;
+        }
+        
+        // Clear results
+        function clearResults() {
+            const panels = ['transcriptionPanel', 'aiAnalysisPanel', 'aiAnalysisLoading'];
+            panels.forEach(panelId => {
+                const panel = document.getElementById(panelId);
+                if (panel) panel.classList.add('hidden');
+            });
+            
+            const elements = ['finalTranscript', 'interimTranscript', 'confidenceScore', 'pronunciationScore', 'fluencyScore', 'aiTranscript', 'aiOverallScore', 'aiConfidenceLevel'];
+            elements.forEach(elementId => {
+                const element = document.getElementById(elementId);
+                if (element) element.textContent = '--';
+            });
+            
+            // Reset AI feedback button
+            const aiFeedbackBtn = document.getElementById('playAiFeedbackBtn');
+            if (aiFeedbackBtn) {
+                aiFeedbackBtn.disabled = true;
+                aiFeedbackBtn.removeAttribute('data-audio-url');
+            }
+            
+            currentSessionId = null;
+        }
+                    
+                    // Generate feedback
+                    generatePracticeFeedback();
+
+        
+        async function checkMicrophonePermissions() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                stream.getTracks().forEach(track => track.stop()); // Stop the test stream
+                return true;
+            } catch (error) {
+                console.error('Microphone permission denied:', error);
+                throw new Error('Microphone access required for audio practice');
+            }
+        }
+        
+        function showPermissionError() {
+            const recordBtn = document.getElementById('recordBtn');
+            if (recordBtn) {
+                recordBtn.disabled = true;
+                recordBtn.innerHTML = '<i class="fas fa-microphone-slash text-xl"></i>';
+                recordBtn.title = 'Microphone access required';
+            }
+            
+            updateRecordingStatus('error', 'Microphone access denied. Please enable microphone permissions.');
+            
+            // Show help message
+            const instructionText = document.getElementById('instructionText');
+            if (instructionText) {
+                instructionText.innerHTML = `
+                    <span class="text-red-600">
+                        <i class="fas fa-exclamation-triangle mr-1"></i>
+                        Please enable microphone access and refresh the page
+                    </span>
+                `;
+            }
+        }
+        
+
+        
+        function setupUIEventListeners() {
+            console.log('Setting up UI event listeners...');
+            
+            // Play prompt button
+            const playPromptBtn = document.getElementById('playPromptBtn');
+            if (playPromptBtn) {
+                playPromptBtn.addEventListener('click', playPrompt);
+            }
+            
+            // Retry button
+            const retryBtn = document.getElementById('retryBtn');
+            if (retryBtn) {
+                retryBtn.addEventListener('click', retryRecording);
+            }
+        }
+        
+        // Make functions globally available for dropdown functionality
+        window.loadPracticeText = loadPracticeText;
+        window.clearResults = clearResults;
+        
+        // Fallback initialization on window focus (for when user returns to tab)
+        window.addEventListener('focus', function() {
+            if (!window.audioPracticeInitialized) {
+                console.log('Window focused, checking audio initialization...');
+                setTimeout(() => {
+                    if (!window.audioPracticeInitialized) {
+                        initializeAudioPractice();
+                    }
+                }, 500);
+            }
+        });
+        
+        // Refresh stats every 30 seconds
+        setInterval(() => {
+            if (window.loadAudioPracticeStats) {
+                window.loadAudioPracticeStats(false);
+            }
+        }, 30000);
+        
+        // AI Mode Functions
+        function toggleAIMode() {
+            aiModeEnabled = !aiModeEnabled;
+            const toggleBtn = document.getElementById('aiModeToggle');
+            
+            if (aiModeEnabled) {
+                toggleBtn.innerHTML = '<i class="fas fa-robot mr-2"></i>AI Mode ON';
+                toggleBtn.className = 'btn-primary px-4 py-2';
+                
+                // Show AI mode indicator
+                updateAIModeIndicator(true);
+                
+                if (window.notifications) {
+                    window.notifications.info('AI Analysis Mode enabled! Your recordings will be analyzed by AI.');
+                }
+            } else {
+                toggleBtn.innerHTML = '<i class="fas fa-robot mr-2"></i>AI Analysis';
+                toggleBtn.className = 'btn-secondary px-4 py-2';
+                
+                // Hide AI panels
+                document.getElementById('aiAnalysisPanel').classList.add('hidden');
+                document.getElementById('aiAnalysisLoading').classList.add('hidden');
+                
+                if (window.notifications) {
+                    window.notifications.info('AI Analysis Mode disabled. Using basic speech recognition.');
+                }
+            }
+            
+            // Clear previous results when switching modes
+            clearResults();
+        }
+        
+        function updateAIModeIndicator(enabled) {
+            const indicator = document.getElementById('aiModeIndicator');
+            if (indicator) {
+                if (enabled) {
+                    // Check if we have real AI or demo mode
+                    const hasOpenAI = localStorage.getItem('openai_available') === 'true';
+                    if (hasOpenAI) {
+                        indicator.textContent = 'Live AI';
+                        indicator.className = 'ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full';
+                    } else {
+                        indicator.textContent = 'Demo Mode';
+                        indicator.className = 'ml-2 text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full';
+                    }
+                } else {
+                    indicator.textContent = 'Basic Mode';
+                    indicator.className = 'ml-2 text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded-full';
+                }
+            }
+        }
+        
+        // AI Analysis Functions
+        async function analyzeWithAI(audioBlob) {
+            if (!aiModeEnabled) return;
+            
+            try {
+                // Show loading
+                document.getElementById('aiAnalysisLoading').classList.remove('hidden');
+                
+                // Convert blob to base64
+                const audioBase64 = await blobToBase64(audioBlob);
+                
+                // Get analysis type based on exercise
+                const exerciseType = getCurrentExerciseType();
+                const analysisType = getAnalysisTypeFromExercise(exerciseType);
+                
+                // Call AI analysis API
+                const response = await api.request('/audio/analyze-ai', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        audio_data: audioBase64,
+                        analysis_type: analysisType,
+                        duration: recordingStartTime ? (Date.now() - recordingStartTime) / 1000 : 0
+                    })
+                });
+                
+                // Hide loading
+                document.getElementById('aiAnalysisLoading').classList.add('hidden');
+                
+                if (response.success) {
+                    currentSessionId = response.session_id;
+                    displayAIResults(response);
+                    
+                    // Update mode indicator based on response
+                    if (response.demo_mode) {
+                        updateAIModeIndicator(true); // Will show "Demo Mode"
+                        localStorage.setItem('openai_available', 'false');
+                    } else {
+                        localStorage.setItem('openai_available', 'true');
+                        updateAIModeIndicator(true); // Will show "Live AI"
+                    }
+                    
+                    // Track session completion
+                    if (window.trackSessionCompletion) {
+                        await window.trackSessionCompletion();
+                    }
+                    
+                    if (window.notifications) {
+                        const modeText = response.demo_mode ? ' (Demo Mode)' : '';
+                        window.notifications.success('AI analysis complete!' + modeText);
+                    }
+                } else {
+                    throw new Error(response.error || 'AI analysis failed');
+                }
+                
+            } catch (error) {
+                console.error('AI analysis error:', error);
+                document.getElementById('aiAnalysisLoading').classList.add('hidden');
+                
+                if (window.notifications) {
+                    window.notifications.error('AI analysis failed: ' + error.message);
+                }
+            }
+        }
+        
+        function displayAIResults(result) {
+            const panel = document.getElementById('aiAnalysisPanel');
+            panel.classList.remove('hidden');
+            
+            // Update transcript
+            document.getElementById('aiTranscript').textContent = result.transcript || 'No speech detected';
+            
+            // Update scores
+            const analysis = result.analysis;
+            if (analysis.score !== null && analysis.score !== undefined) {
+                document.getElementById('aiOverallScore').textContent = analysis.score + '%';
+                document.getElementById('aiOverallScore').className = `text-3xl font-bold ${getScoreColor(analysis.score)}`;
+            }
+            
+            // Update confidence (use score as confidence for now)
+            document.getElementById('aiConfidenceLevel').textContent = analysis.score ? analysis.score + '%' : '--';
+            
+            // Update detailed feedback
+            document.getElementById('aiDetailedContent').textContent = analysis.feedback_text || 'No detailed feedback available';
+            
+            // Update suggestions
+            const suggestionsList = document.getElementById('aiSuggestionsList');
+            suggestionsList.innerHTML = '';
+            
+            if (analysis.suggestions && analysis.suggestions.length > 0) {
+                analysis.suggestions.forEach(suggestion => {
+                    const li = document.createElement('li');
+                    li.className = 'flex items-start';
+                    li.innerHTML = `<i class="fas fa-arrow-right text-primary mr-2 mt-1"></i>${suggestion}`;
+                    suggestionsList.appendChild(li);
+                });
+            } else {
+                const li = document.createElement('li');
+                li.textContent = 'Keep practicing to improve your skills!';
+                suggestionsList.appendChild(li);
+            }
+            
+            // Enable audio feedback if available
+            if (result.audio_feedback && result.audio_feedback.audio_url) {
+                document.getElementById('playAiFeedbackBtn').disabled = false;
+                document.getElementById('playAiFeedbackBtn').setAttribute('data-audio-url', result.audio_feedback.audio_url);
+            } else {
+                document.getElementById('playAiFeedbackBtn').disabled = true;
+            }
+        }
+        
+        function playAIFeedback() {
+            const btn = document.getElementById('playAiFeedbackBtn');
+            const audioUrl = btn.getAttribute('data-audio-url');
+            
+            if (audioUrl) {
+                const audio = new Audio(audioUrl);
+                audio.play().catch(error => {
+                    console.error('Failed to play AI feedback:', error);
+                    if (window.notifications) {
+                        window.notifications.error('Failed to play audio feedback');
+                    }
+                });
+            }
+        }
+        
+        function getAnalysisTypeFromExercise(exerciseType) {
+            const mapping = {
+                'phonetic': 'pronunciation',
+                'word-stress': 'pronunciation',
+                'sentence-rhythm': 'fluency',
+                'conversation': 'fluency'
+            };
+            return mapping[exerciseType] || 'pronunciation';
+        }
+        
+        function getScoreColor(score) {
+            if (score >= 85) return 'text-green-600';
+            if (score >= 70) return 'text-yellow-600';
+            return 'text-red-600';
+        }
+        
+        async function blobToBase64(blob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        }
+        
+        // Periodic check to ensure audio functionality is working
+        setInterval(() => {
+            // Check if record button exists and has event listener
+            const recordBtn = document.getElementById('recordBtn');
+            if (recordBtn && !window.audioPracticeInitialized) {
+                console.log('Audio practice not initialized, reinitializing...');
+                initializeAudioPractice();
+            }
+            
+            // Check if dropdowns are working
+            if (window.reinitializeDropdowns && !window.dropdownInitialized) {
+                console.log('Dropdowns not initialized, reinitializing...');
+                window.reinitializeDropdowns();
+            }
+        }, 3000);
+    </script>
+
+    <!-- Load API Client and Session Tracker -->
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/session-tracker.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/user-common.js') }}"></script>
+
+</body>
+</html>

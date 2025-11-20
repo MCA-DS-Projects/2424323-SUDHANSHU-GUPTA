@@ -1,0 +1,1908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile Settings - ProSpeak AI</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}" />
+    <link rel="alternate icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='favicon.svg') }}" />
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  </head>
+<body class="bg-gradient-to-br from-primary-50 via-white to-secondary-50 min-h-screen">
+    <!-- Header -->
+    {% include 'partials/user_header.html' %}
+                        
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <h1 class="text-3xl font-heading font-bold text-text-primary">Profile Settings</h1>
+                    <p class="text-text-secondary mt-1">Manage your account and personalize your learning experience</p>
+                </div>
+                <div class="mt-4 sm:mt-0 flex space-x-3">
+                    <button class="btn-secondary">
+                        <i class="fas fa-undo mr-2"></i>
+                        Reset Changes
+                    </button>
+                    <button class="btn-primary">
+                        <i class="fas fa-save mr-2"></i>
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Settings Navigation Sidebar -->
+            <div class="lg:col-span-1">
+                <div class="card sticky top-6">
+                    <nav class="space-y-2">
+                        <button class="settings-nav-item active" data-section="profile">
+                            <i class="fas fa-user"></i>
+                            <span>Profile Information</span>
+                        </button>
+                        <button class="settings-nav-item" data-section="account">
+                            <i class="fas fa-cog"></i>
+                            
+                            <span>Account Settings</span>
+                        </button>
+                        <button class="settings-nav-item" data-section="learning">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>Learning Preferences</span>
+                        </button>
+                        <button class="settings-nav-item" data-section="progress">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Progress Data</span>
+                        </button> 
+                        
+                        <button class="settings-nav-item" data-section="accessibility">
+                            <i class="fas fa-universal-access"></i>
+                            <span>Accessibility</span>
+                        </button>
+                        <button class="settings-nav-item" data-section="privacy">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Privacy & Security</span>
+                        </button>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Settings Content -->
+            <div class="lg:col-span-3">
+                <!-- Profile Information Section -->
+                <div id="profile-section" class="settings-section">
+                    <div class="card mb-6">
+                        <h2 class="text-xl font-heading font-semibold text-text-primary mb-6">Profile Information</h2>
+                        
+                        <!-- Profile Photo -->
+                        <div class="flex items-center space-x-6 mb-8">
+                            <div class="relative">
+                                <img id="profilePhoto" src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150" alt="Profile photo" class="w-24 h-24 rounded-full object-cover" />
+                                <button id="cameraBtn" class="absolute bottom-0 right-0 bg-primary text-white rounded-full p-2 shadow-medium hover:bg-primary-700 transition-fast">
+                                    <i class="fas fa-camera text-sm"></i>
+                                </button>
+                                <input type="file" id="photoUpload" accept="image/*" class="hidden" />
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-medium text-text-primary">Profile Photo</h3>
+                                <p class="text-sm text-text-secondary mb-3">Upload a new profile picture. Recommended size: 400x400px</p>
+                                <div class="flex space-x-2">
+                                    <button id="uploadBtn" class="btn-secondary text-sm">Upload New</button>
+                                    <button id="removePhotoBtn" class="text-sm text-red-600 hover:text-red-700 px-3 py-1 rounded-md hover:bg-red-50 transition-fast">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Basic Information Form -->
+                        <form id="profileForm">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="displayName" class="block text-sm font-medium text-text-primary mb-2">Display Name *</label>
+                                    <input type="text" id="displayName" name="displayName" value="" class="input-field" required />
+                                </div>
+                                <div>
+                                    <label for="email" class="block text-sm font-medium text-text-primary mb-2">Email Address *</label>
+                                    <div class="relative">
+                                        <input type="email" id="email" name="email" value="" class="input-field pr-10" readonly />
+                                        <span id="emailVerified" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500 hidden">
+                                            <i class="fas fa-check-circle"></i>
+                                        </span>
+                                    </div>
+                                    <p id="emailStatus" class="text-xs text-text-secondary mt-1"></p>
+                                </div>
+                                <div>
+                                    <label for="firstName" class="block text-sm font-medium text-text-primary mb-2">First Name</label>
+                                    <input type="text" id="firstName" name="firstName" value="" class="input-field" />
+                                </div>
+                                <div>
+                                    <label for="lastName" class="block text-sm font-medium text-text-primary mb-2">Last Name</label>
+                                    <input type="text" id="lastName" name="lastName" value="" class="input-field" />
+                                </div>
+                                <div>
+                                    <label for="phoneNumber" class="block text-sm font-medium text-text-primary mb-2">Phone Number</label>
+                                    <input type="tel" id="phoneNumber" name="phoneNumber" value="" class="input-field" placeholder="+1 (555) 123-4567" />
+                                </div>
+                                <div>
+                                    <label for="dateOfBirth" class="block text-sm font-medium text-text-primary mb-2">Date of Birth</label>
+                                    <input type="date" id="dateOfBirth" name="dateOfBirth" value="" class="input-field" />
+                                </div>
+                                <div>
+                                    <label for="timezone" class="block text-sm font-medium text-text-primary mb-2">Timezone</label>
+                                    <select id="timezone" name="timezone" class="input-field">
+                                        <option value="">Select Timezone</option>
+                                        <option value="UTC-12">UTC-12 (Baker Island)</option>
+                                        <option value="UTC-11">UTC-11 (American Samoa)</option>
+                                        <option value="UTC-10">UTC-10 (Hawaii)</option>
+                                        <option value="UTC-9">UTC-9 (Alaska)</option>
+                                        <option value="UTC-8">UTC-8 (Pacific Time)</option>
+                                        <option value="UTC-7">UTC-7 (Mountain Time)</option>
+                                        <option value="UTC-6">UTC-6 (Central Time)</option>
+                                        <option value="UTC-5">UTC-5 (Eastern Time)</option>
+                                        <option value="UTC-4">UTC-4 (Atlantic Time)</option>
+                                        <option value="UTC-3">UTC-3 (Argentina)</option>
+                                        <option value="UTC-2">UTC-2 (South Georgia)</option>
+                                        <option value="UTC-1">UTC-1 (Azores)</option>
+                                        <option value="UTC+0">UTC+0 (London, Dublin)</option>
+                                        <option value="UTC+1">UTC+1 (Paris, Berlin)</option>
+                                        <option value="UTC+2">UTC+2 (Cairo, Athens)</option>
+                                        <option value="UTC+3">UTC+3 (Moscow, Istanbul)</option>
+                                        <option value="UTC+4">UTC+4 (Dubai, Baku)</option>
+                                        <option value="UTC+5">UTC+5 (Karachi, Tashkent)</option>
+                                        <option value="UTC+5:30">UTC+5:30 (Mumbai, Delhi)</option>
+                                        <option value="UTC+6">UTC+6 (Dhaka, Almaty)</option>
+                                        <option value="UTC+7">UTC+7 (Bangkok, Jakarta)</option>
+                                        <option value="UTC+8">UTC+8 (Beijing, Singapore)</option>
+                                        <option value="UTC+9">UTC+9 (Tokyo, Seoul)</option>
+                                        <option value="UTC+10">UTC+10 (Sydney, Melbourne)</option>
+                                        <option value="UTC+11">UTC+11 (Solomon Islands)</option>
+                                        <option value="UTC+12">UTC+12 (Fiji, Auckland)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="country" class="block text-sm font-medium text-text-primary mb-2">Country</label>
+                                    <select id="country" name="country" class="input-field">
+                                        <option value="">Select Country</option>
+                                        <option value="US">United States</option>
+                                        <option value="CA">Canada</option>
+                                        <option value="GB">United Kingdom</option>
+                                        <option value="AU">Australia</option>
+                                        <option value="DE">Germany</option>
+                                        <option value="FR">France</option>
+                                        <option value="IN">India</option>
+                                        <option value="JP">Japan</option>
+                                        <option value="CN">China</option>
+                                        <option value="BR">Brazil</option>
+                                        <!-- Add more countries as needed -->
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="city" class="block text-sm font-medium text-text-primary mb-2">City</label>
+                                    <input type="text" id="city" name="city" value="" class="input-field" placeholder="New York" />
+                                </div>
+                                <div>
+                                    <label for="profession" class="block text-sm font-medium text-text-primary mb-2">Profession</label>
+                                    <input type="text" id="profession" name="profession" value="" class="input-field" placeholder="Software Engineer" />
+                                </div>
+                                <div>
+                                    <label for="company" class="block text-sm font-medium text-text-primary mb-2">Company</label>
+                                    <input type="text" id="company" name="company" value="" class="input-field" placeholder="Company Name" />
+                                </div>
+                            </div>
+
+                            <div class="mt-6">
+                                <label for="bio" class="block text-sm font-medium text-text-primary mb-2">Bio</label>
+                                <textarea id="bio" name="bio" rows="4" class="input-field" placeholder="Tell us about yourself..."></textarea>
+                                <p class="text-xs text-text-secondary mt-1">Maximum 500 characters</p>
+                            </div>
+
+                            <!-- Learning Goals -->
+                            <div class="mt-6">
+                                <label for="learningGoals" class="block text-sm font-medium text-text-primary mb-2">Learning Goals</label>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="learningGoals" value="business_communication" class="mr-2" />
+                                        <span class="text-sm">Business Communication</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="learningGoals" value="job_interviews" class="mr-2" />
+                                        <span class="text-sm">Job Interviews</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="learningGoals" value="presentations" class="mr-2" />
+                                        <span class="text-sm">Presentations</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="learningGoals" value="casual_conversation" class="mr-2" />
+                                        <span class="text-sm">Casual Conversation</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="learningGoals" value="pronunciation" class="mr-2" />
+                                        <span class="text-sm">Pronunciation</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="learningGoals" value="fluency" class="mr-2" />
+                                        <span class="text-sm">Fluency</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Account Settings Section -->
+                <div id="account-section" class="settings-section hidden">
+                    <div class="card mb-6">
+                        <h2 class="text-xl font-heading font-semibold text-text-primary mb-6">Account Settings</h2>
+                        
+                        <!-- Password Change -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-medium text-text-primary mb-4">Change Password</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="currentPassword" class="block text-sm font-medium text-text-primary mb-2">Current Password</label>
+                                    <div class="relative">
+                                        <input type="password" id="currentPassword" class="input-field pr-10" />
+                                        <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-secondary hover:text-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="newPassword" class="block text-sm font-medium text-text-primary mb-2">New Password</label>
+                                    <div class="relative">
+                                        <input type="password" id="newPassword" class="input-field pr-10" />
+                                        <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-secondary hover:text-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="confirmPassword" class="block text-sm font-medium text-text-primary mb-2">Confirm New Password</label>
+                                    <div class="relative">
+                                        <input type="password" id="confirmPassword" class="input-field pr-10" />
+                                        <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-secondary hover:text-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <button class="btn-primary">Update Password</button>
+                            </div>
+                        </div>
+
+                        <!-- Email Notifications -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-medium text-text-primary mb-4">Email Notifications</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium text-text-primary">Practice Reminders</p>
+                                        <p class="text-sm text-text-secondary">Daily reminders to keep your learning streak</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked />
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium text-text-primary">Progress Reports</p>
+                                        <p class="text-sm text-text-secondary">Weekly progress summaries and achievements</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked />
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium text-text-primary">New Features</p>
+                                        <p class="text-sm text-text-secondary">Notifications about new features and updates</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" />
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium text-text-primary">Marketing Communications</p>
+                                        <p class="text-sm text-text-secondary">Tips, best practices, and promotional content</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" />
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Account Verification -->
+                        <div>
+                            <h3 class="text-lg font-medium text-text-primary mb-4">Account Verification</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                        <span class="text-sm font-medium text-green-800">Email Verified</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-exclamation-circle text-yellow-500 mr-3"></i>
+                                        <span class="text-sm font-medium text-yellow-800">Phone Verification Pending</span>
+                                    </div>
+                                    <button class="btn-secondary text-sm">Verify Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Learning Preferences Section -->
+                <div id="learning-section" class="settings-section hidden">
+                    <div class="card mb-6">
+                        <h2 class="text-xl font-heading font-semibold text-text-primary mb-6">Learning Preferences</h2>
+                        
+                        <!-- Accent Preference -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-medium text-text-primary mb-4">Accent Preference</h3>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                <label class="accent-option selected">
+                                    <input type="radio" name="accent" value="american" checked />
+                                    <div class="accent-card">
+                                        <i class="fas fa-flag-usa text-2xl mb-2"></i>
+                                        <span class="font-medium">American</span>
+                                    </div>
+                                </label>
+                                <label class="accent-option">
+                                    <input type="radio" name="accent" value="british" />
+                                    <div class="accent-card">
+                                        <i class="fas fa-crown text-2xl mb-2"></i>
+                                        <span class="font-medium">British</span>
+                                    </div>
+                                </label>
+                                <label class="accent-option">
+                                    <input type="radio" name="accent" value="australian" />
+                                    <div class="accent-card">
+                                        <i class="fas fa-leaf text-2xl mb-2"></i>
+                                        <span class="font-medium">Australian</span>
+                                    </div>
+                                </label>
+                                <label class="accent-option">
+                                    <input type="radio" name="accent" value="canadian" />
+                                    <div class="accent-card">
+                                        <i class="fas fa-maple-leaf text-2xl mb-2"></i>
+                                        <span class="font-medium">Canadian</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Difficulty Level -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-medium text-text-primary mb-4">Difficulty Level</h3>
+                            <div class="space-y-3">
+                                <label class="flex items-center p-3 border border-border rounded-lg cursor-pointer hover:bg-gray-50 transition-fast">
+                                    <input type="radio" name="difficulty" value="beginner" class="mr-3" />
+                                    <div>
+                                        <div class="font-medium text-text-primary">Beginner</div>
+                                        <div class="text-sm text-text-secondary">Basic vocabulary and simple conversations</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-center p-3 border border-primary bg-primary-50 rounded-lg cursor-pointer">
+                                    <input type="radio" name="difficulty" value="intermediate" checked class="mr-3" />
+                                    <div>
+                                        <div class="font-medium text-text-primary">Intermediate</div>
+                                        <div class="text-sm text-text-secondary">Moderate complexity with professional scenarios</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-center p-3 border border-border rounded-lg cursor-pointer hover:bg-gray-50 transition-fast">
+                                    <input type="radio" name="difficulty" value="advanced" class="mr-3" />
+                                    <div>
+                                        <div class="font-medium text-text-primary">Advanced</div>
+                                        <div class="text-sm text-text-secondary">Complex topics and nuanced communication</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Practice Session Duration -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-medium text-text-primary mb-4">Practice Session Duration</h3>
+                            <div class="flex items-center space-x-4">
+                                <span class="text-sm text-text-secondary">5 min</span>
+                                <input type="range" id="sessionDuration" min="5" max="60" value="15" class="flex-1" />
+                                <span class="text-sm text-text-secondary">60 min</span>
+                                <div class="ml-4 px-3 py-1 bg-primary-100 text-primary rounded-full text-sm font-medium">
+                                    <span id="durationValue">15</span> minutes
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Feedback Intensity -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-medium text-text-primary mb-4">AI Feedback Intensity</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <label class="flex items-center p-4 border border-border rounded-lg cursor-pointer hover:bg-gray-50 transition-fast">
+                                    <input type="radio" name="feedback" value="gentle" class="mr-3" />
+                                    <div class="text-center">
+                                        <i class="fas fa-feather text-2xl text-green-500 mb-2"></i>
+                                        <div class="font-medium text-text-primary">Gentle</div>
+                                        <div class="text-xs text-text-secondary">Focus on positive reinforcement</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-center p-4 border border-primary bg-primary-50 rounded-lg cursor-pointer">
+                                    <input type="radio" name="feedback" value="balanced" checked class="mr-3" />
+                                    <div class="text-center">
+                                        <i class="fas fa-balance-scale text-2xl text-blue-500 mb-2"></i>
+                                        <div class="font-medium text-text-primary">Balanced</div>
+                                        <div class="text-xs text-text-secondary">Mix of praise and constructive criticism</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-center p-4 border border-border rounded-lg cursor-pointer hover:bg-gray-50 transition-fast">
+                                    <input type="radio" name="feedback" value="intensive" class="mr-3" />
+                                    <div class="text-center">
+                                        <i class="fas fa-fire text-2xl text-red-500 mb-2"></i>
+                                        <div class="font-medium text-text-primary">Intensive</div>
+                                        <div class="text-xs text-text-secondary">Detailed corrections and suggestions</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Learning Goals -->
+                        <div>
+                            <h3 class="text-lg font-medium text-text-primary mb-4">Primary Learning Goals</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <label class="flex items-center p-3 border border-primary bg-primary-50 rounded-lg cursor-pointer">
+                                    <input type="checkbox" checked class="mr-3" />
+                                    <span class="font-medium text-text-primary">Job Interview Preparation</span>
+                                </label>
+                                <label class="flex items-center p-3 border border-border rounded-lg cursor-pointer hover:bg-gray-50 transition-fast">
+                                    <input type="checkbox" class="mr-3" />
+                                    <span class="font-medium text-text-primary">Presentation Skills</span>
+                                </label>
+                                <label class="flex items-center p-3 border border-border rounded-lg cursor-pointer hover:bg-gray-50 transition-fast">
+                                    <input type="checkbox" checked class="mr-3" />
+                                    <span class="font-medium text-text-primary">Business Communication</span>
+                                </label>
+                                <label class="flex items-center p-3 border border-border rounded-lg cursor-pointer hover:bg-gray-50 transition-fast">
+                                    <input type="checkbox" class="mr-3" />
+                                    <span class="font-medium text-text-primary">Pronunciation Improvement</span>
+                                </label>
+                                <label class="flex items-center p-3 border border-border rounded-lg cursor-pointer hover:bg-gray-50 transition-fast">
+                                    <input type="checkbox" class="mr-3" />
+                                    <span class="font-medium text-text-primary">Daily Conversation</span>
+                                </label>
+                                <label class="flex items-center p-3 border border-border rounded-lg cursor-pointer hover:bg-gray-50 transition-fast">
+                                    <input type="checkbox" class="mr-3" />
+                                    <span class="font-medium text-text-primary">Academic English</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Data Section -->
+                <div id="progress-section" class="settings-section hidden">
+                    <div class="card mb-6">
+                        <h2 class="text-xl font-heading font-semibold text-text-primary mb-6">Progress Data Management</h2>
+                        
+                        <!-- Export Data -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-medium text-text-primary mb-4">Export Learning Data</h3>
+                            <p class="text-text-secondary mb-4">Download your complete learning analytics and progress history</p>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <button class="flex items-center justify-center p-4 border border-border rounded-lg hover:bg-gray-50 transition-fast">
+                                    <i class="fas fa-file-csv text-primary text-2xl mr-3"></i>
+                                    <div>
+                                        <div class="font-medium text-text-primary">CSV Export</div>
+                                        <div class="text-xs text-text-secondary">Spreadsheet format</div>
+                                    </div>
+                                </button>
+                                <button class="flex items-center justify-center p-4 border border-border rounded-lg hover:bg-gray-50 transition-fast">
+                                    <i class="fas fa-file-pdf text-red-500 text-2xl mr-3"></i>
+                                    <div>
+                                        <div class="font-medium text-text-primary">PDF Report</div>
+                                        <div class="text-xs text-text-secondary">Formatted report</div>
+                                    </div>
+                                </button>
+                                <button class="flex items-center justify-center p-4 border border-border rounded-lg hover:bg-gray-50 transition-fast">
+                                    <i class="fas fa-database text-secondary text-2xl mr-3"></i>
+                                    <div>
+                                        <div class="font-medium text-text-primary">JSON Data</div>
+                                        <div class="text-xs text-text-secondary">Raw data format</div>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Reset Progress -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-medium text-text-primary mb-4">Reset Progress</h3>
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                                <div class="flex items-start">
+                                    <i class="fas fa-exclamation-triangle text-yellow-500 mr-3 mt-1"></i>
+                                    <div>
+                                        <p class="font-medium text-yellow-800">Warning: This action cannot be undone</p>
+                                        <p class="text-sm text-yellow-700 mt-1">Resetting your progress will permanently delete all practice session data, scores, and achievement records.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn-danger">
+                                <i class="fas fa-trash mr-2"></i>
+                                Reset All Progress
+                            </button>
+                        </div>
+
+                        <!-- Data Retention -->
+                        <div>
+                            <h3 class="text-lg font-medium text-text-primary mb-4">Data Retention Settings</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium text-text-primary">Auto-delete old recordings</p>
+                                        <p class="text-sm text-text-secondary">Automatically remove practice recordings after 90 days</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked />
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium text-text-primary">Keep detailed analytics</p>
+                                        <p class="text-sm text-text-secondary">Maintain granular performance data for progress tracking</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked />
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subscription Section -->
+                <div id="subscription-section" class="settings-section hidden">
+                    <div class="card mb-6">
+                        <h2 class="text-xl font-heading font-semibold text-text-primary mb-6">Subscription Management</h2>
+                        
+                        <!-- Current Plan -->
+                        <div class="mb-8">
+                            <div class="bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-lg p-6 mb-6">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="text-xl font-bold mb-2">Pro Plan</h3>
+                                        <p class="opacity-90">Full access to all features and unlimited practice sessions</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-2xl font-bold">$19</div>
+                                        <div class="opacity-90">/month</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="font-medium text-text-primary mb-3">Plan Details</h4>
+                                    <div class="space-y-2 text-sm">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-check text-green-500 mr-2"></i>
+                                            <span>Unlimited practice sessions</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fas fa-check text-green-500 mr-2"></i>
+                                            <span>Advanced AI feedback</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fas fa-check text-green-500 mr-2"></i>
+                                            <span>Detailed progress analytics</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fas fa-check text-green-500 mr-2"></i>
+                                            <span>Priority customer support</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-text-primary mb-3">Billing Information</h4>
+                                    <div class="space-y-2 text-sm text-text-secondary">
+                                        <div>Next billing date: <span class="font-medium text-text-primary">January 15, 2025</span></div>
+                                        <div>Payment method: <span class="font-medium text-text-primary">•••• 4242</span></div>
+                                        <div>Billing cycle: <span class="font-medium text-text-primary">Monthly</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Plan Comparison -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-medium text-text-primary mb-4">Available Plans</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <!-- Free Plan -->
+                                <div class="border border-border rounded-lg p-4">
+                                    <div class="text-center mb-4">
+                                        <h4 class="font-semibold text-text-primary">Free</h4>
+                                        <div class="text-2xl font-bold text-text-primary mt-2">$0</div>
+                                        <div class="text-sm text-text-secondary">/month</div>
+                                    </div>
+                                    <ul class="space-y-2 text-sm mb-4">
+                                        <li class="flex items-center">
+                                            <i class="fas fa-check text-green-500 mr-2"></i>
+                                            <span>5 practice sessions/month</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <i class="fas fa-check text-green-500 mr-2"></i>
+                                            <span>Basic feedback</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <i class="fas fa-times text-gray-400 mr-2"></i>
+                                            <span class="text-gray-400">Advanced analytics</span>
+                                        </li>
+                                    </ul>
+                                    <button class="w-full btn-secondary text-sm">Current Plan</button>
+                                </div>
+
+                                <!-- Pro Plan -->
+                                <div class="border-2 border-primary rounded-lg p-4 relative">
+                                    <div class="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                                        <span class="bg-primary text-white px-3 py-1 rounded-full text-xs font-medium">Current</span>
+                                    </div>
+                                    <div class="text-center mb-4">
+                                        <h4 class="font-semibold text-text-primary">Pro</h4>
+                                        <div class="text-2xl font-bold text-primary mt-2">$19</div>
+                                        <div class="text-sm text-text-secondary">/month</div>
+                                    </div>
+                                    <ul class="space-y-2 text-sm mb-4">
+                                        <li class="flex items-center">
+                                            <i class="fas fa-check text-green-500 mr-2"></i>
+                                            <span>Unlimited practice sessions</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <i class="fas fa-check text-green-500 mr-2"></i>
+                                            <span>Advanced AI feedback</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <i class="fas fa-check text-green-500 mr-2"></i>
+                                            <span>Detailed analytics</span>
+                                        </li>
+                                    </ul>
+                                    <button class="w-full btn-primary text-sm">Active</button>
+                                </div>
+
+                                <!-- Enterprise Plan -->
+                                <div class="border border-border rounded-lg p-4">
+                                    <div class="text-center mb-4">
+                                        <h4 class="font-semibold text-text-primary">Enterprise</h4>
+                                        <div class="text-2xl font-bold text-text-primary mt-2">$49</div>
+                                        <div class="text-sm text-text-secondary">/month</div>
+                                    </div>
+                                    <ul class="space-y-2 text-sm mb-4">
+                                        <li class="flex items-center">
+                                            <i class="fas fa-check text-green-500 mr-2"></i>
+                                            <span>Everything in Pro</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <i class="fas fa-check text-green-500 mr-2"></i>
+                                            <span>Custom training modules</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <i class="fas fa-check text-green-500 mr-2"></i>
+                                            <span>Team management</span>
+                                        </li>
+                                    </ul>
+                                    <button class="w-full btn-secondary text-sm">Upgrade</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Method -->
+                        <div>
+                            <h3 class="text-lg font-medium text-text-primary mb-4">Payment Methods</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-4 border border-border rounded-lg">
+                                    <div class="flex items-center">
+                                        <i class="fab fa-cc-visa text-2xl text-blue-600 mr-3"></i>
+                                        <div>
+                                            <div class="font-medium text-text-primary">•••• •••• •••• 4242</div>
+                                            <div class="text-sm text-text-secondary">Expires 12/2027</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">Primary</span>
+                                        <button class="text-sm text-text-secondary hover:text-primary">Edit</button>
+                                    </div>
+                                </div>
+                                <button class="w-full p-4 border-2 border-dashed border-border rounded-lg text-text-secondary hover:border-primary hover:text-primary transition-fast">
+                                    <i class="fas fa-plus mr-2"></i>
+                                    Add Payment Method
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accessibility Section -->
+                <div id="accessibility-section" class="settings-section hidden">
+                    <div class="card mb-6">
+                        <h2 class="text-xl font-heading font-semibold text-text-primary mb-6">Accessibility Settings</h2>
+                        
+                        <!-- Audio Settings -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-medium text-text-primary mb-4">Audio Preferences</h3>
+                            <div class="space-y-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-text-primary mb-2">Audio Feedback Volume</label>
+                                    <div class="flex items-center space-x-4">
+                                        <i class="fas fa-volume-down text-text-secondary"></i>
+                                        <input type="range" id="audioVolume" min="0" max="100" value="75" class="flex-1" />
+                                        <i class="fas fa-volume-up text-text-secondary"></i>
+                                        <div class="ml-4 px-3 py-1 bg-primary-100 text-primary rounded-full text-sm font-medium">
+                                            <span id="volumeValue">75</span>%
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-text-primary mb-2">Speech Playback Speed</label>
+                                    <div class="flex items-center space-x-4">
+                                        <span class="text-sm text-text-secondary">0.5x</span>
+                                        <input type="range" id="speechSpeed" min="0.5" max="2" step="0.1" value="1" class="flex-1" />
+                                        <span class="text-sm text-text-secondary">2x</span>
+                                        <div class="ml-4 px-3 py-1 bg-primary-100 text-primary rounded-full text-sm font-medium">
+                                            <span id="speedValue">1.0</span>x
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium text-text-primary">Audio Descriptions</p>
+                                        <p class="text-sm text-text-secondary">Descriptive audio for visual elements and interface actions</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" />
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visual Settings -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-medium text-text-primary mb-4">Visual Preferences</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-text-primary mb-3">Color Contrast</label>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                        <label class="flex items-center p-3 border border-primary bg-primary-50 rounded-lg cursor-pointer">
+                                            <input type="radio" name="contrast" value="normal" checked class="mr-3" />
+                                            <span class="font-medium text-text-primary">Normal</span>
+                                        </label>
+                                        <label class="flex items-center p-3 border border-border rounded-lg cursor-pointer hover:bg-gray-50 transition-fast">
+                                            <input type="radio" name="contrast" value="high" class="mr-3" />
+                                            <span class="font-medium text-text-primary">High Contrast</span>
+                                        </label>
+                                        <label class="flex items-center p-3 border border-border rounded-lg cursor-pointer hover:bg-gray-50 transition-fast">
+                                            <input type="radio" name="contrast" value="dark" class="mr-3" />
+                                            <span class="font-medium text-text-primary">Dark Mode</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-text-primary mb-2">Text Size</label>
+                                    <div class="flex items-center space-x-4">
+                                        <span class="text-sm text-text-secondary">Small</span>
+                                        <input type="range" id="textSize" min="12" max="24" value="16" class="flex-1" />
+                                        <span class="text-lg text-text-secondary">Large</span>
+                                        <div class="ml-4 px-3 py-1 bg-primary-100 text-primary rounded-full text-sm font-medium">
+                                            <span id="textSizeValue">16</span>px
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium text-text-primary">Reduce Motion Effects</p>
+                                        <p class="text-sm text-text-secondary">Minimize animations and transitions for better focus</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" />
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Keyboard Navigation -->
+                        <div>
+                            <h3 class="text-lg font-medium text-text-primary mb-4">Keyboard Navigation</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium text-text-primary">Enhanced Focus Indicators</p>
+                                        <p class="text-sm text-text-secondary">Show clear visual indicators for keyboard-focused elements</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked />
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium text-text-primary">Keyboard Shortcuts</p>
+                                        <p class="text-sm text-text-secondary">Enable keyboard shortcuts for quick navigation and actions</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked />
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="bg-gray-50 rounded-lg p-4">
+                                    <h4 class="font-medium text-text-primary mb-2">Common Shortcuts</h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                                        <div class="flex justify-between">
+                                            <span class="text-text-secondary">Start Practice:</span>
+                                            <span class="font-mono bg-white px-2 py-1 rounded">Space</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-text-secondary">Stop Recording:</span>
+                                            <span class="font-mono bg-white px-2 py-1 rounded">Esc</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-text-secondary">Replay Audio:</span>
+                                            <span class="font-mono bg-white px-2 py-1 rounded">R</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-text-secondary">Next Question:</span>
+                                            <span class="font-mono bg-white px-2 py-1 rounded">→</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Privacy & Security Section -->
+                <div id="privacy-section" class="settings-section hidden">
+                    <div class="card mb-6">
+                        <h2 class="text-xl font-heading font-semibold text-text-primary mb-6">Privacy & Security</h2>
+                        
+                        <!-- Data Privacy -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-medium text-text-primary mb-4">Data Privacy Controls</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium text-text-primary">Analytics Data Sharing</p>
+                                        <p class="text-sm text-text-secondary">Share anonymized usage data to help improve the platform</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked />
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium text-text-primary">Voice Recording Storage</p>
+                                        <p class="text-sm text-text-secondary">Store voice recordings for AI analysis and improvement</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked />
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium text-text-primary">Third-party Integrations</p>
+                                        <p class="text-sm text-text-secondary">Allow data sharing with authorized third-party services</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" />
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Security Settings -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-medium text-text-primary mb-4">Security Settings</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-4 bg-green-50 border border-green-200 rounded-lg">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-shield-check text-green-500 mr-3"></i>
+                                        <div>
+                                            <p class="font-medium text-green-800">Two-Factor Authentication</p>
+                                            <p class="text-sm text-green-600">Active via SMS to +1 (555) ***-4567</p>
+                                        </div>
+                                    </div>
+                                    <button class="btn-secondary text-sm">Manage</button>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium text-text-primary">Login Notifications</p>
+                                        <p class="text-sm text-text-secondary">Get notified when your account is accessed from a new device</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked />
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium text-text-primary">Session Timeout</p>
+                                        <p class="text-sm text-text-secondary">Automatically log out after 30 minutes of inactivity</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" />
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Account Deletion -->
+                        <div>
+                            <h3 class="text-lg font-medium text-text-primary mb-4">Account Management</h3>
+                            <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+                                <div class="flex items-start">
+                                    <i class="fas fa-exclamation-triangle text-red-500 mr-4 mt-1"></i>
+                                    <div class="flex-1">
+                                        <h4 class="font-medium text-red-800 mb-2">Delete Account</h4>
+                                        <p class="text-sm text-red-700 mb-4">
+                                            Permanently delete your account and all associated data. This action cannot be undone.
+                                            All practice sessions, progress data, and recordings will be permanently removed.
+                                        </p>
+                                        <div class="space-y-3">
+                                            <div class="text-sm text-red-700">
+                                                <p class="font-medium mb-1">This will delete:</p>
+                                                <ul class="list-disc list-inside space-y-1 ml-4">
+                                                    <li>All practice session recordings and transcripts</li>
+                                                    <li>Progress data and performance analytics</li>
+                                                    <li>Achievement badges and learning streaks</li>
+                                                    <li>Account settings and preferences</li>
+                                                    <li>Subscription and billing information</li>
+                                                </ul>
+                                            </div>
+                                            <button class="btn-danger">
+                                                <i class="fas fa-trash mr-2"></i>
+                                                Delete My Account
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-border mt-16">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <svg class="h-8 w-8 text-primary mr-2" viewBox="0 0 40 40" fill="currentColor">
+                        <circle cx="20" cy="20" r="18" fill="currentColor" opacity="0.1"/>
+                        <path d="M12 16c0-4.4 3.6-8 8-8s8 3.6 8 8v8c0 4.4-3.6 8-8 8s-8-3.6-8-8v-8zm8-6c-3.3 0-6 2.7-6 6v8c0 3.3 2.7 6 6 6s6-2.7 6-6v-8c0-3.3-2.7-6-6-6z"/>
+                        <circle cx="20" cy="16" r="2" fill="currentColor"/>
+                    </svg>
+                    <span class="text-text-primary font-medium">ProSpeak AI</span>
+                </div>
+                <div class="flex space-x-6 text-sm text-text-secondary">
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Privacy Policy</a>
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Terms of Service</a>
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Support</a>
+                </div>
+                <div class="text-sm text-text-secondary mt-4 md:mt-0">
+                    © 2025 ProSpeak AI. All Rights Reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom Styles -->
+    <style>
+        /* Settings Navigation */
+        .settings-nav-item {
+            @apply w-full flex items-center space-x-3 px-4 py-3 text-left text-text-secondary hover:text-primary hover:bg-primary-50 rounded-lg transition-fast;
+        }
+        .settings-nav-item.active {
+            @apply text-primary bg-primary-100 font-medium;
+        }
+        .settings-nav-item i {
+            @apply w-5 h-5 flex items-center justify-center;
+        }
+
+        /* Settings Sections */
+        .settings-section {
+            @apply space-y-6;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            @apply relative inline-block w-12 h-6;
+        }
+        .toggle-switch input {
+            @apply sr-only;
+        }
+        .toggle-slider {
+            @apply absolute inset-0 bg-gray-300 rounded-full cursor-pointer transition-colors duration-200;
+        }
+        .toggle-slider:before {
+            @apply absolute left-1 top-1 bg-white rounded-full h-4 w-4 transition-transform duration-200;
+            content: '';
+        }
+        .toggle-switch input:checked + .toggle-slider {
+            @apply bg-primary;
+        }
+        .toggle-switch input:checked + .toggle-slider:before {
+            @apply transform translate-x-6;
+        }
+
+        /* Accent Options */
+        .accent-option {
+            @apply cursor-pointer;
+        }
+        .accent-option input {
+            @apply sr-only;
+        }
+        .accent-card {
+            @apply flex flex-col items-center justify-center p-4 border border-border rounded-lg hover:border-primary transition-fast text-center;
+        }
+        .accent-option.selected .accent-card {
+            @apply border-primary bg-primary-50 text-primary;
+        }
+
+        /* Range Sliders */
+        input[type="range"] {
+            @apply w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            @apply appearance-none w-5 h-5 bg-primary rounded-full cursor-pointer;
+        }
+        input[type="range"]::-moz-range-thumb {
+            @apply w-5 h-5 bg-primary rounded-full cursor-pointer border-0;
+        }
+
+        /* Danger Button */
+        .btn-danger {
+            @apply px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-fast font-medium;
+        }
+    </style>
+
+    <!-- Profile Settings JavaScript -->
+    <script>
+        // Store original form data for reset functionality
+        let originalFormData = {};
+        let hasUnsavedChanges = false;
+        
+        // Global initialization state
+        window.profileSettingsInitialized = false;
+        
+        // Cleanup function
+        window.cleanupProfileSettings = function() {
+            console.log('Cleaning up Profile Settings...');
+            
+            // Reset state
+            originalFormData = {};
+            hasUnsavedChanges = false;
+            window.profileSettingsInitialized = false;
+            
+            console.log('Profile Settings cleaned up');
+        };
+        
+        // Initialize function
+        function initializeProfileSettings() {
+            if (window.profileSettingsInitialized) {
+                console.log('Profile Settings already initialized');
+                return;
+            }
+            
+            console.log('Profile settings page loaded');
+            
+            // Check if API client is available
+            if (!window.api) {
+                console.error('❌ API client not found! Make sure api.js is loaded.');
+                return;
+            }
+            
+            // Check authentication
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                console.warn('⚠️ No authentication token found. User may need to login.');
+            } else {
+                console.log('✅ Authentication token found');
+            }
+            
+            console.log('✅ API client initialized:', window.api);
+            
+            // Setup profile photo upload
+            setupProfilePhotoUpload();
+            
+            // Setup settings navigation
+            setupSettingsNavigation();
+            
+            // Setup form handlers
+            setupFormHandlers();
+            
+            // Load user profile data
+            loadUserProfileData();
+            
+            // Setup change tracking
+            setupChangeTracking();
+            
+            window.profileSettingsInitialized = true;
+            console.log('Profile Settings initialized successfully');
+        }
+        
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeProfileSettings);
+        } else {
+            initializeProfileSettings();
+        }
+        
+        function setupProfilePhotoUpload() {
+            const cameraBtn = document.getElementById('cameraBtn');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const photoUpload = document.getElementById('photoUpload');
+            const profilePhoto = document.getElementById('profilePhoto');
+            
+            if (photoUpload) {
+                // Camera button click handler
+                if (cameraBtn) {
+                    cameraBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        photoUpload.click();
+                    });
+                }
+                
+                // Upload button click handler
+                if (uploadBtn) {
+                    uploadBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        photoUpload.click();
+                    });
+                }
+                
+                // File selection handler
+                photoUpload.addEventListener('change', async function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        try {
+                            // Use the global function from user-common.js
+                            if (window.handleProfilePhotoUpload) {
+                                await window.handleProfilePhotoUpload(file);
+                                hasUnsavedChanges = true;
+                                updateSaveButtonState();
+                            } else {
+                                // Fallback if function not available
+                                await handleLocalPhotoUpload(file);
+                            }
+                        } catch (error) {
+                            console.error('Photo upload failed:', error);
+                        }
+                        
+                        // Clear the input
+                        photoUpload.value = '';
+                    }
+                });
+            }
+            
+            console.log('Profile photo upload setup complete');
+        }
+        
+        // Fallback photo upload function
+        async function handleLocalPhotoUpload(file) {
+            try {
+                // Validate file
+                if (!file.type.startsWith('image/')) {
+                    throw new Error('Please select a valid image file');
+                }
+                
+                if (file.size > 5 * 1024 * 1024) {
+                    throw new Error('Image size must be less than 5MB');
+                }
+                
+                // Show loading
+                const cameraBtn = document.getElementById('cameraBtn');
+                const profilePhoto = document.getElementById('profilePhoto');
+                
+                if (cameraBtn) {
+                    cameraBtn.innerHTML = '<i class="fas fa-spinner fa-spin text-sm"></i>';
+                    cameraBtn.disabled = true;
+                }
+                
+                // Create preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if (profilePhoto) {
+                        profilePhoto.src = e.target.result;
+                    }
+                    
+                    // Update header avatar too
+                    const userAvatar = document.getElementById('userAvatar');
+                    if (userAvatar) {
+                        userAvatar.src = e.target.result;
+                    }
+                };
+                reader.readAsDataURL(file);
+                
+                // Simulate upload (replace with actual API call)
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Show success message
+                if (window.notifications) {
+                    window.notifications.success('Profile photo updated successfully!');
+                } else {
+                    alert('Profile photo updated successfully!');
+                }
+                
+            } catch (error) {
+                if (window.notifications) {
+                    window.notifications.error(error.message);
+                } else {
+                    alert(error.message);
+                }
+            } finally {
+                // Reset button
+                const cameraBtn = document.getElementById('cameraBtn');
+                if (cameraBtn) {
+                    cameraBtn.innerHTML = '<i class="fas fa-camera text-sm"></i>';
+                    cameraBtn.disabled = false;
+                }
+            }
+        }
+        
+        function setupSettingsNavigation() {
+            const navItems = document.querySelectorAll('.settings-nav-item');
+            const sections = document.querySelectorAll('.settings-section');
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const targetSection = this.dataset.section;
+                    
+                    // Update active nav item
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show target section
+                    sections.forEach(section => {
+                        if (section.id === targetSection + '-section') {
+                            section.style.display = 'block';
+                        } else {
+                            section.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        }
+        
+        // Load user profile data from database
+        async function loadUserProfileData() {
+            try {
+                console.log('Loading user profile data...');
+                
+                // Check if API client is available
+                if (!window.api) {
+                    console.warn('API client not initialized');
+                    return;
+                }
+                
+                // Check if user is authenticated
+                const token = localStorage.getItem('access_token');
+                if (!token) {
+                    console.warn('User not logged in');
+                    return;
+                }
+                
+                // Get profile settings from API
+                const response = await window.api.request('/profile/settings', {
+                    method: 'GET'
+                });
+                
+                if (response.success && response.profile) {
+                    const profile = response.profile;
+                    console.log('User profile data loaded:', profile);
+                    
+                    // Populate form fields
+                    populateFormFields(profile);
+                    
+                    // Store original data for reset functionality
+                    originalFormData = { ...profile };
+                    
+                    // Mark form as clean
+                    hasUnsavedChanges = false;
+                    updateSaveButtonState();
+                } else {
+                    throw new Error('Failed to load profile settings');
+                }
+                
+            } catch (error) {
+                console.error('Failed to load user profile data:', error);
+                if (window.notifications) {
+                    window.notifications.error('Failed to load profile data');
+                }
+            }
+        }
+        
+        // Populate form fields with user data
+        function populateFormFields(profile) {
+            // Basic information
+            setFieldValue('displayName', profile.displayName || '');
+            setFieldValue('email', profile.email || '');
+            setFieldValue('firstName', profile.firstName || '');
+            setFieldValue('lastName', profile.lastName || '');
+            setFieldValue('phoneNumber', profile.phoneNumber || '');
+            setFieldValue('dateOfBirth', profile.dateOfBirth || '');
+            setFieldValue('timezone', profile.timezone || '');
+            setFieldValue('country', profile.country || '');
+            setFieldValue('city', profile.city || '');
+            setFieldValue('profession', profile.profession || '');
+            setFieldValue('company', profile.company || '');
+            setFieldValue('bio', profile.bio || '');
+            
+            // Profile photo
+            const profilePhoto = document.getElementById('profilePhoto');
+            if (profilePhoto && profile.profile_picture) {
+                profilePhoto.src = profile.profile_picture;
+            }
+            
+            // Learning goals (checkboxes)
+            const checkboxes = document.querySelectorAll('input[name="learningGoals"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false; // Reset all first
+            });
+            
+            if (profile.learningGoals && Array.isArray(profile.learningGoals)) {
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = profile.learningGoals.includes(checkbox.value);
+                });
+            }
+            
+            // Email verification status
+            const emailVerified = document.getElementById('emailVerified');
+            const emailStatus = document.getElementById('emailStatus');
+            if (profile.emailVerified) {
+                if (emailVerified) emailVerified.classList.remove('hidden');
+                if (emailStatus) {
+                    emailStatus.textContent = '✓ Verified';
+                    emailStatus.className = 'text-xs text-green-600 mt-1';
+                }
+            } else {
+                if (emailVerified) emailVerified.classList.add('hidden');
+                if (emailStatus) {
+                    emailStatus.textContent = '⚠ Not verified';
+                    emailStatus.className = 'text-xs text-yellow-600 mt-1';
+                }
+            }
+            
+            console.log('Form fields populated successfully');
+        }
+        
+        // Helper function to set field value safely
+        function setFieldValue(fieldId, value) {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.value = value || '';
+            }
+        }
+        
+        // Save profile data to database
+        async function saveProfileData() {
+            try {
+                console.log('Saving profile data...');
+                
+                // Check if API client is available
+                if (!window.api) {
+                    throw new Error('API client not initialized');
+                }
+                
+                // Check if user is authenticated
+                const token = localStorage.getItem('access_token');
+                if (!token) {
+                    throw new Error('Not authenticated. Please login again.');
+                }
+                
+                // Get form data
+                const formData = getFormData();
+                
+                // Validate required fields
+                if (!formData.displayName || !formData.email) {
+                    throw new Error('Display name and email are required');
+                }
+                
+                // Show loading state
+                const saveBtn = document.querySelector('.btn-primary');
+                const originalText = saveBtn.textContent;
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
+                saveBtn.disabled = true;
+                
+                // Save to database
+                const response = await window.api.request('/profile/update', {
+                    method: 'POST',
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.success) {
+                    // Update original data
+                    originalFormData = { ...formData };
+                    hasUnsavedChanges = false;
+                    updateSaveButtonState();
+                    
+                    // Update global user data
+                    if (window.currentUser) {
+                        Object.assign(window.currentUser, formData);
+                    }
+                    
+                    // Update UI elements across the app
+                    updateUIElements(formData);
+                    
+                    // Show success message
+                    if (window.notifications) {
+                        window.notifications.success('Profile updated successfully!');
+                    } else {
+                        alert('Profile updated successfully!');
+                    }
+                } else {
+                    throw new Error(response.message || 'Failed to save profile');
+                }
+                
+            } catch (error) {
+                console.error('Failed to save profile data:', error);
+                if (window.notifications) {
+                    window.notifications.error(error.message || 'Failed to save profile');
+                } else {
+                    alert(error.message || 'Failed to save profile');
+                }
+            } finally {
+                // Reset button state
+                const saveBtn = document.querySelector('.btn-primary');
+                saveBtn.innerHTML = '<i class="fas fa-save mr-2"></i>Save Changes';
+                saveBtn.disabled = false;
+            }
+        }
+        
+        // Get form data as object
+        function getFormData() {
+            const form = document.getElementById('profileForm');
+            const formData = new FormData(form);
+            const data = {};
+            
+            // Convert FormData to object
+            for (let [key, value] of formData.entries()) {
+                if (key === 'learningGoals') {
+                    // Handle multiple checkboxes
+                    if (!data.learningGoals) {
+                        data.learningGoals = [];
+                    }
+                    data.learningGoals.push(value);
+                } else {
+                    data[key] = value;
+                }
+            }
+            
+            // Get unchecked learning goals
+            if (!data.learningGoals) {
+                data.learningGoals = [];
+            }
+            
+            return data;
+        }
+        
+        // Reset form to original data
+        function resetFormData() {
+            if (confirm('Are you sure you want to reset all changes? Any unsaved changes will be lost.')) {
+                populateFormFields(originalFormData);
+                hasUnsavedChanges = false;
+                updateSaveButtonState();
+                
+                if (window.notifications) {
+                    window.notifications.info('Form reset to original values');
+                }
+            }
+        }
+        
+        // Remove profile photo
+        async function removeProfilePhoto() {
+            if (confirm('Are you sure you want to remove your profile photo?')) {
+                try {
+                    // Show loading state
+                    const removeBtn = document.getElementById('removePhotoBtn');
+                    const originalText = removeBtn.textContent;
+                    removeBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Removing...';
+                    removeBtn.disabled = true;
+                    
+                    // Call API to remove photo
+                    if (window.api && window.api.token) {
+                        await window.api.request('/profile/remove-picture', {
+                            method: 'POST'
+                        });
+                    }
+                    
+                    // Reset to default image
+                    const defaultImage = 'https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+                    
+                    // Update all avatar elements
+                    const avatarElements = document.querySelectorAll('#profilePhoto, #userAvatar, [id*="avatar"], [id*="Avatar"]');
+                    avatarElements.forEach(element => {
+                        if (element.tagName === 'IMG') {
+                            element.src = defaultImage;
+                        }
+                    });
+                    
+                    // Update global user data
+                    if (window.currentUser) {
+                        window.currentUser.profile_picture = null;
+                    }
+                    
+                    // Show success message
+                    if (window.notifications) {
+                        window.notifications.success('Profile photo removed successfully');
+                    }
+                    
+                } catch (error) {
+                    console.error('Failed to remove profile photo:', error);
+                    if (window.notifications) {
+                        window.notifications.error('Failed to remove profile photo');
+                    }
+                } finally {
+                    // Reset button state
+                    const removeBtn = document.getElementById('removePhotoBtn');
+                    removeBtn.textContent = 'Remove';
+                    removeBtn.disabled = false;
+                }
+            }
+        }
+        
+        // Update UI elements across the app
+        function updateUIElements(userData) {
+            // Update header name
+            const userNameElement = document.getElementById('userName');
+            if (userNameElement && userData.displayName) {
+                userNameElement.textContent = userData.displayName;
+            }
+            
+            // Update welcome messages
+            const welcomeElements = document.querySelectorAll('[id*="welcome"], [id*="Welcome"]');
+            welcomeElements.forEach(element => {
+                if (userData.displayName) {
+                    const firstName = userData.displayName.split(' ')[0];
+                    element.textContent = `Welcome back, ${firstName}!`;
+                }
+            });
+        }
+        
+        // Setup change tracking
+        function setupChangeTracking() {
+            const form = document.getElementById('profileForm');
+            if (form) {
+                // Track changes on all form inputs
+                const inputs = form.querySelectorAll('input, select, textarea');
+                inputs.forEach(input => {
+                    input.addEventListener('input', function() {
+                        hasUnsavedChanges = true;
+                        updateSaveButtonState();
+                    });
+                    
+                    input.addEventListener('change', function() {
+                        hasUnsavedChanges = true;
+                        updateSaveButtonState();
+                    });
+                });
+            }
+            
+            // Warn before leaving page with unsaved changes
+            window.addEventListener('beforeunload', function(e) {
+                if (hasUnsavedChanges) {
+                    e.preventDefault();
+                    e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+                    return e.returnValue;
+                }
+            });
+        }
+        
+        // Update save button state based on changes
+        function updateSaveButtonState() {
+            const saveBtn = document.querySelector('.btn-primary');
+            if (saveBtn) {
+                if (hasUnsavedChanges) {
+                    saveBtn.classList.remove('opacity-50');
+                    saveBtn.disabled = false;
+                } else {
+                    saveBtn.classList.add('opacity-50');
+                    saveBtn.disabled = true;
+                }
+            }
+        }
+        
+        function setupFormHandlers() {
+            // Setup save button
+            const saveBtn = document.querySelector('.btn-primary');
+            if (saveBtn) {
+                saveBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    saveProfileData();
+                });
+            }
+            
+            // Setup reset button
+            const resetBtn = document.querySelector('.btn-secondary');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    resetFormData();
+                });
+            }
+            
+            // Setup remove photo button
+            const removePhotoBtn = document.getElementById('removePhotoBtn');
+            if (removePhotoBtn) {
+                removePhotoBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    removeProfilePhoto();
+                });
+            }
+        }
+    </script>
+
+    <!-- Load API Client -->
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/user-common.js') }}"></script>
+
+    <!-- JavaScript for Settings Functionality -->
+    <script>
+        function setupProfilePhotoUpload() {
+            const photoUpload = document.getElementById('photoUpload');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const cameraBtn = document.getElementById('cameraBtn');
+            const removePhotoBtn = document.getElementById('removePhotoBtn');
+            const profilePhoto = document.getElementById('profilePhoto');
+            
+            console.log('Profile photo elements:', {
+                photoUpload: !!photoUpload,
+                uploadBtn: !!uploadBtn,
+                cameraBtn: !!cameraBtn,
+                removePhotoBtn: !!removePhotoBtn,
+                profilePhoto: !!profilePhoto
+            });
+            
+            if (!photoUpload || !uploadBtn || !cameraBtn || !removePhotoBtn || !profilePhoto) {
+                console.error('Some profile photo elements not found');
+                return;
+            }
+            
+            // Upload button click
+            uploadBtn.addEventListener('click', function() {
+                console.log('Upload button clicked');
+                photoUpload.click();
+            });
+            
+            // Camera button click
+            cameraBtn.addEventListener('click', function() {
+                console.log('Camera button clicked');
+                photoUpload.click();
+            });
+            
+            // File selection
+            photoUpload.addEventListener('change', async function(e) {
+                console.log('File input changed');
+                const file = e.target.files[0];
+                if (file) {
+                    console.log('File selected:', file.name, file.type, file.size);
+                    // Validate file type
+                    if (!file.type.startsWith('image/')) {
+                        alert('Please select an image file.');
+                        return;
+                    }
+                    
+                    // Validate file size (max 5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('File size must be less than 5MB.');
+                        return;
+                    }
+                    
+                    // Read and display the image
+                    const reader = new FileReader();
+                    reader.onload = async function(e) {
+                        const imageUrl = e.target.result;
+                        profilePhoto.src = imageUrl;
+                        
+                        // Update avatar across all pages
+                        if (typeof updateUserAvatar === 'function') {
+                            try {
+                                await updateUserAvatar(imageUrl);
+                                // Show success message
+                                showMessage('Profile photo updated successfully!', 'success');
+                            } catch (error) {
+                                console.error('Failed to update avatar:', error);
+                                showMessage('Failed to save profile photo. Please try again.', 'error');
+                            }
+                        } else {
+                            // Show success message even if updateUserAvatar is not available
+                            showMessage('Profile photo updated successfully!', 'success');
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Remove photo
+            removePhotoBtn.addEventListener('click', async function() {
+                const defaultAvatar = 'https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+                profilePhoto.src = defaultAvatar;
+                
+                // Update avatar across all pages
+                if (typeof updateUserAvatar === 'function') {
+                    await updateUserAvatar(defaultAvatar);
+                }
+                
+                showMessage('Profile photo removed.', 'info');
+            });
+        }
+        
+        function showMessage(message, type) {
+            // Remove existing messages
+            const existingMessage = document.querySelector('.settings-message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+            
+            // Create message element
+            const messageDiv = document.createElement('div');
+            let bgColor = 'bg-red-500 text-white';
+            if (type === 'success') bgColor = 'bg-green-500 text-white';
+            if (type === 'info') bgColor = 'bg-blue-500 text-white';
+            
+            messageDiv.className = `settings-message fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 ${bgColor}`;
+            messageDiv.textContent = message;
+            
+            document.body.appendChild(messageDiv);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 3000);
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Profile settings page loaded');
+            
+            // Profile photo upload functionality
+            setupProfilePhotoUpload();
+            
+            // Settings Navigation
+            const navItems = document.querySelectorAll('.settings-nav-item');
+            const sections = document.querySelectorAll('.settings-section');
+
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const sectionId = this.dataset.section;
+                    
+                    // Update navigation
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show/hide sections
+                    sections.forEach(section => {
+                        if (section.id === `${sectionId}-section`) {
+                            section.classList.remove('hidden');
+                        } else {
+                            section.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            // Range Sliders
+            const sessionDurationSlider = document.getElementById('sessionDuration');
+            const durationValue = document.getElementById('durationValue');
+            
+            if (sessionDurationSlider) {
+                sessionDurationSlider.addEventListener('input', function() {
+                    durationValue.textContent = this.value;
+                });
+            }
+
+            const audioVolumeSlider = document.getElementById('audioVolume');
+            const volumeValue = document.getElementById('volumeValue');
+            
+            if (audioVolumeSlider) {
+                audioVolumeSlider.addEventListener('input', function() {
+                    volumeValue.textContent = this.value;
+                });
+            }
+
+            const speechSpeedSlider = document.getElementById('speechSpeed');
+            const speedValue = document.getElementById('speedValue');
+            
+            if (speechSpeedSlider) {
+                speechSpeedSlider.addEventListener('input', function() {
+                    speedValue.textContent = parseFloat(this.value).toFixed(1);
+                });
+            }
+
+            const textSizeSlider = document.getElementById('textSize');
+            const textSizeValue = document.getElementById('textSizeValue');
+            
+            if (textSizeSlider) {
+                textSizeSlider.addEventListener('input', function() {
+                    textSizeValue.textContent = this.value;
+                });
+            }
+
+            // Accent Selection
+            const accentOptions = document.querySelectorAll('.accent-option');
+            accentOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    accentOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+
+            // Password visibility toggles
+            document.querySelectorAll('[type="password"] + button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const input = this.previousElementSibling;
+                    const icon = this.querySelector('i');
+                    
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                });
+            });
+
+            // Danger actions with confirmation
+            document.querySelectorAll('.btn-danger').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const action = this.textContent.trim();
+                    if (confirm(`Are you sure you want to ${action.toLowerCase()}? This action cannot be undone.`)) {
+                        // Implement the actual action here
+                        console.log(`${action} confirmed`);
+                    }
+                });
+            });
+
+            // Save Changes
+            document.querySelector('.btn-primary').addEventListener('click', function() {
+                // Simulate saving
+                this.innerHTML = '<i class="fas fa-check mr-2"></i>Saved!';
+                this.classList.add('bg-green-600');
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-save mr-2"></i>Save Changes';
+                    this.classList.remove('bg-green-600');
+                }, 2000);
+            });
+        });
+    </script>
+
+    <!-- Load API Client -->
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/user-common.js') }}"></script>
+
+</body>
+</html>

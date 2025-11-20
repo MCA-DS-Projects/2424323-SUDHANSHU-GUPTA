@@ -1,0 +1,1939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interview Simulator - ProSpeak AI</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}" />
+    <link rel="alternate icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='favicon.svg') }}" />
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  
+  <script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fprospeaka9282back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.9"></script>
+  <script type="module" src="https://static.rocket.new/rocket-shot.js?v=0.0.1"></script>
+  </head>
+<body class="bg-gradient-to-br from-primary-50 via-white to-secondary-50 min-h-screen">
+    <!-- Header -->
+    {% include 'partials/user_header.html' %}
+
+    <!-- Main Content -->
+    <main class="flex-1 py-6 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <!-- Page Header -->
+            <div class="mb-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-heading font-bold text-text-primary">Interview Simulator</h1>
+                        <p class="text-text-secondary mt-1">Practice with AI-powered realistic job interview scenarios</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="text-sm text-text-secondary">
+                            <i class="fas fa-clock mr-1"></i>
+                            Session: <span id="sessionTimer" class="font-medium text-primary">00:00</span>
+                        </div>
+                        <button id="endSession" class="btn-outline text-sm px-4 py-2">
+                            <i class="fas fa-stop mr-2"></i>
+                            End Session
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-4 gap-6">
+                <!-- Main Interview Area -->
+                <div class="lg:col-span-3 space-y-6">
+                    <!-- Interview Question Display -->
+                    <div class="card-elevated">
+                        <div class="relative bg-gradient-to-br from-primary-50 via-white to-secondary-50 rounded-lg p-8 md:p-12" style="min-height: 400px;">
+                            <!-- Question Header -->
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+                                        <i class="fas fa-question text-white text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-text-secondary">Interview Question</p>
+                                        <p id="questionCounter" class="text-lg font-semibold text-primary">Question 1 of 8</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span id="difficultyBadge" class="text-xs font-medium text-warning bg-warning-100 px-3 py-1 rounded-full">Medium</span>
+                                    <span id="categoryBadge" class="text-xs font-medium text-secondary bg-secondary-100 px-3 py-1 rounded-full">Behavioral</span>
+                                </div>
+                            </div>
+
+                            <!-- Main Question Display -->
+                            <div class="flex items-center justify-center" style="min-height: 250px;">
+                                <div class="text-center max-w-4xl">
+                                    <!-- Loading State -->
+                                    <div id="questionLoading" class="hidden">
+                                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                                        <p class="text-text-secondary">Generating your next question...</p>
+                                    </div>
+                                    
+                                    <!-- Question Text -->
+                                    <div id="questionDisplay">
+                                        <i class="fas fa-quote-left text-primary text-2xl mb-4 opacity-50"></i>
+                                        <p id="mainQuestionText" class="text-2xl md:text-3xl lg:text-4xl font-heading font-bold text-text-primary leading-relaxed mb-4">
+                                            Tell me about yourself and why you're interested in this position.
+                                        </p>
+                                        <i class="fas fa-quote-right text-primary text-2xl opacity-50"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question Navigation Hints -->
+                            <div class="absolute bottom-6 left-6 right-6">
+                                <div class="flex items-center justify-between text-xs text-text-secondary">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-lightbulb text-warning"></i>
+                                        <span id="questionHint">Take your time to think before answering</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Response Recording Area -->
+                    <div class="card">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-heading font-semibold text-text-primary">Your Response</h3>
+                            <div class="flex items-center space-x-3">
+                                <div class="text-sm text-text-secondary">
+                                    <i class="fas fa-microphone mr-1"></i>
+                                    <span id="recordingTimer">00:00</span>
+                                </div>
+                                <div class="flex items-center space-x-1">
+                                    <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
+                                    <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
+                                    <div class="w-2 h-2 bg-secondary rounded-full animate-pulse"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recording Controls -->
+                        <div class="flex items-center justify-center space-x-4 mb-6">
+                            <button id="recordBtn" class="w-16 h-16 bg-accent text-white rounded-full flex items-center justify-center hover:bg-accent-700 transition-fast shadow-lg">
+                                <i class="fas fa-microphone text-xl"></i>
+                            </button>
+                            <button id="pauseBtn" class="w-12 h-12 bg-warning text-white rounded-full flex items-center justify-center hover:bg-warning-700 transition-fast" disabled>
+                                <i class="fas fa-pause"></i>
+                            </button>
+                            <button id="stopBtn" class="w-12 h-12 bg-gray-400 text-white rounded-full flex items-center justify-center hover:bg-gray-600 transition-fast" disabled>
+                                <i class="fas fa-stop"></i>
+                            </button>
+                            <button id="playbackBtn" class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary-700 transition-fast" disabled>
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+
+                        <!-- Real-time Speech Recognition -->
+                        <div class="bg-gray-50 rounded-lg p-4 min-h-32">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-text-secondary">Live Transcription</span>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-2 h-2 bg-secondary rounded-full animate-pulse"></div>
+                                    <span class="text-xs text-secondary">Listening</span>
+                                </div>
+                            </div>
+                            <div id="transcriptionText" class="text-text-primary leading-relaxed">
+                                <span class="text-text-secondary italic">Start speaking to see your words appear here in real-time...</span>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex items-center justify-between mt-6">
+                            <button id="prevQuestion" class="btn-outline text-sm px-4 py-2">
+                                <i class="fas fa-chevron-left mr-2"></i>
+                                Previous
+                            </button>
+                            <div class="flex space-x-3">
+                                <button id="skipQuestion" class="text-text-secondary hover:text-primary transition-fast text-sm">
+                                    Skip Question
+                                </button>
+                                <button id="nextQuestion" class="btn-primary text-sm px-6 py-2">
+                                    Next Question
+                                    <i class="fas fa-chevron-right ml-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feedback Sidebar -->
+                <div class="lg:col-span-1 space-y-6">
+                    <!-- Real-time Analysis -->
+                    <div class="card">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-heading font-semibold text-text-primary">AI Analysis</h3>
+                            <div class="flex items-center space-x-1">
+                                <div id="aiAnalysisIndicator" class="w-2 h-2 bg-gray-300 rounded-full"></div>
+                                <span id="aiAnalysisStatus" class="text-xs text-text-secondary">Waiting...</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Overall Score -->
+                        <div class="mb-4 p-3 bg-gradient-to-r from-primary-50 to-secondary-50 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-text-primary">Overall Score</span>
+                                <span id="realtimeOverallScore" class="text-2xl font-bold text-primary">--</span>
+                            </div>
+                            <div class="progress-bar mt-2">
+                                <div id="realtimeOverallBar" class="bg-primary h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Content Quality -->
+                        <div class="mb-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-text-secondary">Content Quality</span>
+                                <span id="contentQualityScore" class="text-sm font-bold text-secondary">--</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div id="contentQualityBar" class="bg-secondary h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                            <p id="contentQualityText" class="text-xs text-text-secondary mt-1">Analyzing...</p>
+                        </div>
+
+                        <!-- Structure & Clarity -->
+                        <div class="mb-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-text-secondary">Structure & Clarity</span>
+                                <span id="structureScore" class="text-sm font-bold text-primary">--</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div id="structureBar" class="bg-primary h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                            <p id="structureText" class="text-xs text-text-secondary mt-1">Analyzing...</p>
+                        </div>
+
+                        <!-- Examples & Evidence -->
+                        <div class="mb-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-text-secondary">Examples & Evidence</span>
+                                <span id="examplesScore" class="text-sm font-bold text-warning">--</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div id="examplesBar" class="bg-warning h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                            <p id="examplesText" class="text-xs text-text-secondary mt-1">Analyzing...</p>
+                        </div>
+
+                        <!-- Communication Style -->
+                        <div class="mb-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-text-secondary">Communication</span>
+                                <span id="communicationScore" class="text-sm font-bold text-accent">--</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div id="communicationBar" class="bg-accent h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                            <p id="communicationText" class="text-xs text-text-secondary mt-1">Analyzing...</p>
+                        </div>
+                    </div>
+
+                    <!-- AI Feedback -->
+                    <div class="card">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-heading font-semibold text-text-primary">AI Feedback</h3>
+                            <div class="flex items-center space-x-2">
+                                <button id="enableAIAnalysis" class="btn-secondary text-xs px-3 py-1">
+                                    <i class="fas fa-robot mr-1"></i>
+                                    AI Mode
+                                </button>
+                                <button id="manualAnalyze" class="btn-outline text-xs px-3 py-1 hidden">
+                                    <i class="fas fa-sync mr-1"></i>
+                                    Analyze Now
+                                </button>
+                                <span id="aiModeIndicator" class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">Basic</span>
+                            </div>
+                        </div>
+                        
+                        <!-- AI Analysis Loading -->
+                        <div id="aiAnalysisLoading" class="text-center py-6 hidden">
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-3"></div>
+                            <p class="text-sm text-text-secondary">AI is analyzing your response...</p>
+                        </div>
+                        
+                        <!-- Dynamic Feedback Container -->
+                        <div id="feedbackContainer" class="space-y-3">
+                            <!-- Default feedback (will be replaced by AI) -->
+                            <div class="feedback-card">
+                                <div class="flex items-start">
+                                    <i class="fas fa-info-circle text-primary mr-2 mt-1"></i>
+                                    <div>
+                                        <p class="text-sm font-medium text-text-primary">Ready for Analysis</p>
+                                        <p class="text-xs text-text-secondary">Record your response to get AI-powered feedback.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Overall Score Display -->
+                        <div id="overallScoreDisplay" class="mt-4 p-3 bg-gradient-to-r from-primary-50 to-secondary-50 rounded-lg hidden">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-text-primary">Overall Interview Score</p>
+                                    <p class="text-xs text-text-secondary">Based on AI analysis</p>
+                                </div>
+                                <div class="text-right">
+                                    <div id="overallScore" class="text-2xl font-bold text-primary">--</div>
+                                    <div class="text-xs text-text-secondary">out of 100</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button id="viewDetailedAnalysis" class="w-full mt-4 text-sm text-primary hover:text-primary-700 transition-fast hidden">
+                            <i class="fas fa-chevron-down mr-1"></i>
+                            View Detailed Analysis
+                        </button>
+                    </div>
+
+                    <!-- Session Progress -->
+                    <div class="card">
+                        <h3 class="text-lg font-heading font-semibold text-text-primary mb-4">Session Progress</h3>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm font-medium text-text-secondary">Questions Completed</span>
+                                    <span id="questionsCompletedText" class="text-sm font-bold text-primary">0/8</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div id="questionsProgressBar" class="bg-primary h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+
+                            <div id="questionDotsContainer" class="grid grid-cols-4 gap-2">
+                                <!-- Dots will be generated dynamically -->
+                            </div>
+
+                            <div class="text-center pt-2">
+                                <p id="timeRemainingText" class="text-xs text-text-secondary">Estimated time remaining: -- minutes</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card">
+                        <h3 class="text-lg font-heading font-semibold text-text-primary mb-4">Quick Actions</h3>
+                        
+                        <div class="space-y-2">
+                            <button class="w-full text-left px-3 py-2 text-sm text-text-secondary hover:text-primary hover:bg-primary-50 rounded transition-fast">
+                                <i class="fas fa-bookmark mr-2"></i>
+                                Save Current Progress
+                            </button>
+                            <button class="w-full text-left px-3 py-2 text-sm text-text-secondary hover:text-primary hover:bg-primary-50 rounded transition-fast">
+                                <i class="fas fa-redo mr-2"></i>
+                                Restart Question
+                            </button>
+                            <button class="w-full text-left px-3 py-2 text-sm text-text-secondary hover:text-primary hover:bg-primary-50 rounded transition-fast">
+                                <i class="fas fa-question-circle mr-2"></i>
+                                Get Hint
+                            </button>
+                            <button class="w-full text-left px-3 py-2 text-sm text-text-secondary hover:text-primary hover:bg-primary-50 rounded transition-fast">
+                                <i class="fas fa-cog mr-2"></i>
+                                Interview Settings
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-border mt-16">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <svg class="h-8 w-8 text-primary mr-2" viewBox="0 0 40 40" fill="currentColor">
+                        <circle cx="20" cy="20" r="18" fill="currentColor" opacity="0.1"/>
+                        <path d="M12 16c0-4.4 3.6-8 8-8s8 3.6 8 8v8c0 4.4-3.6 8-8 8s-8-3.6-8-8v-8zm8-6c-3.3 0-6 2.7-6 6v8c0 3.3 2.7 6 6 6s6-2.7 6-6v-8c0-3.3-2.7-6-6-6z"/>
+                        <circle cx="20" cy="16" r="2" fill="currentColor"/>
+                    </svg>
+                    <span class="text-text-primary font-medium">ProSpeak AI</span>
+                </div>
+                <div class="flex space-x-6 text-sm text-text-secondary">
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Privacy Policy</a>
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Terms of Service</a>
+                    <a href="javascript:void(0)" class="hover:text-primary transition-fast">Support</a>
+                </div>
+                <div class="text-sm text-text-secondary mt-4 md:mt-0">
+                    © 2025 ProSpeak AI. All Rights Reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interview Simulator Styles -->
+    <style>
+        .recording-active {
+            animation: pulse-red 1.5s infinite;
+            background-color: #ef4444 !important;
+        }
+        
+        @keyframes pulse-red {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .progress-fill {
+            transition: width 1s ease-out, background-color 0.3s ease;
+        }
+        
+        .microphone-denied {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .recording-timer {
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+        }
+    </style>
+
+    <!-- Load Required Scripts -->
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/user-common.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/ai-audio-analyzer.js') }}"></script>
+    
+    <!-- JavaScript for Interview Simulator -->
+    <script>
+        // Interview questions database - Structured: 4 Easy → 3 Medium → 1 Hard
+        const questions = [
+            // Easy Questions (1-4)
+            {
+                text: "Tell me about yourself and why you're interested in this position.",
+                difficulty: "Easy",
+                category: "General",
+                generated: false
+            },
+            {
+                text: "What do you know about our company?",
+                difficulty: "Easy",
+                category: "General",
+                generated: false
+            },
+            {
+                text: "Why did you choose your field of study or career path?",
+                difficulty: "Easy",
+                category: "Background",
+                generated: false
+            },
+            {
+                text: "What are your hobbies and interests outside of work?",
+                difficulty: "Easy",
+                category: "Personal",
+                generated: false
+            },
+            // Medium Questions (5-7)
+            {
+                text: "Describe a challenging project you worked on and how you overcame obstacles.",
+                difficulty: "Medium",
+                category: "Behavioral",
+                generated: false
+            },
+            {
+                text: "Tell me about a time when you had to work with a difficult team member. How did you handle it?",
+                difficulty: "Medium",
+                category: "Behavioral",
+                generated: false
+            },
+            {
+                text: "What is your greatest weakness and how are you actively working to improve it?",
+                difficulty: "Medium",
+                category: "Self-Assessment",
+                generated: false
+            },
+            // Hard Question (8)
+            {
+                text: "Why should we hire you over other qualified candidates? What unique value do you bring to this role?",
+                difficulty: "Hard",
+                category: "Closing",
+                generated: false
+            }
+        ];
+        
+        let currentQuestionIndex = 0; // Start from first question (0-indexed)
+        let completedQuestions = new Set(); // Track which questions have been answered
+        let sessionStartTime = Date.now();
+        let sessionTimer;
+        let recordingStartTime = null;
+        let recordingTimer = null;
+        let aiAnalysisEnabled = false;
+        let currentTranscript = '';
+        let currentSessionId = null;
+        
+        // Audio recording variables
+        let isRecording = false;
+        let isPaused = false;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let recognition = null;
+        let recordedAudioUrl = null;
+        
+        // Cleanup function to reset state when leaving page
+        function cleanupInterviewSimulator() {
+            console.log('Cleaning up Interview Simulator...');
+            
+            // Stop recording if active
+            if (isRecording) {
+                stopRecording();
+            }
+            
+            // Clear timers
+            if (sessionTimer) clearInterval(sessionTimer);
+            if (recordingTimer) clearInterval(recordingTimer);
+            
+            // Stop speech recognition
+            if (recognition) {
+                try {
+                    recognition.stop();
+                } catch (e) {
+                    console.log('Recognition already stopped');
+                }
+            }
+            
+            // Reset initialization flag
+            delete window.interviewSimulatorInitialized;
+        }
+        
+        // Initialize everything when page loads
+        function initializeInterviewSimulator() {
+            // Always reinitialize on page load (don't check flag)
+            console.log('Interview Simulator initializing...');
+            
+            try {
+                // Cleanup any previous state first
+                if (window.interviewSimulatorInitialized) {
+                    console.log('Cleaning up previous initialization...');
+                    cleanupInterviewSimulator();
+                }
+                
+                initializeAudioRecording();
+                initializeSpeechRecognition();
+                setupEventListeners();
+                updateQuestion();
+                startSessionTimer();
+                initializeAIAnalysis();
+                
+                window.interviewSimulatorInitialized = true;
+                console.log('✓ Interview Simulator initialized successfully');
+                
+            } catch (error) {
+                console.error('Initialization error:', error);
+                showErrorMessage('Failed to initialize interview simulator. Please refresh the page.');
+            }
+        }
+        
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeInterviewSimulator);
+        } else {
+            // DOM already loaded, initialize immediately
+            initializeInterviewSimulator();
+        }
+        
+        // Cleanup when leaving page
+        window.addEventListener('beforeunload', cleanupInterviewSimulator);
+        window.addEventListener('pagehide', cleanupInterviewSimulator);
+        
+        // Initialize audio recording
+        async function initializeAudioRecording() {
+            try {
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    throw new Error('Audio recording not supported in this browser');
+                }
+                
+                // Test microphone permission
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                stream.getTracks().forEach(track => track.stop());
+                console.log('Microphone permission granted for interview');
+                
+            } catch (error) {
+                console.error('Microphone permission denied:', error);
+                showPermissionError();
+            }
+        }
+        
+        // Initialize speech recognition
+        function initializeSpeechRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = 'en-US';
+                
+                recognition.onstart = function() {
+                    console.log('Speech recognition started for interview');
+                };
+                
+                recognition.onresult = function(event) {
+                    let finalTranscript = '';
+                    let interimTranscript = '';
+                    
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const transcript = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalTranscript += transcript;
+                        } else {
+                            interimTranscript += transcript;
+                        }
+                    }
+                    
+                    updateTranscription(finalTranscript + interimTranscript);
+                };
+                
+                recognition.onerror = function(event) {
+                    console.error('Speech recognition error:', event.error);
+                    if (event.error === 'not-allowed') {
+                        showPermissionError();
+                    }
+                };
+                
+                recognition.onend = function() {
+                    console.log('Speech recognition ended');
+                    if (isRecording && !isPaused) {
+                        setTimeout(() => {
+                            if (isRecording && recognition) {
+                                try {
+                                    recognition.start();
+                                } catch (e) {
+                                    console.log('Could not restart recognition:', e);
+                                }
+                            }
+                        }, 100);
+                    }
+                };
+            } else {
+                console.warn('Speech recognition not supported in this browser');
+                showErrorMessage('Speech recognition is not supported in this browser. Please use Chrome or Edge.');
+            }
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            console.log('Setting up interview event listeners...');
+            
+            // Record button
+            const recordBtn = document.getElementById('recordBtn');
+            if (recordBtn) {
+                recordBtn.addEventListener('click', toggleRecording);
+                console.log('Record button event listener added');
+            }
+            
+            // Pause button
+            const pauseBtn = document.getElementById('pauseBtn');
+            if (pauseBtn) {
+                pauseBtn.addEventListener('click', togglePause);
+                console.log('Pause button event listener added');
+            }
+            
+            // Stop button
+            const stopBtn = document.getElementById('stopBtn');
+            if (stopBtn) {
+                stopBtn.addEventListener('click', stopRecording);
+                console.log('Stop button event listener added');
+            }
+            
+            // Playback button
+            const playbackBtn = document.getElementById('playbackBtn');
+            if (playbackBtn) {
+                playbackBtn.addEventListener('click', playRecording);
+                console.log('Playback button event listener added');
+            }
+            
+            // Navigation buttons
+            const prevBtn = document.getElementById('prevQuestion');
+            if (prevBtn) {
+                prevBtn.addEventListener('click', previousQuestion);
+            }
+            
+            const nextBtn = document.getElementById('nextQuestion');
+            if (nextBtn) {
+                nextBtn.addEventListener('click', nextQuestion);
+            }
+            
+            const skipBtn = document.getElementById('skipQuestion');
+            if (skipBtn) {
+                skipBtn.addEventListener('click', skipQuestion);
+            }
+            
+            // End session button
+            const endBtn = document.getElementById('endSession');
+            if (endBtn) {
+                endBtn.addEventListener('click', endSession);
+            }
+            
+            // AI Analysis toggle
+            const aiToggleBtn = document.getElementById('enableAIAnalysis');
+            if (aiToggleBtn) {
+                aiToggleBtn.addEventListener('click', toggleAIAnalysis);
+            }
+            
+            // View detailed analysis
+            const detailedBtn = document.getElementById('viewDetailedAnalysis');
+            if (detailedBtn) {
+                detailedBtn.addEventListener('click', showDetailedAnalysis);
+            }
+            
+            // Manual analyze button
+            const manualBtn = document.getElementById('manualAnalyze');
+            if (manualBtn) {
+                manualBtn.addEventListener('click', () => {
+                    console.log('Manual analyze clicked');
+                    if (currentTranscript && currentTranscript.trim()) {
+                        analyzeInterviewResponse();
+                    } else {
+                        alert('Please record your answer first!');
+                    }
+                });
+            }
+            
+            console.log('Interview event listeners setup completed');
+        }
+        
+        // Toggle recording
+        async function toggleRecording() {
+            if (!isRecording) {
+                await startRecording();
+            } else {
+                stopRecording();
+            }
+        }
+        
+        // Start recording
+        async function startRecording() {
+            try {
+                console.log('Starting interview recording...');
+                
+                // Get microphone stream
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true,
+                        sampleRate: 44100
+                    }
+                });
+                
+                // Setup MediaRecorder
+                mediaRecorder = new MediaRecorder(stream, {
+                    mimeType: 'audio/webm;codecs=opus'
+                });
+                audioChunks = [];
+                
+                mediaRecorder.ondataavailable = function(event) {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
+                };
+                
+                mediaRecorder.onstop = function() {
+                    console.log('MediaRecorder stopped, processing audio...');
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    recordedAudioUrl = URL.createObjectURL(audioBlob);
+                    
+                    // Enable playback
+                    const playbackBtn = document.getElementById('playbackBtn');
+                    if (playbackBtn) {
+                        playbackBtn.disabled = false;
+                    }
+                    
+                    // Save session
+                    saveInterviewSession(audioBlob);
+                    
+                    // Stop all tracks
+                    stream.getTracks().forEach(track => track.stop());
+                };
+                
+                mediaRecorder.onerror = function(event) {
+                    console.error('MediaRecorder error:', event.error);
+                    showErrorMessage('Recording error: ' + event.error);
+                };
+                
+                // Start recording
+                mediaRecorder.start(1000);
+                isRecording = true;
+                isPaused = false;
+                recordingStartTime = Date.now();
+                
+                // Reset real-time analysis bars
+                resetRealtimeAnalysisBars();
+                
+                // Start speech recognition
+                if (recognition) {
+                    try {
+                        recognition.start();
+                    } catch (e) {
+                        console.log('Recognition already started or error:', e);
+                    }
+                }
+                
+                // Update UI
+                updateRecordingUI(true);
+                startRecordingTimer();
+                
+                console.log('Interview recording started successfully');
+                
+            } catch (error) {
+                console.error('Failed to start recording:', error);
+                if (error.name === 'NotAllowedError') {
+                    showPermissionError();
+                } else {
+                    showErrorMessage('Failed to start recording: ' + error.message);
+                }
+            }
+        }
+        
+        // Stop recording
+        function stopRecording() {
+            console.log('Stopping interview recording...');
+            
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+            }
+            
+            if (recognition) {
+                recognition.stop();
+            }
+            
+            isRecording = false;
+            isPaused = false;
+            
+            // Update UI
+            updateRecordingUI(false);
+            stopRecordingTimer();
+            
+            console.log('Interview recording stopped');
+        }
+        
+        // Toggle pause
+        function togglePause() {
+            if (!isRecording) return;
+            
+            if (!isPaused) {
+                // Pause recording
+                if (mediaRecorder && mediaRecorder.state === 'recording') {
+                    mediaRecorder.pause();
+                }
+                if (recognition) {
+                    recognition.stop();
+                }
+                isPaused = true;
+                
+                const pauseBtn = document.getElementById('pauseBtn');
+                if (pauseBtn) {
+                    pauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                }
+                
+                console.log('Recording paused');
+            } else {
+                // Resume recording
+                if (mediaRecorder && mediaRecorder.state === 'paused') {
+                    mediaRecorder.resume();
+                }
+                if (recognition) {
+                    try {
+                        recognition.start();
+                    } catch (e) {
+                        console.log('Could not restart recognition:', e);
+                    }
+                }
+                isPaused = false;
+                
+                const pauseBtn = document.getElementById('pauseBtn');
+                if (pauseBtn) {
+                    pauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                }
+                
+                console.log('Recording resumed');
+            }
+        }
+        
+        // Play recording
+        function playRecording() {
+            if (recordedAudioUrl) {
+                const audio = new Audio(recordedAudioUrl);
+                audio.play();
+            }
+        }
+        
+        // Update recording UI
+        function updateRecordingUI(recording) {
+            const recordBtn = document.getElementById('recordBtn');
+            const pauseBtn = document.getElementById('pauseBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            const playbackBtn = document.getElementById('playbackBtn');
+            
+            if (recording) {
+                if (recordBtn) {
+                    recordBtn.innerHTML = '<i class="fas fa-microphone text-xl"></i>';
+                    recordBtn.classList.add('recording-active');
+                    recordBtn.disabled = true;
+                }
+                if (pauseBtn) pauseBtn.disabled = false;
+                if (stopBtn) stopBtn.disabled = false;
+                if (playbackBtn) playbackBtn.disabled = true;
+            } else {
+                if (recordBtn) {
+                    recordBtn.innerHTML = '<i class="fas fa-microphone text-xl"></i>';
+                    recordBtn.classList.remove('recording-active');
+                    recordBtn.disabled = false;
+                }
+                if (pauseBtn) {
+                    pauseBtn.disabled = true;
+                    pauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                }
+                if (stopBtn) stopBtn.disabled = true;
+            }
+        }
+        
+        // Update transcription
+        function updateTranscription(transcript) {
+            const transcriptionText = document.getElementById('transcriptionText');
+            if (transcriptionText && transcript) {
+                transcriptionText.textContent = transcript;
+                currentTranscript = transcript;
+                
+                // Trigger real-time analysis
+                updateRealtimeAnalysis(transcript);
+            }
+        }
+        
+        // Reset real-time analyzer
+        async function resetRealtimeAnalyzer() {
+            try {
+                await api.request('/interview/analyze-realtime', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        transcript: '',
+                        reset: true
+                    })
+                });
+                console.log('Real-time analyzer reset');
+                
+                // Reset UI to default values
+                updateRealtimeUI({
+                    pronunciation: { percentage: 0 },
+                    speaking_pace: { wpm: 0, quality: 'N/A', optimal_range: '140-160', percentage: 0 },
+                    confidence: { percentage: 0 },
+                    filler_words: { count: 0, details: {} },
+                    volume: { level: 0 }
+                });
+            } catch (error) {
+                console.log('Failed to reset analyzer:', error);
+            }
+        }
+        
+        // Real-time analysis update
+        let analysisTimeout = null;
+        async function updateRealtimeAnalysis(transcript) {
+            // Debounce to avoid too many API calls
+            if (analysisTimeout) {
+                clearTimeout(analysisTimeout);
+            }
+            
+            analysisTimeout = setTimeout(async () => {
+                if (!transcript || !transcript.trim() || !isRecording) {
+                    return;
+                }
+                
+                try {
+                    const response = await api.request('/interview/analyze-realtime', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            transcript: transcript,
+                            is_final: false
+                        })
+                    });
+                    
+                    if (response.success && response.metrics) {
+                        updateRealtimeUI(response.metrics);
+                    }
+                } catch (error) {
+                    console.log('Real-time analysis error:', error);
+                }
+            }, 500); // Update every 500ms
+        }
+        
+        // Reset real-time analysis bars to initial state
+        function resetRealtimeAnalysisBars() {
+            const indicator = document.getElementById('aiAnalysisIndicator');
+            const status = document.getElementById('aiAnalysisStatus');
+            if (indicator && status) {
+                indicator.className = 'w-2 h-2 bg-gray-300 rounded-full';
+                status.textContent = 'Waiting...';
+            }
+            
+            // Reset all bars to 0
+            const metrics = ['realtimeOverall', 'contentQuality', 'structure', 'examples', 'communication'];
+            metrics.forEach(metric => {
+                const scoreEl = document.getElementById(metric + 'Score');
+                const barEl = document.getElementById(metric + 'Bar');
+                const textEl = document.getElementById(metric + 'Text');
+                
+                if (scoreEl) scoreEl.textContent = '--';
+                if (barEl) {
+                    barEl.style.width = '0%';
+                    barEl.className = 'bg-gray-300 h-2 rounded-full transition-all duration-500';
+                }
+                if (textEl) textEl.textContent = 'Analyzing...';
+            });
+        }
+        
+        // Initialize AI Analysis
+        async function initializeAIAnalysis() {
+            try {
+                if (window.aiAudioAnalyzer) {
+                    await window.aiAudioAnalyzer.initialize();
+                    console.log('AI Audio Analyzer initialized for interview');
+                }
+            } catch (error) {
+                console.log('AI Audio Analyzer not available:', error);
+            }
+        }
+        
+        // Toggle AI Analysis
+        function toggleAIAnalysis() {
+            aiAnalysisEnabled = !aiAnalysisEnabled;
+            const toggleBtn = document.getElementById('enableAIAnalysis');
+            const indicator = document.getElementById('aiModeIndicator');
+            
+            if (aiAnalysisEnabled) {
+                toggleBtn.innerHTML = '<i class="fas fa-robot mr-1"></i>AI ON';
+                toggleBtn.className = 'btn-primary text-xs px-3 py-1';
+                indicator.textContent = 'AI Mode';
+                indicator.className = 'text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full';
+                
+                // Show manual analyze button
+                const manualBtn = document.getElementById('manualAnalyze');
+                if (manualBtn) manualBtn.classList.remove('hidden');
+                
+                console.log('AI Analysis ENABLED');
+                
+                if (window.notifications) {
+                    window.notifications.success('AI Analysis enabled! Record and stop to get feedback.');
+                }
+            } else {
+                toggleBtn.innerHTML = '<i class="fas fa-robot mr-1"></i>AI Mode';
+                toggleBtn.className = 'btn-secondary text-xs px-3 py-1';
+                indicator.textContent = 'Basic';
+                indicator.className = 'text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full';
+                
+                // Hide manual analyze button
+                const manualBtn = document.getElementById('manualAnalyze');
+                if (manualBtn) manualBtn.classList.add('hidden');
+                
+                // Reset feedback to default
+                resetFeedbackToDefault();
+                
+                console.log('AI Analysis DISABLED');
+                
+                if (window.notifications) {
+                    window.notifications.info('AI Analysis disabled. Using basic feedback.');
+                }
+            }
+        }
+        
+        // Analyze interview response with AI
+        async function analyzeInterviewResponse() {
+            console.log('analyzeInterviewResponse called');
+            console.log('AI Enabled:', aiAnalysisEnabled);
+            console.log('Transcript:', currentTranscript);
+            
+            if (!aiAnalysisEnabled) {
+                console.log('AI analysis not enabled, skipping');
+                return;
+            }
+            
+            if (!currentTranscript || !currentTranscript.trim()) {
+                console.log('No transcript available, skipping AI analysis');
+                if (window.notifications) {
+                    window.notifications.warning('No transcript available for AI analysis');
+                }
+                return;
+            }
+            
+            try {
+                console.log('Starting AI analysis...');
+                
+                // Show loading
+                const loadingEl = document.getElementById('aiAnalysisLoading');
+                const containerEl = document.getElementById('feedbackContainer');
+                
+                if (loadingEl) loadingEl.classList.remove('hidden');
+                if (containerEl) containerEl.classList.add('hidden');
+                
+                const currentQuestion = questions[currentQuestionIndex];
+                
+                console.log('Sending request to API...');
+                console.log('Question:', currentQuestion.text);
+                console.log('Transcript:', currentTranscript.substring(0, 100));
+                
+                // Call AI analysis API
+                const response = await api.request('/interview/analyze-response', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        transcript: currentTranscript,
+                        question: currentQuestion.text,
+                        category: currentQuestion.category,
+                        difficulty: currentQuestion.difficulty
+                    })
+                });
+                
+                console.log('API response received:', response);
+                
+                // Hide loading
+                if (loadingEl) loadingEl.classList.add('hidden');
+                if (containerEl) containerEl.classList.remove('hidden');
+                
+                if (response.success) {
+                    console.log('Analysis successful, displaying feedback');
+                    currentSessionId = response.session_id;
+                    displayAIFeedback(response);
+                    
+                    if (window.notifications) {
+                        const modeText = response.demo_mode ? ' (Demo Mode)' : '';
+                        window.notifications.success('AI analysis complete!' + modeText);
+                    }
+                } else {
+                    throw new Error(response.error || 'AI analysis failed');
+                }
+                
+            } catch (error) {
+                console.error('AI analysis error:', error);
+                
+                const loadingEl = document.getElementById('aiAnalysisLoading');
+                const containerEl = document.getElementById('feedbackContainer');
+                
+                if (loadingEl) loadingEl.classList.add('hidden');
+                if (containerEl) containerEl.classList.remove('hidden');
+                
+                // Show error feedback
+                showErrorFeedback(error.message || error.toString());
+                
+                if (window.notifications) {
+                    window.notifications.error('AI analysis failed: ' + (error.message || error.toString()));
+                }
+            }
+        }
+        
+        // Display AI feedback
+        function displayAIFeedback(response) {
+            const feedbackContainer = document.getElementById('feedbackContainer');
+            const overallScoreDisplay = document.getElementById('overallScoreDisplay');
+            const overallScore = document.getElementById('overallScore');
+            const detailedBtn = document.getElementById('viewDetailedAnalysis');
+            
+            // Clear existing feedback
+            feedbackContainer.innerHTML = '';
+            
+            // Display overall score
+            if (response.overall_score) {
+                overallScore.textContent = response.overall_score;
+                overallScore.className = `text-2xl font-bold ${getScoreColor(response.overall_score)}`;
+                overallScoreDisplay.classList.remove('hidden');
+                
+                // Update real-time analysis bars based on AI feedback
+                updateRealtimeAnalysisBars(response);
+            }
+            
+            // Display feedback components
+            if (response.feedback_components && response.feedback_components.feedback_items) {
+                response.feedback_components.feedback_items.forEach(item => {
+                    const feedbackCard = createFeedbackCard(item);
+                    feedbackContainer.appendChild(feedbackCard);
+                });
+            } else {
+                // Fallback to basic feedback
+                const basicFeedback = createBasicFeedback(response.overall_score || 75);
+                feedbackContainer.appendChild(basicFeedback);
+            }
+            
+            // Show detailed analysis button
+            detailedBtn.classList.remove('hidden');
+            
+            // Store detailed feedback for modal
+            window.currentDetailedFeedback = response.detailed_feedback;
+        }
+        
+        // Update real-time analysis bars based on AI feedback
+        function updateRealtimeAnalysisBars(response) {
+            const score = response.overall_score || 0;
+            const feedbackText = response.detailed_feedback || '';
+            const feedbackItems = response.feedback_components?.feedback_items || [];
+            
+            // Update AI Analysis Status
+            const indicator = document.getElementById('aiAnalysisIndicator');
+            const status = document.getElementById('aiAnalysisStatus');
+            if (indicator && status) {
+                indicator.className = 'w-2 h-2 bg-green-500 rounded-full animate-pulse';
+                status.textContent = 'Analyzed';
+            }
+            
+            // Update Overall Score
+            const realtimeScore = document.getElementById('realtimeOverallScore');
+            const realtimeBar = document.getElementById('realtimeOverallBar');
+            if (realtimeScore && realtimeBar) {
+                realtimeScore.textContent = score;
+                realtimeBar.style.width = score + '%';
+                realtimeBar.className = `h-2 rounded-full transition-all duration-500 ${getBarColorClass(score)}`;
+            }
+            
+            // Analyze feedback to determine sub-scores
+            const analysis = analyzeAIFeedback(feedbackText, feedbackItems, score);
+            
+            // Update Content Quality
+            updateMetricBar('contentQuality', analysis.contentQuality, analysis.contentQualityText);
+            
+            // Update Structure & Clarity
+            updateMetricBar('structure', analysis.structure, analysis.structureText);
+            
+            // Update Examples & Evidence
+            updateMetricBar('examples', analysis.examples, analysis.examplesText);
+            
+            // Update Communication
+            updateMetricBar('communication', analysis.communication, analysis.communicationText);
+        }
+        
+        // Analyze AI feedback to extract sub-scores
+        function analyzeAIFeedback(feedbackText, feedbackItems, overallScore) {
+            const text = feedbackText.toLowerCase();
+            
+            // Count positive and negative indicators
+            const strengths = feedbackItems.filter(item => item.type === 'positive').length;
+            const improvements = feedbackItems.filter(item => item.type === 'improvement').length;
+            
+            // Content Quality - based on examples, details, relevance
+            let contentQuality = overallScore;
+            let contentQualityText = 'Good content';
+            
+            if (text.includes('specific example') || text.includes('concrete example')) {
+                contentQuality = Math.min(100, contentQuality + 5);
+                contentQualityText = 'Includes specific examples';
+            }
+            if (text.includes('lack') && text.includes('example')) {
+                contentQuality = Math.max(0, contentQuality - 10);
+                contentQualityText = 'Needs more examples';
+            }
+            if (text.includes('relevant') || text.includes('addresses the question')) {
+                contentQuality = Math.min(100, contentQuality + 3);
+            }
+            
+            // Structure & Clarity - based on organization, STAR method
+            let structure = overallScore;
+            let structureText = 'Clear structure';
+            
+            if (text.includes('star') || text.includes('structured')) {
+                structure = Math.min(100, structure + 5);
+                structureText = 'Well-structured response';
+            }
+            if (text.includes('unclear') || text.includes('disorganized')) {
+                structure = Math.max(0, structure - 10);
+                structureText = 'Needs better structure';
+            }
+            if (text.includes('clear') && text.includes('communication')) {
+                structure = Math.min(100, structure + 3);
+            }
+            
+            // Examples & Evidence - based on specificity, metrics
+            let examples = overallScore;
+            let examplesText = 'Adequate examples';
+            
+            if (text.includes('quantifiable') || text.includes('metric') || text.includes('measurable')) {
+                examples = Math.min(100, examples + 8);
+                examplesText = 'Strong use of metrics';
+            }
+            if (text.includes('add') && text.includes('example')) {
+                examples = Math.max(0, examples - 15);
+                examplesText = 'Missing specific examples';
+            }
+            if (text.includes('outcome') || text.includes('result')) {
+                examples = Math.min(100, examples + 5);
+            }
+            
+            // Communication - based on confidence, clarity, professionalism
+            let communication = overallScore;
+            let communicationText = 'Professional tone';
+            
+            if (text.includes('confident') || text.includes('professional')) {
+                communication = Math.min(100, communication + 5);
+                communicationText = 'Confident delivery';
+            }
+            if (text.includes('hesitant') || text.includes('uncertain')) {
+                communication = Math.max(0, communication - 10);
+                communicationText = 'Needs more confidence';
+            }
+            if (text.includes('clear') || text.includes('articulate')) {
+                communication = Math.min(100, communication + 3);
+            }
+            
+            // Adjust based on strengths/improvements ratio
+            const ratio = strengths / Math.max(1, improvements);
+            if (ratio > 1.5) {
+                // More strengths than improvements
+                contentQuality = Math.min(100, contentQuality + 5);
+                structure = Math.min(100, structure + 5);
+                examples = Math.min(100, examples + 5);
+                communication = Math.min(100, communication + 5);
+            }
+            
+            return {
+                contentQuality: Math.round(contentQuality),
+                contentQualityText,
+                structure: Math.round(structure),
+                structureText,
+                examples: Math.round(examples),
+                examplesText,
+                communication: Math.round(communication),
+                communicationText
+            };
+        }
+        
+        // Update a metric bar
+        function updateMetricBar(metricName, score, text) {
+            const scoreEl = document.getElementById(metricName + 'Score');
+            const barEl = document.getElementById(metricName + 'Bar');
+            const textEl = document.getElementById(metricName + 'Text');
+            
+            if (scoreEl) scoreEl.textContent = score + '%';
+            if (barEl) {
+                barEl.style.width = score + '%';
+                barEl.className = `h-2 rounded-full transition-all duration-500 ${getBarColorClass(score)}`;
+            }
+            if (textEl) textEl.textContent = text;
+        }
+        
+        // Get bar color class based on score
+        function getBarColorClass(score) {
+            if (score >= 85) return 'bg-green-500';
+            if (score >= 70) return 'bg-yellow-500';
+            if (score >= 50) return 'bg-orange-500';
+            return 'bg-red-500';
+        }
+        
+        // Create feedback card element
+        function createFeedbackCard(item) {
+            const card = document.createElement('div');
+            card.className = 'feedback-card';
+            
+            const colorClass = item.color === 'secondary' ? 'text-secondary' : 
+                              item.color === 'warning' ? 'text-warning' : 
+                              item.color === 'accent' ? 'text-accent' : 'text-primary';
+            
+            card.innerHTML = `
+                <div class="flex items-start">
+                    <i class="${item.icon} ${colorClass} mr-2 mt-1"></i>
+                    <div>
+                        <p class="text-sm font-medium text-text-primary">${item.title}</p>
+                        <p class="text-xs text-text-secondary">${item.content}</p>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        // Create basic feedback for fallback
+        function createBasicFeedback(score) {
+            const card = document.createElement('div');
+            card.className = 'feedback-card';
+            
+            let title, content, icon, color;
+            
+            if (score >= 85) {
+                title = 'Excellent Response';
+                content = 'Your answer demonstrates strong interview skills and clear communication.';
+                icon = 'fas fa-thumbs-up';
+                color = 'text-secondary';
+            } else if (score >= 70) {
+                title = 'Good Response';
+                content = 'You provided a relevant answer. Consider adding more specific examples.';
+                icon = 'fas fa-check-circle';
+                color = 'text-primary';
+            } else {
+                title = 'Room for Improvement';
+                content = 'Focus on providing more detailed and structured responses.';
+                icon = 'fas fa-exclamation-triangle';
+                color = 'text-warning';
+            }
+            
+            card.innerHTML = `
+                <div class="flex items-start">
+                    <i class="${icon} ${color} mr-2 mt-1"></i>
+                    <div>
+                        <p class="text-sm font-medium text-text-primary">${title}</p>
+                        <p class="text-xs text-text-secondary">${content}</p>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        // Show error feedback
+        function showErrorFeedback(errorMessage) {
+            const feedbackContainer = document.getElementById('feedbackContainer');
+            feedbackContainer.innerHTML = `
+                <div class="feedback-card">
+                    <div class="flex items-start">
+                        <i class="fas fa-exclamation-circle text-red-500 mr-2 mt-1"></i>
+                        <div>
+                            <p class="text-sm font-medium text-text-primary">Analysis Error</p>
+                            <p class="text-xs text-text-secondary">Unable to analyze response: ${errorMessage}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Reset feedback to default
+        function resetFeedbackToDefault() {
+            const feedbackContainer = document.getElementById('feedbackContainer');
+            const overallScoreDisplay = document.getElementById('overallScoreDisplay');
+            const detailedBtn = document.getElementById('viewDetailedAnalysis');
+            
+            feedbackContainer.innerHTML = `
+                <div class="feedback-card">
+                    <div class="flex items-start">
+                        <i class="fas fa-info-circle text-primary mr-2 mt-1"></i>
+                        <div>
+                            <p class="text-sm font-medium text-text-primary">Ready for Analysis</p>
+                            <p class="text-xs text-text-secondary">Record your response to get AI-powered feedback.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            overallScoreDisplay.classList.add('hidden');
+            detailedBtn.classList.add('hidden');
+        }
+        
+        // Show detailed analysis modal
+        function showDetailedAnalysis() {
+            if (!window.currentDetailedFeedback) return;
+            
+            // Create modal
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-semibold text-text-primary">Detailed AI Analysis</h3>
+                            <button class="text-text-secondary hover:text-text-primary" onclick="this.closest('.fixed').remove()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="prose prose-sm max-w-none">
+                            <div class="whitespace-pre-line text-text-secondary">${window.currentDetailedFeedback}</div>
+                        </div>
+                        <div class="mt-6 flex justify-end">
+                            <button class="btn-primary" onclick="this.closest('.fixed').remove()">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Close on backdrop click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
+        
+        // Get score color class
+        function getScoreColor(score) {
+            if (score >= 85) return 'text-green-600';
+            if (score >= 70) return 'text-yellow-600';
+            return 'text-red-600';
+        }
+        
+        // Start recording timer
+        function startRecordingTimer() {
+            const timerElement = document.getElementById('recordingTimer');
+            
+            recordingTimer = setInterval(() => {
+                if (recordingStartTime && !isPaused) {
+                    const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+                    const minutes = Math.floor(elapsed / 60);
+                    const seconds = elapsed % 60;
+                    if (timerElement) {
+                        timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    }
+                }
+            }, 1000);
+        }
+        
+        // Stop recording timer
+        function stopRecordingTimer() {
+            if (recordingTimer) {
+                clearInterval(recordingTimer);
+                recordingTimer = null;
+            }
+        }
+        
+        // Start session timer
+        function startSessionTimer() {
+            const sessionTimerEl = document.getElementById('sessionTimer');
+            
+            sessionTimer = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+                if (sessionTimerEl) {
+                    sessionTimerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+            }, 1000);
+        }
+        
+        // Save interview session
+        async function saveInterviewSession(audioBlob) {
+            try {
+                if (window.api && window.api.token) {
+                    // Get the latest transcript from DOM
+                    const transcriptElement = document.getElementById('transcriptionText');
+                    const transcriptText = transcriptElement?.textContent || '';
+                    
+                    // Update currentTranscript with the latest value
+                    if (transcriptText && !transcriptText.includes('Start speaking')) {
+                        currentTranscript = transcriptText;
+                    }
+                    
+                    console.log('Transcript captured:', currentTranscript.substring(0, 50) + '...');
+                    console.log('AI Analysis Enabled:', aiAnalysisEnabled);
+                    
+                    const sessionData = {
+                        session_type: 'interview_practice',
+                        question_index: currentQuestionIndex,
+                        question_text: questions[currentQuestionIndex].text,
+                        duration: recordingStartTime ? Date.now() - recordingStartTime : 0,
+                        transcript: currentTranscript,
+                        scores: {
+                            overall: Math.floor(Math.random() * 20) + 80 // Simulated score
+                        }
+                    };
+                    
+                    await window.api.request('/audio/save-session', {
+                        method: 'POST',
+                        body: JSON.stringify(sessionData)
+                    });
+                    
+                    // Mark current question as completed
+                    completedQuestions.add(currentQuestionIndex);
+                    
+                    // Update progress display
+                    updateSessionProgress();
+                    
+                    // Increment session count
+                    if (window.incrementSessionCount) {
+                        window.incrementSessionCount();
+                    }
+                    
+                    // Update feedback
+                    updateInterviewFeedback();
+                    
+                    // Analyze with AI if enabled
+                    if (aiAnalysisEnabled) {
+                        if (currentTranscript && currentTranscript.trim().length > 10) {
+                            console.log('Triggering AI analysis...');
+                            setTimeout(() => {
+                                analyzeInterviewResponse();
+                            }, 1000);
+                        } else {
+                            console.warn('Transcript too short for AI analysis:', currentTranscript);
+                            if (window.notifications) {
+                                window.notifications.warning('Please speak more to get AI feedback. Transcript was too short.');
+                            }
+                        }
+                    } else {
+                        console.log('AI analysis not enabled');
+                    }
+                    
+                    console.log('Interview session saved successfully');
+                }
+            } catch (error) {
+                console.error('Failed to save interview session:', error);
+            }
+        }
+        
+        // Update interview feedback
+        function updateInterviewFeedback() {
+            // Simulate AI feedback with random scores
+            const pronunciationScore = Math.floor(Math.random() * 20) + 80;
+            const confidenceScore = Math.floor(Math.random() * 20) + 75;
+            
+            // Update pronunciation score
+            const pronunciationBar = document.querySelector('.progress-fill');
+            const pronunciationText = document.querySelector('.text-secondary');
+            if (pronunciationBar && pronunciationText) {
+                pronunciationBar.style.width = pronunciationScore + '%';
+                pronunciationText.textContent = pronunciationScore + '%';
+            }
+            
+            // Show success notification
+            if (window.notifications) {
+                window.notifications.success(`Response recorded! Score: ${pronunciationScore}%`);
+            }
+        }
+        
+        // Question navigation functions
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                updateQuestion();
+                resetTranscription();
+            }
+        }
+        
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                updateQuestion();
+                resetTranscription();
+            }
+        }
+        
+        function skipQuestion() {
+            nextQuestion();
+        }
+        
+        // Update question display
+        async function updateQuestion() {
+            const question = questions[currentQuestionIndex];
+            
+            // Update counter
+            const counterEl = document.getElementById('questionCounter');
+            if (counterEl) {
+                counterEl.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+            }
+            
+            // Update badges
+            const difficultyBadge = document.getElementById('difficultyBadge');
+            const categoryBadge = document.getElementById('categoryBadge');
+            
+            if (difficultyBadge) {
+                difficultyBadge.textContent = question.difficulty;
+                // Update color based on difficulty
+                if (question.difficulty === 'Easy') {
+                    difficultyBadge.className = 'text-xs font-medium text-green-600 bg-green-100 px-3 py-1 rounded-full';
+                } else if (question.difficulty === 'Hard') {
+                    difficultyBadge.className = 'text-xs font-medium text-red-600 bg-red-100 px-3 py-1 rounded-full';
+                } else {
+                    difficultyBadge.className = 'text-xs font-medium text-warning bg-warning-100 px-3 py-1 rounded-full';
+                }
+            }
+            
+            if (categoryBadge) {
+                categoryBadge.textContent = question.category;
+            }
+            
+            // Generate new question with Gemini if not already generated
+            if (!question.generated) {
+                await generateQuestionWithGemini(currentQuestionIndex);
+            } else {
+                // Just display the existing question
+                displayQuestion(question.text);
+            }
+            
+            // Update progress
+            updateSessionProgress();
+        }
+        
+        // Generate question with Gemini
+        async function generateQuestionWithGemini(questionIndex) {
+            const question = questions[questionIndex];
+            
+            // Show loading state
+            const loadingEl = document.getElementById('questionLoading');
+            const displayEl = document.getElementById('questionDisplay');
+            const sourceEl = document.getElementById('questionSource');
+            
+            if (loadingEl) loadingEl.classList.remove('hidden');
+            if (displayEl) displayEl.classList.add('hidden');
+            
+            try {
+                // Get previous questions to avoid duplicates
+                const previousQuestions = questions
+                    .filter(q => q.generated)
+                    .map(q => q.text)
+                    .slice(0, 5);
+                
+                const response = await api.request('/interview/generate-question', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        category: question.category,
+                        difficulty: question.difficulty,
+                        job_role: 'Professional',
+                        previous_questions: previousQuestions
+                    })
+                });
+                
+                if (response.success && response.question) {
+                    // Update question in array
+                    questions[questionIndex].text = response.question;
+                    questions[questionIndex].generated = true;
+                    questions[questionIndex].ai_generated = response.ai_generated;
+                    
+                    // Display the question
+                    displayQuestion(response.question);
+                    
+                    // Update source indicator
+                    if (sourceEl) {
+                        sourceEl.textContent = response.ai_generated ? 'AI Generated by Gemini' : 'Curated Question';
+                    }
+                    
+                    console.log('✓ Question generated with Gemini');
+                } else {
+                    throw new Error('Failed to generate question');
+                }
+                
+            } catch (error) {
+                console.error('Question generation error:', error);
+                
+                // Fallback to default question
+                displayQuestion(question.text);
+                
+                if (sourceEl) {
+                    sourceEl.textContent = 'Default Question';
+                }
+            } finally {
+                // Hide loading, show display
+                if (loadingEl) loadingEl.classList.add('hidden');
+                if (displayEl) displayEl.classList.remove('hidden');
+            }
+        }
+        
+        // Display question with animation
+        function displayQuestion(questionText) {
+            const questionEl = document.getElementById('mainQuestionText');
+            if (questionEl) {
+                // Fade out
+                questionEl.style.opacity = '0';
+                questionEl.style.transform = 'translateY(10px)';
+                
+                setTimeout(() => {
+                    questionEl.textContent = questionText;
+                    
+                    // Fade in
+                    questionEl.style.transition = 'all 0.5s ease';
+                    questionEl.style.opacity = '1';
+                    questionEl.style.transform = 'translateY(0)';
+                }, 200);
+            }
+            
+            // Update hint based on question
+            const hintEl = document.getElementById('questionHint');
+            if (hintEl) {
+                const hints = [
+                    'Take your time to think before answering',
+                    'Use the STAR method for behavioral questions',
+                    'Be specific and provide examples',
+                    'Focus on your role and contributions',
+                    'Mention measurable outcomes when possible'
+                ];
+                hintEl.textContent = hints[Math.floor(Math.random() * hints.length)];
+            }
+        }
+        
+        // Reset transcription
+        function resetTranscription() {
+            const transcriptionText = document.getElementById('transcriptionText');
+            if (transcriptionText) {
+                transcriptionText.innerHTML = '<span class="text-text-secondary italic">Start speaking to see your words appear here in real-time...</span>';
+            }
+            
+            // Reset playback
+            const playbackBtn = document.getElementById('playbackBtn');
+            if (playbackBtn) {
+                playbackBtn.disabled = true;
+            }
+            
+            // Reset AI feedback if enabled
+            if (aiAnalysisEnabled) {
+                resetFeedbackToDefault();
+            }
+            
+            // Reset real-time analysis bars
+            resetRealtimeAnalysisBars();
+            
+            // Clear current transcript and session
+            currentTranscript = '';
+            currentSessionId = null;
+            recordedAudioUrl = null;
+        }
+        
+        // Update session progress
+        function updateSessionProgress() {
+            const totalQuestions = questions.length;
+            const completedCount = completedQuestions.size;
+            const currentQuestion = currentQuestionIndex + 1;
+            
+            // Update questions completed text
+            const completedText = document.getElementById('questionsCompletedText');
+            if (completedText) {
+                completedText.textContent = `${completedCount}/${totalQuestions}`;
+                
+                // Change color based on progress
+                if (completedCount === totalQuestions) {
+                    completedText.className = 'text-sm font-bold text-green-600';
+                } else if (completedCount >= totalQuestions / 2) {
+                    completedText.className = 'text-sm font-bold text-primary';
+                } else {
+                    completedText.className = 'text-sm font-bold text-gray-600';
+                }
+            }
+            
+            // Update progress bar
+            const progressBar = document.getElementById('questionsProgressBar');
+            if (progressBar) {
+                const percentage = (completedCount / totalQuestions) * 100;
+                progressBar.style.width = percentage + '%';
+                
+                // Change color based on progress
+                if (completedCount === totalQuestions) {
+                    progressBar.className = 'bg-green-500 h-2 rounded-full transition-all duration-500';
+                } else if (completedCount >= totalQuestions / 2) {
+                    progressBar.className = 'bg-primary h-2 rounded-full transition-all duration-500';
+                } else {
+                    progressBar.className = 'bg-gray-400 h-2 rounded-full transition-all duration-500';
+                }
+            }
+            
+            // Generate progress dots dynamically
+            const dotsContainer = document.getElementById('questionDotsContainer');
+            if (dotsContainer) {
+                dotsContainer.innerHTML = '';
+                
+                for (let i = 0; i < totalQuestions; i++) {
+                    const dot = document.createElement('div');
+                    
+                    if (completedQuestions.has(i)) {
+                        // Completed questions - green with checkmark effect
+                        dot.className = 'w-full h-2 bg-green-500 rounded transition-all duration-300';
+                        dot.title = `Question ${i + 1} - Completed`;
+                    } else if (i === currentQuestionIndex) {
+                        // Current question - blue with pulse
+                        dot.className = 'w-full h-2 bg-primary rounded animate-pulse transition-all duration-300';
+                        dot.title = `Question ${i + 1} - Current`;
+                    } else {
+                        // Future/skipped questions - gray
+                        dot.className = 'w-full h-2 bg-gray-200 rounded transition-all duration-300';
+                        dot.title = `Question ${i + 1} - Not started`;
+                    }
+                    
+                    dotsContainer.appendChild(dot);
+                }
+            }
+            
+            // Calculate estimated time remaining
+            const avgTimePerQuestion = 3; // minutes
+            const remainingQuestions = totalQuestions - completedCount;
+            const estimatedMinutes = remainingQuestions * avgTimePerQuestion;
+            
+            const timeText = document.getElementById('timeRemainingText');
+            if (timeText) {
+                if (remainingQuestions === 0) {
+                    timeText.textContent = 'All questions completed! 🎉';
+                    timeText.className = 'text-xs text-green-600 font-medium';
+                } else if (remainingQuestions === 1) {
+                    timeText.textContent = `Estimated time remaining: ${estimatedMinutes} minute`;
+                } else {
+                    timeText.textContent = `Estimated time remaining: ${estimatedMinutes} minutes`;
+                }
+            }
+        }
+        
+        // End session
+        function endSession() {
+            if (confirm('Are you sure you want to end this interview session?')) {
+                // Stop any ongoing recording
+                if (isRecording) {
+                    stopRecording();
+                }
+                
+                // Clear timers
+                if (sessionTimer) {
+                    clearInterval(sessionTimer);
+                }
+                
+                // Save final session data before redirecting
+                if (window.incrementSessionCount) {
+                    window.incrementSessionCount();
+                }
+                
+                // Show completion message
+                if (window.notifications) {
+                    window.notifications.success('Interview session completed! Redirecting to dashboard...');
+                }
+                
+                // Redirect to dashboard using Flask route
+                setTimeout(() => {
+                    window.location.href = "{{ url_for('pages.render_page', filename='user/user_dashboard.html') }}";
+                }, 1000);
+            }
+        }
+        
+        // Show permission error
+        function showPermissionError() {
+            const recordBtn = document.getElementById('recordBtn');
+            if (recordBtn) {
+                recordBtn.disabled = true;
+                recordBtn.innerHTML = '<i class="fas fa-microphone-slash text-xl"></i>';
+                recordBtn.title = 'Microphone access required';
+                recordBtn.classList.add('microphone-denied');
+            }
+            
+            if (window.notifications) {
+                window.notifications.error('Microphone access required. Please enable permissions and refresh the page.');
+            }
+        }
+        
+        // Show error message
+        function showErrorMessage(message) {
+            if (window.notifications) {
+                window.notifications.error(message);
+            }
+            console.error(message);
+        }
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', function() {
+            if (isRecording) {
+                stopRecording();
+            }
+            
+            if (sessionTimer) {
+                clearInterval(sessionTimer);
+            }
+            
+            if (recordingTimer) {
+                clearInterval(recordingTimer);
+            }
+        });
+    </script>
+
+</body>
+</html>

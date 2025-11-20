@@ -1,0 +1,310 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Primary Colors */
+  --color-primary: #2563EB; /* blue-600 */
+  --color-primary-50: #EFF6FF; /* blue-50 */
+  --color-primary-100: #DBEAFE; /* blue-100 */
+  --color-primary-200: #BFDBFE; /* blue-200 */
+  --color-primary-300: #93C5FD; /* blue-300 */
+  --color-primary-400: #60A5FA; /* blue-400 */
+  --color-primary-500: #3B82F6; /* blue-500 */
+  --color-primary-600: #2563EB; /* blue-600 */
+  --color-primary-700: #1D4ED8; /* blue-700 */
+  --color-primary-800: #1E40AF; /* blue-800 */
+  --color-primary-900: #1E3A8A; /* blue-900 */
+
+  /* Secondary Colors */
+  --color-secondary: #059669; /* emerald-600 */
+  --color-secondary-50: #ECFDF5; /* emerald-50 */
+  --color-secondary-100: #D1FAE5; /* emerald-100 */
+  --color-secondary-200: #A7F3D0; /* emerald-200 */
+  --color-secondary-300: #6EE7B7; /* emerald-300 */
+  --color-secondary-400: #34D399; /* emerald-400 */
+  --color-secondary-500: #10B981; /* emerald-500 */
+  --color-secondary-600: #059669; /* emerald-600 */
+  --color-secondary-700: #047857; /* emerald-700 */
+  --color-secondary-800: #065F46; /* emerald-800 */
+  --color-secondary-900: #064E3B; /* emerald-900 */
+
+  /* Accent Colors */
+  --color-accent: #DC2626; /* red-600 */
+  --color-accent-50: #FEF2F2; /* red-50 */
+  --color-accent-100: #FEE2E2; /* red-100 */
+  --color-accent-200: #FECACA; /* red-200 */
+  --color-accent-300: #FCA5A5; /* red-300 */
+  --color-accent-400: #F87171; /* red-400 */
+  --color-accent-500: #EF4444; /* red-500 */
+  --color-accent-600: #DC2626; /* red-600 */
+  --color-accent-700: #B91C1C; /* red-700 */
+  --color-accent-800: #991B1B; /* red-800 */
+  --color-accent-900: #7F1D1D; /* red-900 */
+
+  /* Background Colors */
+  --color-background: #FAFAFA; /* gray-50 */
+  --color-surface: #FFFFFF; /* white */
+
+  /* Text Colors */
+  --color-text-primary: #1F2937; /* gray-800 */
+  --color-text-secondary: #6B7280; /* gray-500 */
+
+  /* Status Colors */
+  --color-success: #10B981; /* emerald-500 */
+  --color-success-50: #ECFDF5; /* emerald-50 */
+  --color-success-100: #D1FAE5; /* emerald-100 */
+  --color-success-200: #A7F3D0; /* emerald-200 */
+  --color-success-300: #6EE7B7; /* emerald-300 */
+  --color-success-400: #34D399; /* emerald-400 */
+  --color-success-500: #10B981; /* emerald-500 */
+  --color-success-600: #059669; /* emerald-600 */
+  --color-success-700: #047857; /* emerald-700 */
+  --color-success-800: #065F46; /* emerald-800 */
+  --color-success-900: #064E3B; /* emerald-900 */
+
+  --color-warning: #F59E0B; /* amber-500 */
+  --color-warning-50: #FFFBEB; /* amber-50 */
+  --color-warning-100: #FEF3C7; /* amber-100 */
+  --color-warning-200: #FDE68A; /* amber-200 */
+  --color-warning-300: #FCD34D; /* amber-300 */
+  --color-warning-400: #FBBF24; /* amber-400 */
+  --color-warning-500: #F59E0B; /* amber-500 */
+  --color-warning-600: #D97706; /* amber-600 */
+  --color-warning-700: #B45309; /* amber-700 */
+  --color-warning-800: #92400E; /* amber-800 */
+  --color-warning-900: #78350F; /* amber-900 */
+
+  --color-error: #EF4444; /* red-500 */
+  --color-error-50: #FEF2F2; /* red-50 */
+  --color-error-100: #FEE2E2; /* red-100 */
+  --color-error-200: #FECACA; /* red-200 */
+  --color-error-300: #FCA5A5; /* red-300 */
+  --color-error-400: #F87171; /* red-400 */
+  --color-error-500: #EF4444; /* red-500 */
+  --color-error-600: #DC2626; /* red-600 */
+  --color-error-700: #B91C1C; /* red-700 */
+  --color-error-800: #991B1B; /* red-800 */
+  --color-error-900: #7F1D1D; /* red-900 */
+
+  /* Border Colors */
+  --color-border: #E5E7EB; /* gray-200 */
+  --color-border-light: #F3F4F6; /* gray-100 */
+  --color-border-dark: #D1D5DB; /* gray-300 */
+
+  /* Shadow Variables */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.2);
+
+  /* Animation Variables */
+  --transition-fast: 200ms ease-out;
+  --transition-normal: 300ms ease-out;
+  --transition-slow: 500ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+}
+
+@layer base {
+  html {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+  
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .font-heading {
+    font-family: 'Inter', sans-serif;
+  }
+
+  .font-body {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+
+  .font-caption {
+    font-family: 'Roboto', sans-serif;
+  }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+@layer components {
+  /* Button Components */
+  .btn-primary {
+    @apply bg-primary text-white px-6 py-3 rounded-md font-medium transition-all duration-200 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-white px-6 py-3 rounded-md font-medium transition-all duration-200 hover:bg-secondary-700 focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:ring-offset-2;
+  }
+
+  .btn-outline {
+    @apply border border-primary text-primary px-6 py-3 rounded-md font-medium transition-all duration-200 hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+
+  /* Card Components */
+  .card {
+    @apply bg-surface rounded-lg shadow-sm border border-border p-6;
+  }
+
+  .card-elevated {
+    @apply bg-surface rounded-lg shadow-lg border border-border p-6;
+  }
+
+  /* Input Components */
+  .input-field {
+    @apply w-full px-4 py-3 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary transition-all duration-200;
+  }
+
+  /* Progress Components */
+  .progress-bar {
+    @apply w-full bg-gray-200 rounded-full h-2;
+  }
+
+  .progress-fill {
+    @apply bg-secondary h-2 rounded-full transition-all duration-500 ease-out;
+  }
+
+  /* Audio Visualization */
+  .audio-wave {
+    @apply transition-all duration-200 ease-out;
+  }
+
+  /* Floating Action Button */
+  .fab {
+    @apply fixed bottom-6 right-6 bg-primary text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+
+  /* Navigation */
+  .nav-item {
+    @apply px-4 py-2 rounded-md transition-all duration-200 hover:bg-primary-50 hover:text-primary;
+  }
+
+  .nav-item-active {
+    @apply bg-primary text-white;
+  }
+
+  /* Feedback Cards */
+  .feedback-card {
+    @apply bg-surface border-l-4 border-secondary p-4 rounded-r-md shadow-sm;
+  }
+
+  .feedback-card-warning {
+    @apply border-l-warning;
+  }
+
+  .feedback-card-error {
+    @apply border-l-error;
+  }
+
+  /* Micro-interactions */
+  .pulse-success {
+    animation: pulse-success 2s infinite;
+  }
+
+  .breathing-guide {
+    animation: breathing 4s ease-in-out infinite;
+  }
+
+  .typing-indicator {
+    animation: typing 1.4s infinite ease-in-out;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .shadow-soft {
+    box-shadow: var(--shadow-sm);
+  }
+
+  .shadow-medium {
+    box-shadow: var(--shadow-md);
+  }
+
+  .shadow-strong {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .transition-fast {
+    transition: all var(--transition-fast);
+  }
+
+  .transition-normal {
+    transition: all var(--transition-normal);
+  }
+
+  .transition-spring {
+    transition: all var(--transition-slow);
+  }
+}
+
+/* Custom Animations */
+@keyframes pulse-success {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes breathing {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+@keyframes typing {
+  0%, 60%, 100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .fab {
+    @apply bottom-4 right-4 p-3;
+  }
+  
+  .card {
+    @apply p-4;
+  }
+  
+  .btn-primary, .btn-secondary, .btn-outline {
+    @apply px-4 py-2 text-sm;
+  }
+}
